@@ -416,7 +416,7 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
   <div class="auth-modal">
     <button class="modal-close" id="authClose">✕</button>
     <div class="eyebrow">MONKEY UI STATION</div><h2 id="authTitle" style="margin:6px 0 0">Welcome back</h2><div class="auth-lock-sub" id="authLockSub">Log in or create an account to enter the station.</div>
-    <div class="auth-tabs"><button class="active" data-auth-tab="login">LOGIN</button><button data-auth-tab="signup">SIGN UP</button></div>
+    <div class="auth-tabs"><button type="button" class="active" data-auth-tab="login">LOGIN</button><button type="button" data-auth-tab="signup">SIGN UP</button></div>
     <form class="auth-form" id="authForm">
       <div class="field"><label>Username</label><input id="authUser" required autocomplete="username"></div>
       <div class="field" id="authEmailWrap" style="display:none"><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div>
@@ -1253,6 +1253,11 @@ async function initAuth(){
  $('authModal').onclick=e=>{e.preventDefault();e.stopPropagation();if(!authCurrent())return;if(e.target===$('authModal'))closeAuth()};
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.onclick=()=>setAuthMode(b.dataset.authTab));
  $('authForm').onsubmit=handleAuth;
+ $('authSubmit').onclick=e=>{
+   e.preventDefault();
+   handleAuth(e);
+ };
+ document.querySelectorAll('[data-auth-tab]').forEach(b=>b.type='button');
  if(hasSupabase()){
    try{
      let {data}=await sb.auth.getSession();
