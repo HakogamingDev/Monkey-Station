@@ -1137,9 +1137,19 @@ let currentProfile=null;
 
 
 function authCurrent(){return currentProfile}
-function normalizedRole(){return String(currentProfile?.role||'').trim().toLowerCase()}
+function normalizedRole(){return String(currentProfile?.role||currentProfile?.user_metadata?.role||'').trim().toLowerCase()}
 function isAdmin(){return normalizedRole()==='admin'}
 function canUseStudio(){return ['artist','admin'].includes(normalizedRole())}
+async function refreshCurrentProfile(){
+ if(!sb)return currentProfile;
+ const {data:{user}}=await sb.auth.getUser();
+ if(!user)return currentProfile=null;
+ const fresh=await loadProfile(user);
+ if(fresh){currentProfile={...fresh,user_metadata:user.user_metadata||{}};}
+ updateAuthUI();
+ navInit();
+ return currentProfile;
+}
 function openAuth(mode){$('authModal').classList.add('open');setAuthMode(mode||'login');setTimeout(()=>$('authUser').focus(),40)}
 function closeAuth(){if(!authCurrent())return;$('authModal').classList.remove('open')}
 
@@ -1325,6 +1335,7 @@ async function handleAuth(e){
      if(!result.data?.user)throw new Error('Supabase did not return a signed-in user.');
 
      currentProfile=await loadProfile(result.data.user);
+     currentProfile={...currentProfile,user_metadata:result.data.user.user_metadata||{}};
      if(!currentProfile)throw new Error('Login worked, but your profile could not be loaded.');
      const md=result.data.user.user_metadata||{};
      if(md.account_type==='artist' && !['artist_pending','artist','admin'].includes(currentProfile.role||'')){
@@ -1340,6 +1351,7 @@ async function handleAuth(e){
    document.body.classList.remove('auth-locked');
    closeAuth();
    updateAuthUI();
+   navInit();
    await renderPosts();
  }catch(err){
    console.error('Authentication failed:',err);
@@ -1372,6 +1384,7 @@ async function initAuth(){
      }
      if(session){
        currentProfile=await loadProfile(session.user);
+       currentProfile={...currentProfile,user_metadata:session.user.user_metadata||{}};
        window.sessionStorage.setItem('monkey-auth-active','1');
        if(window.location.hash.includes('access_token=')||window.location.search.includes('code=')){
          history.replaceState({},document.title,window.location.pathname);
@@ -1389,6 +1402,7 @@ async function initAuth(){
          }
          if(session){
            currentProfile=await loadProfile(session.user);
+           currentProfile={...currentProfile,user_metadata:session.user.user_metadata||{}};
            window.sessionStorage.setItem('monkey-auth-active','1');
            document.body.classList.remove('auth-locked');
            $('authStatus').textContent='Signed in successfully.';
