@@ -1258,119 +1258,77 @@ function updateAuthUI(){
 async function handleAuth(e){
  e.preventDefault();
  e.stopPropagation();
- const status=$('authStatus');
- const submit=$('authSubmit');
- const form=$('authForm');
- let mode=form?.dataset.mode||'login';
- let username=$('authUser').value.trim();
- let pass=$('authPass').value;
-
- const show=(msg,cls='')=>{
-   status.textContent=msg;
-   status.className='auth-status '+cls;
- };
-
- if(!hasSupabase()){
-   show('Supabase is not loaded. Refresh the page and make sure the Supabase script is available.','err');
-   return;
- }
- if(!username){show('Enter a username.','warn');return}
+ const status=$('authStatus'),submit=$('authSubmit'),form=$('authForm');
+ const mode=form?.dataset.mode||'login';
+ const username=$('authUser').value.trim();
+ const pass=$('authPass').value;
+ const show=(msg,cls='')=>{status.textContent=msg;status.className='auth-status '+cls};
+ if(!hasSupabase()){show('Supabase is not loaded. Please refresh the page.','err');return}
+ if(!username){show('Enter your username or email.','warn');return}
  if(pass.length<6){show('Password must be at least 6 characters.','warn');return}
-
  submit.disabled=true;
  show(mode==='signup'?'Creating your account…':'Signing you in…');
-
  try{
    if(mode==='signup'){
      const email=$('authEmail').value.trim();
      const pass2=$('authPass2').value;
-
-     if(!email){show('Enter your email address.','warn');return}
-     if(!/^\S+@\S+\.\S+$/.test(email)){show('Enter a valid email address.','warn');return}
+     const accountType=$('authAccountType')?.value||'user';
+     const portfolio=$('authPortfolio')?.value.trim()||'';
+     const portfolioFile=$('artistPortfolioFile')?.files?.[0]||null;
+     const discord=$('authDiscord')?.value.trim()||'';
+     if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){show('Enter a valid email address.','warn');return}
      if(pass!==pass2){show('Passwords do not match.','warn');return}
-     const accountType=$('authAccountType')?.value||'user';const portfolio=$('authPortfolio')?.value.trim()||'';const portfolioFile=$('artistPortfolioFile')?.files?.[0]||null;const discord=$('authDiscord')?.value.trim()||'';let portfolioType='link',portfolioData=portfolio;if(accountType==='artist'){if(portfolioFile){portfolioType=portfolioFile.type.startsWith('video/')?'video':'image';portfolioData=await new Promise((resolve,reject)=>{const rd=new FileReader();rd.onload=()=>resolve(rd.result);rd.onerror=()=>reject(new Error('Could not read the portfolio file.'));rd.readAsDataURL(portfolioFile)});}if(!portfolioData){show('Portfolio link or file is required for UI Artist applications.','warn');return}if(portfolioType==='link'&&!/^https?:\/\//i.test(portfolioData)){show('Portfolio must start with http:// or https://.','warn');return}if(!discord){show('Discord username is required for UI Artist applications.','warn');return}}
-     if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(username)){
-       show('Username must be 3–24 characters and use only letters, numbers, _, - or .','warn');
-       return;
-     }
-
-     // Do not query profiles before signup: anonymous RLS commonly blocks that query.
-     // The database/profile trigger is responsible for creating the profile and enforcing uniqueness.
-     const redirectTo='https://hakogamingdev.github.io/Monkey-Station/';
-
-     const result=await sb.auth.signUp({
-       email,
-       password:pass,
-       options:{
-         data:{username,account_type:accountType,portfolio_url:accountType==='artist'?portfolio:'',discord_username:accountType==='artist'?discord:''},
-         ...(redirectTo?{emailRedirectTo:redirectTo}:{})
+     if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(username)){show('Username must be 3–24 characters and use only letters, numbers, _, - or .','warn');return}
+     let portfolioType='link',portfolioData=portfolio;
+     if(accountType==='artist'){
+       if(portfolioFile){
+         if(portfolioFile.size>15*1024*1024)throw new Error('Portfolio file must be 15 MB or smaller.');
+         portfolioType=portfolioFile.type.startsWith('video/')?'video':'image';
+         portfolioData=await new Promise((resolve,reject)=>{const rd=new FileReader();rd.onload=()=>resolve(rd.result);rd.onerror=()=>reject(new Error('Could not read the portfolio file.'));rd.readAsDataURL(portfolioFile)});
        }
-     });
-
+       if(!portfolioData){show('Portfolio link or file is required for UI Artist applications.','warn');return}
+       if(portfolioType==='link'&&!/^https?:\/\//i.test(portfolioData)){show('Portfolio must start with http:// or https://.','warn');return}
+       if(!discord){show('Discord username is required for UI Artist applications.','warn');return}
+     }
+     const redirectTo='https://hakogamingdev.github.io/Monkey-Station/';
+     const result=await sb.auth.signUp({email,password:pass,options:{data:{username,account_type:accountType,portfolio_url:accountType==='artist'&&portfolioType==='link'?portfolioData:'',discord_username:accountType==='artist'?discord:''},emailRedirectTo:redirectTo}});
      if(result.error)throw result.error;
-     if(!result.data?.user)throw new Error('Supabase did not create the account. Check your Supabase Auth settings.');
-
-     // Email confirmation enabled: Supabase intentionally returns no session.
+     if(!result.data?.user)throw new Error('Supabase did not create the account.');
      if(!result.data.session){
-       show('Account created! Check your email and click the confirmation link, then log in here.','ok');
+       show('Account created. Check your email for the confirmation link, then log in with your EMAIL first.','ok');
        return;
      }
-
      currentProfile=await loadProfile(result.data.user);
-     if(!currentProfile)throw new Error('Account was created, but its profile could not be loaded. Run the database setup SQL again.');
-     if(accountType==='artist'){const app=await sb.rpc('submit_artist_application',{p_portfolio_url:portfolioType==='link'?portfolioData:'',p_discord_username:discord,p_portfolio_type:portfolioType,p_portfolio_data:portfolioData});if(app.error)throw app.error;currentProfile=await loadProfile(result.data.user);show('Application submitted. Your account is Social-only until an admin approves your UI Artist application.','ok')}else{show('Account created successfully. Social access is ready.','ok')}
-   }else{
-     const remember=$('authRemember')?.checked!==false;
-     window.localStorage.setItem('monkey-remember-me',remember?'1':'0');
-     if(remember){
-       window.sessionStorage.setItem('monkey-auth-active','1');
-     }else{
-       window.sessionStorage.setItem('monkey-auth-active','1');
+     if(accountType==='artist'){
+       const app=await sb.rpc('submit_artist_application',{p_portfolio_url:portfolioType==='link'?portfolioData:'',p_discord_username:discord,p_portfolio_type:portfolioType,p_portfolio_data:portfolioData});
+       if(app.error)throw app.error;
+       currentProfile=await loadProfile(result.data.user);
      }
+     show('Account created successfully.','ok');
+   }else{
      let email=username;
-
      if(!username.includes('@')){
        const q=await sb.rpc('get_auth_email',{p_username:username});
-       if(q.error||!q.data){
-         const fallback=await sb.from('profiles').select('email').ilike('username',username).limit(1);
-         if(fallback.error||!fallback.data?.length||!fallback.data[0]?.email){
-           show('Username login is not configured yet. Run the auth repair SQL, or log in with your email.','err');return
-         }
-         email=fallback.data[0].email;
-       }else email=q.data;
+       if(q.error)throw new Error('Username lookup failed: '+q.error.message);
+       if(q.data)email=q.data;
+       else throw new Error('Username not found. Try logging in with the email used when you signed up.');
      }
-
      const result=await sb.auth.signInWithPassword({email,password:pass});
      if(result.error)throw result.error;
      if(!result.data?.user)throw new Error('Supabase did not return a signed-in user.');
-
+     const ep=await sb.rpc('ensure_my_monkey_profile');
+     if(ep.error)console.warn('Profile auto-create:',ep.error);
      currentProfile=await loadProfile(result.data.user);
      currentProfile={...currentProfile,user_metadata:result.data.user.user_metadata||{}};
-     if(!currentProfile)throw new Error('Login worked, but your profile could not be loaded.');
-     const md=result.data.user.user_metadata||{};
-     if(md.account_type==='artist' && !['artist_pending','artist','admin'].includes(currentProfile.role||'')){
-       const app=await sb.rpc('submit_artist_application',{p_portfolio_url:md.portfolio_url||'',p_discord_username:md.discord_username||''});
-       if(app.error)throw app.error;
-       currentProfile=await loadProfile(result.data.user);
-       show('Signed in. Your UI Artist application is pending admin approval; Social is available now.','ok');
-     }else{
-       show('Signed in successfully.','ok');
-     }
+     show('Signed in successfully.','ok');
    }
-
    document.body.classList.remove('auth-locked');
-   closeAuth();
-   updateAuthUI();
-   navInit();
-   await renderPosts();
+   closeAuth();updateAuthUI();navInit();await renderPosts();
  }catch(err){
    console.error('Authentication failed:',err);
-   show(err?.message||'Authentication failed. Check your details and try again.','err');
- }finally{
-   submit.disabled=false;
- }
+   show(err?.message||'Authentication failed.','err');
+ }finally{submit.disabled=false}
 }
-
 async function initAuth(){
  $('authClose').onclick=closeAuth;
  $('authModal').onclick=e=>{e.preventDefault();e.stopPropagation();if(!authCurrent())return;if(e.target===$('authModal'))closeAuth()};
