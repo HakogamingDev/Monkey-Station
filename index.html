@@ -1192,10 +1192,14 @@ function updateAuthUI(){
  if(!box)return;
  document.body.classList.toggle('auth-locked',!u);
  if(!u){
-   box.innerHTML='';
+   box.innerHTML='<button class="btn alt" id="loginBtn" type="button">Login</button><button class="btn" id="signupBtn" type="button">Sign Up</button>';
+   box.style.setProperty('display','flex','important');
+   box.style.alignItems='center';
+   box.style.gap='7px';
+   $('loginBtn').onclick=()=>openAuth('login');
+   $('signupBtn').onclick=()=>openAuth('signup');
    navInit();
    ['themeSelect','layoutToggle','randomTop'].forEach(id=>{if($(id))$(id).style.display='none'});
-   box.style.display='none';
    $('authModal').classList.add('open');
    $('authClose').style.display='none';
    $('authStatus').textContent=hasSupabase()?'Log in or create an account to enter Monkey UI Station.':'Add your Supabase credentials to enable real accounts.';
@@ -1290,16 +1294,9 @@ async function handleAuth(e){
        return;
      }
 
-     // Check case-insensitively so usernames cannot collide later.
-     const taken=await sb.from('profiles')
-       .select('id,username')
-       .ilike('username',username)
-       .limit(1);
-     if(taken.error)throw taken.error;
-     if(taken.data?.length){show('That username is already taken.','warn');return}
-
-     const redirectTo=(window.location.protocol==='http:'||window.location.protocol==='https:')
-       ?window.location.href:null;
+     // Do not query profiles before signup: anonymous RLS commonly blocks that query.
+     // The database/profile trigger is responsible for creating the profile and enforcing uniqueness.
+     const redirectTo='https://hakogamingdev.github.io/Monkey-Station/';
 
      const result=await sb.auth.signUp({
        email,
@@ -1334,9 +1331,13 @@ async function handleAuth(e){
 
      if(!username.includes('@')){
        const q=await sb.rpc('get_auth_email',{p_username:username});
-       if(q.error)throw q.error;
-       if(!q.data){show('Username not found.','warn');return}
-       email=q.data;
+       if(q.error||!q.data){
+         const fallback=await sb.from('profiles').select('email').ilike('username',username).limit(1);
+         if(fallback.error||!fallback.data?.length||!fallback.data[0]?.email){
+           show(q.error?.message||'Username not found. Try logging in with your email address.','warn');return
+         }
+         email=fallback.data[0].email;
+       }else email=q.data;
      }
 
      const result=await sb.auth.signInWithPassword({email,password:pass});
@@ -1375,10 +1376,7 @@ async function initAuth(){
  $('authModal').onclick=e=>{e.preventDefault();e.stopPropagation();if(!authCurrent())return;if(e.target===$('authModal'))closeAuth()};
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.onclick=()=>setAuthMode(b.dataset.authTab));
  $('authForm').onsubmit=handleAuth;
- $('authSubmit').onclick=e=>{
-   e.preventDefault();
-   handleAuth(e);
- };
+ // The form submit handler is the single source of truth. Do not also bind a click handler to the submit button.
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.type='button');
  if(hasSupabase()){
    try{
@@ -1635,7 +1633,7 @@ async function sendSocialMessage(){let n=socialState.selected,t=$('messageInput'
 async function loadSharedMessages(friendId,name){if(!sb||!currentProfile)return;let {data,error}=await sb.from('messages').select('sender_id,receiver_id,body,created_at').or(`and(sender_id.eq.${currentProfile.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${currentProfile.id})`).order('created_at',{ascending:true});if(error){renderConversation();return}socialState.messages[name]=(data||[]).map(m=>({text:m.body,mine:m.sender_id===currentProfile.id,time:new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}));saveSocial();renderConversation()}
 async function adminSetRole(userId,role){if(!isAdmin()||!sb)return;let r=await sb.rpc('admin_manage_account',{p_user_id:userId,p_role:role});if(r.error){toastU?.(r.error.message);return false}toastU?.('Account updated.');return true}
 async function renderAdminAccounts(){if(!isAdmin()||!$('adminAccounts'))return;if(!sb){$('adminAccounts').innerHTML='<div class="status err">Supabase is required.</div>';return}let q=($('adminAccountSearch')?.value||'').trim();let query=sb.from('profiles').select('id,username,avatar_url,role,hireable,portfolio_url,discord_username,created_at').order('created_at',{ascending:false}).limit(500);if(q)query=query.ilike('username',`%${q}%`);let {data,error}=await query;if(error){$('adminAccounts').innerHTML=`<div class="status err">${esc(error.message)}</div>`;return}let rows=data||[];$('adminAccounts').innerHTML=rows.length?rows.map(a=>`<div class="admin-account"><div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>@${esc(a.username||'User')}</b><span class="artist-badge ${a.role==='artist'?'approved':a.role==='artist_pending'?'pending':''}">${esc(a.role||'user').toUpperCase()}</span></div><div class="meta" style="margin-top:5px">Discord: ${esc(a.discord_username||'—')} · Hireable: ${a.hireable?'Yes':'No'}</div>${a.portfolio_url?`<div class="meta" style="margin-top:3px">Portfolio: <a href="${esc(a.portfolio_url)}" target="_blank" rel="noopener">Open ↗</a></div>`:''}</div><div class="actions"><select data-admin-role="${esc(a.id)}" aria-label="Role for ${esc(a.username||'user')}"><option value="user" ${a.role==='user'?'selected':''}>Normal</option><option value="artist" ${a.role==='artist'?'selected':''}>Artist</option><option value="artist_pending" ${a.role==='artist_pending'?'selected':''}>Pending</option><option value="artist_declined" ${a.role==='artist_declined'?'selected':''}>Declined</option><option value="admin" ${a.role==='admin'?'selected':''}>Admin</option></select><button class="btn" data-save-role="${esc(a.id)}">Apply Role</button>${a.role==='artist'?`<button class="btn alt" data-admin-hireable="${esc(a.id)}" data-value="${a.hireable?'0':'1'}">${a.hireable?'Remove Hireable':'Make Hireable'}</button>`:''}</div></div>`).join(''):'<div class="social-empty">No accounts found.</div>';$('adminAccounts').querySelectorAll('[data-save-role]').forEach(b=>b.onclick=async()=>{let sel=$(`[data-admin-role="${CSS.escape(b.dataset.saveRole)}"]`);if(!sel)return;b.disabled=true;let ok=await adminSetRole(b.dataset.saveRole,sel.value);b.disabled=false;if(ok){await renderAdminAccounts();await renderArtistApplications();await renderPeople();await renderHireable()}});$('adminAccounts').querySelectorAll('[data-admin-hireable]').forEach(b=>b.onclick=async()=>{b.disabled=true;let role=await adminSetRole(b.dataset.adminHireable,b.dataset.value==='1'?'artist':'artist');b.disabled=false;if(role){let r=await sb.rpc('admin_set_hireable_for_user',{p_user_id:b.dataset.adminHireable,p_hireable:b.dataset.value==='1'});if(r.error){toastU?.(r.error.message)}else{await renderAdminAccounts();await renderHireable()}}})}
-async async function submitFeedback(){
+async function submitFeedback(){
  const text=$('feedbackText')?.value.trim(); const status=$('feedbackStatus');
  if(!text||!currentProfile||!sb)return;
  status.textContent='Sending…'; status.className='status';
@@ -1651,7 +1649,7 @@ async function renderAdminFeedback(){
  $('adminFeedback').innerHTML=rows.length?rows.map(x=>`<div class="social-row" style="align-items:flex-start"><div style="min-width:0;flex:1"><div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap"><b>@${esc(x.username||'User')}</b><span class="artist-badge">${esc(x.role||'user').toUpperCase()}</span></div><div class="meta" style="margin-top:3px">${new Date(x.created_at).toLocaleString()}</div><div style="margin-top:8px;white-space:pre-wrap;line-height:1.5">${esc(x.message||'')}</div></div><button class="btn alt" data-feedback-read="${esc(x.id)}">Mark read</button></div>`).join(''):'<div class="social-empty">No feedback yet.</div>';
  $('adminFeedback').querySelectorAll('[data-feedback-read]').forEach(b=>b.onclick=async()=>{b.disabled=true;const rr=await sb.rpc('admin_mark_feedback_read',{p_feedback_id:b.dataset.feedbackRead});if(rr.error)toastU?.(rr.error.message);await renderAdminFeedback()});
 }
-function renderArtistApplications(){
+async function renderArtistApplications(){
  if(!isAdmin()||!$('artistApplications'))return;
  if(!sb){$('artistApplications').innerHTML='<div class="status err">Supabase is required.</div>';return}
  let {data,error}=await sb.from('artist_applications').select('id,user_id,status,portfolio_type,portfolio_data,discord_username,created_at,profiles(username,role)').eq('status','pending').order('created_at',{ascending:true});
