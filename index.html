@@ -1334,7 +1334,7 @@ async function handleAuth(e){
        if(q.error||!q.data){
          const fallback=await sb.from('profiles').select('email').ilike('username',username).limit(1);
          if(fallback.error||!fallback.data?.length||!fallback.data[0]?.email){
-           show(q.error?.message||'Username not found. Try logging in with your email address.','warn');return
+           show('Username login is not configured yet. Run the auth repair SQL, or log in with your email.','err');return
          }
          email=fallback.data[0].email;
        }else email=q.data;
@@ -1783,7 +1783,8 @@ document.addEventListener('DOMContentLoaded',()=>{wire();setTimeout(ensureSocial
     const link=wrap.querySelector('input:not([type=file])');
     const file=document.getElementById('artistPortfolioFile');
     const btn=document.getElementById('artistPortfolioUseFile');
-    btn.onclick=()=>{ if(file.files?.[0]&&link){ link.value=''; link.placeholder='Uploaded file selected: '+file.files[0].name; link.dataset.portfolioFile=file.files[0].name; } };
+    btn.onclick=()=>{ if(file.files?.[0]&&link){ link.value=''; link.placeholder='Uploaded file selected: '+file.files[0].name; link.dataset.portfolioFile=file.files[0].name; const hint=document.getElementById('artistPortfolioHint'); if(hint)hint.textContent='Selected: '+file.files[0].name+' — the file will be read when you submit.'; } };
+    file.onchange=()=>{ const f=file.files?.[0]; const hint=document.getElementById('artistPortfolioHint'); if(f&&hint)hint.textContent='Selected: '+f.name+' — ready to upload.'; };
   }
   document.addEventListener('DOMContentLoaded',enhanceArtistPortfolio);
   setTimeout(enhanceArtistPortfolio,500);
