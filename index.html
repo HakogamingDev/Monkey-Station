@@ -974,15 +974,17 @@ function renderVirtualGradients(reset=false){
   let grid=$('virtualGradientGrid');
   if(!grid)return;
   if(!out.length){grid.innerHTML='<div class="theme-empty" style="grid-column:1/-1">No gradients match that search. Try another term or choose All styles.</div>';}
-  else grid.innerHTML=out.map(g=>`<div class="gradient-virtual-card"><div class="gradient-virtual-sample" style="background:${g.css}"></div><div class="gradient-virtual-meta"><div class="gradient-virtual-name">${g.name}</div><div class="gradient-virtual-code">${g.c.join(' · ')}</div><div class="actions" style="margin-top:8px"><button class="btn alt" data-vgpreview="${g.id}">Preview</button><button class="btn" data-vguse="${g.id}">Use</button></div></div></div>`).join('');
+  else grid.innerHTML=out.map(g=>`<div class="gradient-virtual-card" data-vgcard="${g.id}" title="Click to load this gradient into Gradient Studio"><div class="gradient-virtual-sample" style="background:${g.css}"></div><div class="gradient-virtual-meta"><div class="gradient-virtual-name">${g.name}</div><div class="gradient-virtual-code">${g.c.join(' · ')}</div><div class="actions" style="margin-top:8px"><button class="btn alt" data-vgpreview="${g.id}">Preview</button><button class="btn" data-vguse="${g.id}">Use</button></div></div></div>`).join('');
   if($('gradientVirtualCount'))$('gradientVirtualCount').textContent=`${Math.min(scanned,VirtualGradients.total).toLocaleString()} / 100,000`;
   if($('virtualGradientMore'))$('virtualGradientMore').style.display=scanned>=VirtualGradients.total?'none':'inline-flex';
-  grid.querySelectorAll('[data-vgpreview]').forEach(b=>b.onclick=()=>previewVirtualGradient(+b.dataset.vgpreview));
-  grid.querySelectorAll('[data-vguse]').forEach(b=>b.onclick=()=>selectVirtualGradient(+b.dataset.vguse));
+  grid.querySelectorAll('[data-vgcard]').forEach(card=>card.onclick=e=>{if(e.target.closest('button'))return;loadVirtualGradientIntoStudio(+card.dataset.vgcard)});
+  grid.querySelectorAll('[data-vgpreview]').forEach(b=>b.onclick=e=>{e.stopPropagation();previewVirtualGradient(+b.dataset.vgpreview)});
+  grid.querySelectorAll('[data-vguse]').forEach(b=>b.onclick=e=>{e.stopPropagation();loadVirtualGradientIntoStudio(+b.dataset.vguse)});
  }catch(e){if($('virtualGradientGrid'))$('virtualGradientGrid').innerHTML='<div class="status err" style="grid-column:1/-1">Gradient library could not render. '+esc(e.message||'Unknown error')+'</div>';}
 }
 function previewVirtualGradient(id){let g=virtualGradient(id,VirtualGradients.style||'All');if(!g)return;$('gradientPreviewTitle').textContent=g.name;$('gradientPreviewMeta').textContent=`100K Library · ${g.type} · ${g.cat} · ${g.angle}° · #${String(g.id+1).padStart(6,'0')}`;$('gradientPreviewLarge').style.background=g.css;$('gradientPreviewCopy').onclick=()=>fallbackCopy(g.css);$('gradientPreviewUse').onclick=()=>{selectVirtualGradient(id);closeGradientPreview()};$('gradientPreviewModal').classList.add('open');$('gradientPreviewModal').setAttribute('aria-hidden','false')}
-function selectVirtualGradient(id){let g=virtualGradient(id,VirtualGradients.style);VirtualGradients.selected=g;$('virtualGradientPreview').style.background=g.css;$('virtualGradientLabel').textContent=g.name;$('virtualGradientMeta').textContent=`${g.type} · ${g.cat} · ${g.c.join(' → ')} · ${g.angle}° · #${String(g.id+1).padStart(6,'0')}`;$('virtualGradientCopy').onclick=()=>fallbackCopy(g.css);$('virtualGradientSvg').onclick=()=>exportGradientSvg(g.c,g.angle,g.type,g.name.toLowerCase().replace(/[^a-z0-9]+/g,'-'));$('virtualGradientApply').onclick=()=>{setGradientEditor({name:g.name,c:g.c,angle:g.angle,type:g.type});showView('gradients')}}
+function loadVirtualGradientIntoStudio(id){let g=virtualGradient(id,VirtualGradients.style||'All');if(!g)return;selectVirtualGradient(id);setGradientEditor({name:g.name,c:g.c,angle:g.angle,type:g.type});showView('gradients');setTimeout(()=>{let target=document.querySelector('#gradients .gradient-layout > .panel');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},40)}
+function selectVirtualGradient(id){let g=virtualGradient(id,VirtualGradients.style);VirtualGradients.selected=g;$('virtualGradientPreview').style.background=g.css;$('virtualGradientLabel').textContent=g.name;$('virtualGradientMeta').textContent=`${g.type} · ${g.cat} · ${g.c.join(' → ')} · ${g.angle}° · #${String(g.id+1).padStart(6,'0')}`;$('virtualGradientCopy').onclick=()=>fallbackCopy(g.css);$('virtualGradientSvg').onclick=()=>exportGradientSvg(g.c,g.angle,g.type,g.name.toLowerCase().replace(/[^a-z0-9]+/g,'-'));$('virtualGradientApply').onclick=()=>loadVirtualGradientIntoStudio(g.id)}
 function renderResources(){
  let q=($('resourceSearch').value||'').toLowerCase(),cat=document.querySelector('#resourceCats .active')?.dataset.cat||'All';
  $('resourceGrid').innerHTML=ResourceItems.filter(x=>(cat==='All'||x.cat===cat)&&(!q||`${x.title} ${x.desc} ${x.cat}`.toLowerCase().includes(q))).map(x=>`<article class="resource-card"><div class="resource-icon">${x.icon}</div><h3>${x.title}</h3><p>${x.desc}</p><a class="btn alt" href="${x.url}" target="_blank" rel="noopener">Open Resource ↗</a></article>`).join('');
@@ -997,7 +999,7 @@ const SUPABASE_URL='https://wmvcouygzycvfkrpopna.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_jaC_o201T4GLp5f82NOkvQ_3FxUHEM7';
 const ADMIN_PASSWORD='hakogaming26';
 const hasSupabase=()=>window.supabase&&SUPABASE_URL.startsWith('http')&&SUPABASE_ANON_KEY!=='YOUR_SUPABASE_PUBLISHABLE_KEY';
-const sb=hasSupabase()?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+const sb=hasSupabase()?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
 let currentProfile=null;
 
 function authCurrent(){return currentProfile}
@@ -1020,7 +1022,7 @@ function setAuthMode(mode){
 
 async function loadProfile(user){
  if(!sb||!user)return null;
- let {data,error}=await sb.from('profiles').select('id,username,email').eq('id',user.id).maybeSingle();
+ let {data,error}=await sb.from('profiles').select('id,username').eq('id',user.id).maybeSingle();
  if(error)throw error;
  return data||{id:user.id,username:user.user_metadata?.username||user.email?.split('@')[0]||'User',email:user.email}
 }
@@ -1076,7 +1078,8 @@ async function handleAuth(e){
      let taken=await sb.from('profiles').select('id').eq('username',username).maybeSingle();
      if(taken.error)throw taken.error;
      if(taken.data){$('authStatus').textContent='That username already exists.';return}
-     let {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{username}}});
+     let redirectTo=(window.location.protocol==='http:'||window.location.protocol==='https:')?window.location.href:null;
+     let {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{username},...(redirectTo?{emailRedirectTo:redirectTo}: {})}});
      if(error)throw error;
      if(!data.user){throw new Error('Supabase did not return a user. Check your project URL/key and Auth settings.')}
      if(!data.session){
@@ -1111,7 +1114,12 @@ async function initAuth(){
  }else if(hasSupabase()){
    try{
      let {data}=await sb.auth.getSession();
-     if(data.session)currentProfile=await loadProfile(data.session.user);
+     if(data.session){
+       currentProfile=await loadProfile(data.session.user);
+       if(window.location.hash.includes('access_token=')||window.location.search.includes('code=')){
+         history.replaceState({},document.title,window.location.pathname);
+       }
+     }
      sb.auth.onAuthStateChange(async(_event,session)=>{
        if(localStorage.getItem('monkey-admin-session')==='1')return;
        currentProfile=session?await loadProfile(session.user):null;
