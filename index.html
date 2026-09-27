@@ -1137,6 +1137,9 @@ let currentProfile=null;
 
 
 function authCurrent(){return currentProfile}
+function normalizedRole(){return String(currentProfile?.role||'').trim().toLowerCase()}
+function isAdmin(){return normalizedRole()==='admin'}
+function canUseStudio(){return ['artist','admin'].includes(normalizedRole())}
 function openAuth(mode){$('authModal').classList.add('open');setAuthMode(mode||'login');setTimeout(()=>$('authUser').focus(),40)}
 function closeAuth(){if(!authCurrent())return;$('authModal').classList.remove('open')}
 
@@ -1147,6 +1150,7 @@ function setAuthMode(mode){
  $('authEmailWrap').style.display=mode==='signup'?'block':'none';
  $('authAccountTypeWrap').style.display=mode==='signup'?'block':'none';
  $('artistApplicationWrap').style.display=(mode==='signup'&&$('authAccountType')?.value==='artist')?'block':'none';
+ if($('artistPortfolioHint'))$('artistPortfolioHint').textContent='Portfolio: paste a link, or upload a PNG/JPG/WebP image or video.';
  $('artistDiscordWrap').style.display=(mode==='signup'&&$('authAccountType')?.value==='artist')?'block':'none';
  $('authPass2Wrap').style.display=mode==='signup'?'block':'none';
  if($('authRememberWrap'))$('authRememberWrap').style.display=mode==='login'?'flex':'none';
@@ -1390,6 +1394,7 @@ async function initAuth(){
            $('authStatus').textContent='Signed in successfully.';
            closeAuth();
            updateAuthUI();
+           navInit();
            await renderPosts();
          }
        }catch(err){
@@ -1399,7 +1404,8 @@ async function initAuth(){
    }catch(e){console.warn('Supabase auth:',e)}
  }
  if(currentProfile){document.body.classList.remove('auth-locked');}else{setAuthMode('login');}
- updateAuthUI()
+ updateAuthUI();
+navInit()
 }
 function getCurrentUISVG(){try{if(typeof layoutSVG==='string'&&layoutSVG.trim())return figmaSafeSVG(layoutSVG);if(typeof customSVG!=='undefined'&&customSVG)return figmaSafeSVG(new XMLSerializer().serializeToString(customSVG));for(let k of ['button','header','frame','hud'])if(typeof svgStore!=='undefined'&&svgStore[k])return figmaSafeSVG(svgStore[k])}catch(e){}return ''}
 let communityPosts=[];
@@ -1640,6 +1646,27 @@ function initRasterEditor(){
 function wireSvgModeTabs(){$('svgModeTabs').querySelectorAll('[data-svg-mode]').forEach(b=>b.onclick=()=>{$('svgModeTabs').querySelectorAll('.settings-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');let raster=b.dataset.svgMode==='raster';$('svgVectorPanel').style.display=raster?'none':'block';$('svgRasterPanel').style.display=raster?'block':'none';if(raster)$('rasterStatus').textContent=$('rasterStatus').textContent||'Ready.'})}
 function loadSVGFile(file){if(!file)return;let r=new FileReader();r.onload=()=>{try{customSVG=svgSafeParse(String(r.result));let vb=customSVG.getAttribute('viewBox')||'0 0 600 400';customSVG.setAttribute('preserveAspectRatio','xMidYMid meet');$('svgCanvas').innerHTML='';$('svgCanvas').appendChild(customSVG);renderSvgSmartInfo();$('svgStatus').textContent=`Loaded ${file.name} · viewBox ${vb} · smart background/palette scan complete`;$('svgStatus').className='status ok'}catch(e){$('svgStatus').textContent=e.message;$('svgStatus').className='status err'}};r.readAsText(file)}
 document.addEventListener('DOMContentLoaded',wire);
+</script>
+<script>
+// Portfolio input enhancement: artists may submit a URL or image/video file.
+(function(){
+  function enhanceArtistPortfolio(){
+    const wrap=document.getElementById('artistApplicationWrap');
+    if(!wrap || document.getElementById('artistPortfolioType')) return;
+    const host=wrap.querySelector('input,textarea')?.parentElement || wrap;
+    const label=document.createElement('div'); label.className='sub'; label.id='artistPortfolioHint'; label.textContent='Portfolio: paste a link, or upload a PNG/JPG/WebP image or video.';
+    wrap.appendChild(label);
+    const row=document.createElement('div'); row.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px';
+    row.innerHTML='<input id="artistPortfolioFile" type="file" accept="image/png,image/jpeg,image/webp,video/*" class="input"><button id="artistPortfolioUseFile" type="button" class="btn alt">Use uploaded portfolio</button>';
+    wrap.appendChild(row);
+    const link=wrap.querySelector('input:not([type=file])');
+    const file=document.getElementById('artistPortfolioFile');
+    const btn=document.getElementById('artistPortfolioUseFile');
+    btn.onclick=()=>{ if(file.files?.[0]&&link){ link.value=''; link.placeholder='Uploaded file selected: '+file.files[0].name; link.dataset.portfolioFile=file.files[0].name; } };
+  }
+  document.addEventListener('DOMContentLoaded',enhanceArtistPortfolio);
+  setTimeout(enhanceArtistPortfolio,500);
+})();
 </script>
 </body>
 </html>
