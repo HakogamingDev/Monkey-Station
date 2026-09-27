@@ -453,11 +453,11 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
     <button class="modal-close" id="authClose">✕</button>
     <div class="eyebrow">MONKEY UI STATION</div><h2 id="authTitle" style="margin:6px 0 0">Welcome back</h2><div class="auth-lock-sub" id="authLockSub">Log in or create an account to enter the station.</div>
     <div class="auth-tabs"><button type="button" class="active" data-auth-tab="login">LOGIN</button><button type="button" data-auth-tab="signup">SIGN UP</button></div>
-    <form class="auth-form" id="authForm">
+    <form class="auth-form" id="authForm" novalidate>
       <div class="field"><label>Username</label><input id="authUser" required autocomplete="username"></div>
       <div class="field" id="authEmailWrap" style="display:none"><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div>
       <div class="field" id="authAccountTypeWrap" style="display:none"><label>Account type</label><select id="authAccountType"><option value="user">Normal account — Social only</option><option value="artist">UI Artist — application required</option></select></div>
-      <div class="field" id="artistApplicationWrap" style="display:none"><label>Portfolio URL</label><input id="authPortfolio" type="url" placeholder="https://your-portfolio.com" autocomplete="url"><div class="meta" style="margin-top:5px">Your portfolio is sent to an admin for manual review.</div></div>
+      <div class="field" id="artistApplicationWrap" style="display:none"><label>Portfolio URL</label><input id="authPortfolio" type="url" placeholder="https://your-portfolio.com" autocomplete="url"><div class="meta" style="margin-top:5px">UI Artist applications accept a portfolio URL only. Your account stays Social-only until Hako approves it.</div></div>
       <div class="field" id="artistDiscordWrap" style="display:none"><label>Discord username</label><input id="authDiscord" placeholder="your Discord username" autocomplete="off"></div>
       <div class="field"><label>Password</label><input id="authPass" type="password" minlength="6" required autocomplete="current-password"></div>
       <label class="remember-row" id="authRememberWrap"><input id="authRemember" type="checkbox" checked> <span>Remember me</span></label>
@@ -496,7 +496,7 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
  <div class="social-panel" id="socialFeedbackPanel"><div class="social-card"><div class="eyebrow">FEEDBACK</div><h3>Help improve MONKEY UI STATION</h3><div class="sub">Send feedback, bug reports, ideas, or anything you want Hako to see.</div><form id="feedbackForm" class="auth-form"><div class="field"><label>Feedback</label><textarea id="feedbackText" maxlength="2000" rows="7" placeholder="Tell us what you think, what is broken, or what you want added..." required></textarea></div><button class="btn" type="submit">Send Feedback</button><div class="status" id="feedbackStatus"></div></form></div></div>
  <div class="social-panel" id="socialMessagesPanel"><div class="social-grid"><div class="social-card"><div class="eyebrow">MESSAGES</div><div class="social-list" id="conversationList"></div></div><div class="social-card"><div class="conversation-title" id="conversationHeader"><div class="profile-avatar">M</div><div class="conversation-title-copy"><b id="messageTitle">SELECT A FRIEND</b><div class="meta" id="messageSubtitle">Choose a friend to start messaging.</div></div></div><div class="message-list" id="messageList"><div class="status">Choose a friend to start messaging.</div></div><div class="message-compose"><input id="messageInput" maxlength="4000" placeholder="Write a message..." autocomplete="off"><button class="btn" id="sendMessageBtn" type="button">Send</button></div></div></div></div>
  </div>
-<section class="social-panel" id="socialApplyPanel"><div class="panel-card"><div class="eyebrow">UI ARTIST</div><h2 style="margin:6px 0 10px">Apply to become a UI Artist</h2><div class="sub" style="margin-bottom:14px">Send your portfolio and Discord username. Your account stays Social-only until Hako approves it.</div><form id="socialArtistApplyForm" class="auth-form"><div class="field"><label>Portfolio link</label><input id="socialApplyPortfolio" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Or upload portfolio</label><input id="socialApplyFile" type="file" accept="image/png,image/jpeg,image/webp,video/*"></div><div class="field"><label>Discord username</label><input id="socialApplyDiscord" placeholder="your Discord username"></div><button class="btn" type="submit">Submit UI Artist Application</button><div id="socialApplyStatus" class="auth-status"></div></form></div></section>
+<section class="social-panel" id="socialApplyPanel"><div class="panel-card"><div class="eyebrow">UI ARTIST</div><h2 style="margin:6px 0 10px">Apply to become a UI Artist</h2><div class="sub" style="margin-bottom:14px">Send your portfolio and Discord username. Your account stays Social-only until Hako approves it.</div><form id="socialArtistApplyForm" class="auth-form"><div class="field"><label>Portfolio link</label><input id="socialApplyPortfolio" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Discord username</label><input id="socialApplyDiscord" placeholder="your Discord username"></div><button class="btn" type="submit">Submit UI Artist Application</button><div id="socialApplyStatus" class="auth-status"></div></form></div></section>
 </section>
 
 <section id="profile" class="view"><div class="panel"><div class="head"><div><h2>Profile</h2><div class="sub">Customize your public identity and avatar.</div></div></div>
@@ -1274,26 +1274,25 @@ async function handleAuth(e){
      const pass2=$('authPass2').value;
      const accountType=$('authAccountType')?.value||'user';
      const portfolio=$('authPortfolio')?.value.trim()||'';
-     const portfolioFile=$('artistPortfolioFile')?.files?.[0]||null;
      const discord=$('authDiscord')?.value.trim()||'';
      if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){show('Enter a valid email address.','warn');return}
      if(pass!==pass2){show('Passwords do not match.','warn');return}
      if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(username)){show('Username must be 3–24 characters and use only letters, numbers, _, - or .','warn');return}
      let portfolioType='link',portfolioData=portfolio;
      if(accountType==='artist'){
-       if(portfolioFile){
-         if(portfolioFile.size>15*1024*1024)throw new Error('Portfolio file must be 15 MB or smaller.');
-         portfolioType=portfolioFile.type.startsWith('video/')?'video':'image';
-         portfolioData=await new Promise((resolve,reject)=>{const rd=new FileReader();rd.onload=()=>resolve(rd.result);rd.onerror=()=>reject(new Error('Could not read the portfolio file.'));rd.readAsDataURL(portfolioFile)});
-       }
-       if(!portfolioData){show('Portfolio link or file is required for UI Artist applications.','warn');return}
-       if(portfolioType==='link'&&!/^https?:\/\//i.test(portfolioData)){show('Portfolio must start with http:// or https://.','warn');return}
+       if(!portfolioData){show('Portfolio URL is required for UI Artist applications.','warn');return}
+       if(!/^https?:\/\//i.test(portfolioData)){show('Portfolio must start with http:// or https://.','warn');return}
        if(!discord){show('Discord username is required for UI Artist applications.','warn');return}
      }
      const redirectTo='https://hakogamingdev.github.io/Monkey-Station/';
      const result=await sb.auth.signUp({email,password:pass,options:{data:{username,account_type:accountType,portfolio_url:accountType==='artist'&&portfolioType==='link'?portfolioData:'',discord_username:accountType==='artist'?discord:''},emailRedirectTo:redirectTo}});
      if(result.error)throw result.error;
      if(!result.data?.user)throw new Error('Supabase did not create the account.');
+     try{
+       const saved=JSON.parse(localStorage.getItem('monkey-auth-accounts')||'{}');
+       saved[username.toLowerCase()]=email;
+       localStorage.setItem('monkey-auth-accounts',JSON.stringify(saved));
+     }catch(_){}
      if(!result.data.session){
        show('Account created. Check your email for the confirmation link, then log in with your EMAIL first.','ok');
        return;
@@ -1308,10 +1307,16 @@ async function handleAuth(e){
    }else{
      let email=username;
      if(!username.includes('@')){
-       const q=await sb.rpc('get_auth_email',{p_username:username});
-       if(q.error)throw new Error('Username lookup failed: '+q.error.message);
-       if(q.data)email=q.data;
-       else throw new Error('Username not found. Try logging in with the email used when you signed up.');
+       // Server lookup is preferred; local fallback keeps username login working on the
+       // same browser even if the optional RPC has not been installed yet.
+       let q=null;
+       try{q=await sb.rpc('get_auth_email',{p_username:username})}catch(_){}
+       if(q?.data) email=q.data;
+       else {
+         const saved=JSON.parse(localStorage.getItem('monkey-auth-accounts')||'{}');
+         email=saved[username.toLowerCase()]||'';
+       }
+       if(!email)throw new Error('Username login needs the email used when you signed up. If this is a new browser, log in with your email once.');
      }
      const result=await sb.auth.signInWithPassword({email,password:pass});
      if(result.error)throw result.error;
@@ -1333,7 +1338,8 @@ async function initAuth(){
  $('authClose').onclick=closeAuth;
  $('authModal').onclick=e=>{e.preventDefault();e.stopPropagation();if(!authCurrent())return;if(e.target===$('authModal'))closeAuth()};
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.onclick=()=>setAuthMode(b.dataset.authTab));
- $('authForm').onsubmit=handleAuth;
+ const authForm=$('authForm');
+ if(authForm)authForm.onsubmit=handleAuth;
  // The form submit handler is the single source of truth. Do not also bind a click handler to the submit button.
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.type='button');
  if(hasSupabase()){
@@ -1482,7 +1488,7 @@ function ensureSocialArtistApplyTab(){
 }
 function renderArtistApplyForm(){
  const form=$('socialArtistApplyForm');if(!form||form.dataset.wired)return;if(!['user','artist_declined'].includes(normalizedRole()))return;form.dataset.wired='1';
- form.onsubmit=async e=>{e.preventDefault();const status=$('socialApplyStatus'),link=$('socialApplyPortfolio')?.value.trim()||'',file=$('socialApplyFile')?.files?.[0]||null,discord=$('socialApplyDiscord')?.value.trim()||'';let type='link',data=link;status.className='auth-status';status.textContent='Submitting…';try{if(file){type=file.type.startsWith('video/')?'video':'image';data=await new Promise((resolve,reject)=>{const rd=new FileReader();rd.onload=()=>resolve(rd.result);rd.onerror=()=>reject(new Error('Could not read the portfolio file.'));rd.readAsDataURL(file)});}if(!data)throw new Error('Portfolio link or file is required.');if(type==='link'&&!/^https?:\/\//i.test(data))throw new Error('Portfolio must start with http:// or https://.');if(!discord)throw new Error('Discord username is required.');if(!sb)throw new Error('Supabase is required.');const r=await sb.rpc('submit_artist_application',{p_portfolio_url:type==='link'?data:'',p_discord_username:discord,p_portfolio_type:type,p_portfolio_data:data});if(r.error)throw r.error;status.textContent='Application submitted. Hako can now review it.';status.className='auth-status ok';}catch(err){status.textContent=err?.message||'Application failed.';status.className='auth-status err';}};
+ form.onsubmit=async e=>{e.preventDefault();const status=$('socialApplyStatus'),link=$('socialApplyPortfolio')?.value.trim()||'',discord=$('socialApplyDiscord')?.value.trim()||'';status.className='auth-status';status.textContent='Submitting…';try{if(!link)throw new Error('Portfolio URL is required.');if(!/^https?:\/\//i.test(link))throw new Error('Portfolio must start with http:// or https://.');if(!discord)throw new Error('Discord username is required.');if(!sb)throw new Error('Supabase is required.');const r=await sb.rpc('submit_artist_application',{p_portfolio_url:link,p_discord_username:discord,p_portfolio_type:'link',p_portfolio_data:link});if(r.error)throw r.error;status.textContent='Application submitted. Hako can now review it.';status.className='auth-status ok';}catch(err){status.textContent=err?.message||'Application failed.';status.className='auth-status err';}};
 }
 
 function ensureSocialSettingsTab(){
@@ -1733,16 +1739,7 @@ document.addEventListener('DOMContentLoaded',()=>{wire();setTimeout(ensureSocial
     const wrap=document.getElementById('artistApplicationWrap');
     if(!wrap || document.getElementById('artistPortfolioType')) return;
     const host=wrap.querySelector('input,textarea')?.parentElement || wrap;
-    const label=document.createElement('div'); label.className='sub'; label.id='artistPortfolioHint'; label.textContent='Portfolio: paste a link, or upload a PNG/JPG/WebP image or video.';
-    wrap.appendChild(label);
-    const row=document.createElement('div'); row.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px';
-    row.innerHTML='<input id="artistPortfolioFile" type="file" accept="image/png,image/jpeg,image/webp,video/*" class="input"><button id="artistPortfolioUseFile" type="button" class="btn alt">Use uploaded portfolio</button>';
-    wrap.appendChild(row);
-    const link=wrap.querySelector('input:not([type=file])');
-    const file=document.getElementById('artistPortfolioFile');
-    const btn=document.getElementById('artistPortfolioUseFile');
-    btn.onclick=()=>{ if(file.files?.[0]&&link){ link.value=''; link.placeholder='Uploaded file selected: '+file.files[0].name; link.dataset.portfolioFile=file.files[0].name; const hint=document.getElementById('artistPortfolioHint'); if(hint)hint.textContent='Selected: '+file.files[0].name+' — the file will be read when you submit.'; } };
-    file.onchange=()=>{ const f=file.files?.[0]; const hint=document.getElementById('artistPortfolioHint'); if(f&&hint)hint.textContent='Selected: '+f.name+' — ready to upload.'; };
+
   }
   document.addEventListener('DOMContentLoaded',enhanceArtistPortfolio);
   setTimeout(enhanceArtistPortfolio,500);
