@@ -155,11 +155,92 @@ body.auth-locked { overflow:hidden !important; }
 .auth-lock-title{font-size:13px;font-weight:900;letter-spacing:.08em;margin:10px 0 4px}
 .gradient-stop-extra{display:none}
 .gradient-svg-preview{width:100%;aspect-ratio:1/1;max-width:360px;border-radius:16px;border:1px solid var(--line);overflow:hidden;margin:10px auto}
+
+/* ===== MOBILE UX PASS ===== */
+.mobile-menu-btn{display:none;border:1px solid var(--line);background:var(--panel2);color:var(--text);width:40px;height:40px;border-radius:10px;font-size:18px;font-weight:900;align-items:center;justify-content:center;flex:none}
+@media(max-width:700px){
+ html,body{width:100%;max-width:100%;overflow-x:hidden}
+ .top{position:sticky;top:0}
+ .topin{display:flex;align-items:center;gap:8px;padding:8px 10px;min-height:56px}
+ .brand{font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+ .mobile-menu-btn{display:flex}
+ .top .actions{gap:5px;flex:none}
+ .top .actions .toolbtn,.top .actions .user-pill{display:none}
+ .top .actions .btn{min-height:40px;padding:8px 10px;font-size:10px}
+ .nav{order:4;display:none;width:100%;flex-basis:100%;padding:7px 0 2px;max-height:calc(100vh - 64px);overflow-y:auto;overflow-x:hidden;grid-template-columns:1fr 1fr;gap:6px}
+ .nav.mobile-open{display:grid}
+ .nav button{min-height:42px;padding:10px 9px;font-size:10px;text-align:left}
+ .nav-more{grid-column:1/-1}
+ .nav-more>button{width:100%;min-height:42px}
+ .nav-more-menu{position:static;grid-template-columns:1fr 1fr;min-width:0;width:100%;margin-top:5px;padding:5px;box-shadow:none}
+ .nav-more-menu button{min-height:40px}
+ main{width:100%;padding:16px 10px 42px;overflow:hidden}
+ .hero{padding:8px 0 18px}
+ .hero h1{font-size:clamp(30px,10vw,42px);line-height:1.02;letter-spacing:-1.5px;word-break:break-word}
+ .hero p{max-width:none;font-size:12px;line-height:1.6}
+ .panel{width:100%;max-width:100%;padding:12px;border-radius:14px;overflow:hidden}
+ .controls-grid,.two,.three,.four,.controls{grid-template-columns:1fr!important}
+ .field input,.field select,.field textarea{min-height:42px;font-size:12px}
+ .field input[type=range]{min-height:32px}
+ .settings-tabs{position:sticky;top:64px;z-index:4;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+ .settings-tabs::-webkit-scrollbar{display:none}
+ .settings-tab{flex:0 0 auto;min-height:40px;padding:9px 12px;font-size:9px}
+ .btn{min-height:42px;padding:10px 12px;font-size:10px}
+ .gradient-grid,.pattern-grid,.preset-grid,.theme-grid,.hud-grid,.gradient-library-grid{grid-template-columns:1fr 1fr!important;gap:8px}
+ .gradient-card .sample,.pattern-card .sample{height:96px}
+ .cardbody{padding:9px}
+ .preview{height:300px;padding:12px}
+ .builder-canvas{height:420px;justify-content:flex-start;overflow:auto}
+ .builder-canvas svg{max-width:none}
+ .builder-stage{overflow:auto}
+ .svg-canvas,.svg-editor canvas{max-width:100%}
+ .gradient-library-layout{grid-template-columns:1fr!important}
+ .gradient-detail{position:static}
+ .gradient-virtual-sample{height:92px}
+ .gradient-preview-dialog{padding:12px;border-radius:16px}
+ .gradient-preview-large{height:52vh;min-height:220px}
+ .gradient-preview-actions{display:grid;grid-template-columns:1fr 1fr}
+ .gradient-preview-actions .btn{width:100%}
+ .post-grid,.resource-grid{grid-template-columns:1fr!important}
+ .post-art{height:180px}
+ .community-compose,.resource-toolbar{grid-template-columns:1fr!important}
+ .slice-useful{grid-template-columns:1fr 1fr}
+ .layout-drawer{width:min(100vw,360px)}
+ .layout-drawer .drawer-inner{padding:14px}
+ .auth-modal,.post-modal{width:calc(100vw - 20px);max-height:calc(100vh - 20px);overflow:auto;padding:16px}
+}
+@media(max-width:430px){
+ .gradient-grid,.pattern-grid,.preset-grid,.theme-grid,.hud-grid,.gradient-library-grid{grid-template-columns:1fr!important}
+ .nav.mobile-open{grid-template-columns:1fr}
+ .nav-more{grid-column:auto}
+ .nav-more-menu{grid-template-columns:1fr}
+ .hero h1{font-size:34px}
+ .top .actions .btn{font-size:9px;padding-inline:8px}
+ .preview{height:260px}
+ .builder-canvas{height:340px}
+}
+
+/* ===== PROFILE + SOCIAL ===== */
+.profile-hero{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel2)}
+.profile-avatar{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:var(--accent-grad);border:2px solid var(--line);font-size:28px;font-weight:1000;overflow:hidden;color:#fff}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-name{font-size:22px;font-weight:1000}.profile-handle{color:var(--muted);font-size:12px;margin-top:3px}
+.social-tabs{display:flex;gap:7px;overflow:auto;padding:5px;background:var(--bg);border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
+.social-tab{white-space:nowrap;border:1px solid transparent;background:transparent;color:var(--muted);padding:9px 12px;border-radius:9px;font-size:10px;font-weight:1000;cursor:pointer}.social-tab.active{background:var(--accent-grad);color:#fff}
+.social-panel{display:none}.social-panel.active{display:block}
+.social-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.social-card{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:14px}.social-user{display:flex;align-items:center;gap:10px}.social-user .profile-avatar{width:42px;height:42px;font-size:15px}.social-list{display:grid;gap:8px}.social-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel)}
+.message-list{height:360px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--bg);display:flex;flex-direction:column;gap:8px}.message{max-width:78%;padding:9px 11px;border-radius:12px;border:1px solid var(--line);font-size:11px}.message.mine{margin-left:auto;background:var(--accent-grad);color:#fff;border-color:transparent}.message .meta{font-size:8px;opacity:.7;margin-top:4px}
+.message-compose{display:flex;gap:8px;margin-top:9px}.message-compose input{flex:1}
+.profile-settings{margin-top:12px}.profile-settings .grid{margin-top:10px}
+.gradient-css-import{margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:12px;background:var(--panel2)}.gradient-css-import textarea{min-height:92px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px}
+@media(max-width:760px){.profile-hero{grid-template-columns:auto 1fr}.profile-hero .actions{grid-column:1/-1}.social-grid{grid-template-columns:1fr}.message{max-width:88%}}
+
 </style>
 </head>
 <body class="auth-locked">
 <header class="top"><div class="topin">
 <div class="brand">Monkey <span>UI Station</span></div>
+<button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
 <nav class="nav" id="nav"></nav>
 <div class="actions"><select class="toolbtn" id="themeSelect"></select><button class="btn alt" id="layoutToggle">⚙ Layout</button><button class="btn alt" id="randomTop">✦ Random</button><div class="auth-actions" id="authActions"><button class="btn alt" id="loginBtn">Login</button><button class="btn" id="signupBtn">Sign Up</button></div></div>
 </div></header>
@@ -201,7 +282,7 @@ body.auth-locked { overflow:hidden !important; }
 <div class="field"><label>Color 3</label><div class="color-copy"><input id="g3" type="color"><button type="button" class="color-copy-btn" data-copy-color="g3" title="Copy color">⧉</button></div></div><div class="field"><label>Color 4</label><div class="color-copy"><input id="g4" type="color"><button type="button" class="color-copy-btn" data-copy-color="g4" title="Copy color">⧉</button></div></div>
 <div class="field gradient-stop-extra" data-gstop="5"><label>Color 5</label><div class="color-copy"><input id="g5" type="color"><button type="button" class="color-copy-btn" data-copy-color="g5" title="Copy color">⧉</button></div></div><div class="field gradient-stop-extra" data-gstop="6"><label>Color 6</label><div class="color-copy"><input id="g6" type="color"><button type="button" class="color-copy-btn" data-copy-color="g6" title="Copy color">⧉</button></div></div>
 <div class="field"><label>Angle</label><input id="gAngle" type="range" min="0" max="360" value="90"></div><div class="field"><label>Target</label><select id="gTarget"><option>Button</option><option>Header</option><option>Frame</option><option>HUD</option><option>Pattern</option></select></div>
-</div><div class="actions"><button class="btn" id="gradientPreviewBtn">Preview</button><button class="btn" id="applyGradient">Apply</button><button class="btn alt" id="copyGradient">Copy CSS</button><button class="btn alt" id="gradientSvgExport">Export Square SVG</button></div></div><div><div class="gradient-grid" id="gradientGrid"></div><div class="actions"><button class="btn alt" id="gradientMore">Load More</button></div></div></div></div>
+</div><div class="actions"><button class="btn" id="gradientPreviewBtn">Preview</button><button class="btn" id="applyGradient">Apply</button><button class="btn alt" id="copyGradient">Copy CSS</button><button class="btn alt" id="gradientSvgExport">Export Square SVG</button></div><div class="gradient-css-import"><div class="head"><div><h3>Paste CSS Gradient</h3><div class="sub">Paste a background or gradient declaration and load its colors into the editor.</div></div></div><textarea id="gradientCssPaste" placeholder="background: linear-gradient(135deg, #7c3aed, #22d3ee);"></textarea><div class="actions"><button class="btn" id="gradientCssImport" type="button">Import CSS</button><button class="btn alt" id="gradientCssClear" type="button">Clear</button></div><div class="status" id="gradientCssStatus"></div></div></div><div><div class="gradient-grid" id="gradientGrid"></div><div class="actions"><button class="btn alt" id="gradientMore">Load More</button></div></div></div></div>
 <div id="gradientlibrary" class="gradient-library-block"><div class="panel">
  <div class="head"><div><h2>100K Gradient Library</h2><div class="sub">100,000 deterministic gradients generated on demand — only the visible cards are rendered.</div></div><div class="badge" id="gradientVirtualCount">0 / 100,000</div></div>
  <div class="gradient-library-layout">
@@ -332,7 +413,7 @@ body.auth-locked { overflow:hidden !important; }
   <div class="auth-modal">
     <button class="modal-close" id="authClose">✕</button>
     <div class="eyebrow">MONKEY UI STATION</div><h2 id="authTitle" style="margin:6px 0 0">Welcome back</h2><div class="auth-lock-sub" id="authLockSub">Log in or create an account to enter the station.</div>
-    <div class="auth-tabs"><button class="active" data-auth-tab="login">LOGIN</button><button data-auth-tab="signup">SIGN UP</button><button data-auth-tab="admin">ADMIN</button></div>
+    <div class="auth-tabs"><button class="active" data-auth-tab="login">LOGIN</button><button data-auth-tab="signup">SIGN UP</button></div>
     <form class="auth-form" id="authForm">
       <div class="field"><label>Username</label><input id="authUser" required autocomplete="username"></div>
       <div class="field" id="authEmailWrap" style="display:none"><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div>
@@ -362,6 +443,19 @@ body.auth-locked { overflow:hidden !important; }
  <div class="community-compose"><div class="field"><label>Search posts</label><input id="postSearch" placeholder="Search UI, anime, HUD, shop..."></div><div class="field"><label>Sort</label><select id="postSort"><option value="new">Newest</option><option value="likes">Most liked</option></select></div></div>
  <div class="post-grid" id="postGrid"></div>
 </div></section>
+
+<section id="social" class="view"><div class="panel">
+ <div class="head"><div><h2>Social</h2><div class="sub">Friends, requests and private messages — built into MONKEY UI STATION.</div></div><button class="btn" id="socialRefreshBtn" type="button">Refresh</button></div>
+ <div class="social-tabs"><button class="social-tab active" data-social-tab="friends" type="button">Friends</button><button class="social-tab" data-social-tab="requests" type="button">Friend Requests <span class="badge" id="requestCount">0</span></button><button class="social-tab" data-social-tab="messages" type="button">Messages</button></div>
+ <div class="social-panel active" id="socialFriendsPanel"><div class="social-grid"><div class="social-card"><div class="eyebrow">ADD FRIEND</div><div class="toolbar"><div class="field" style="flex:1"><label>Username</label><input id="friendUsername" placeholder="Enter username"></div><button class="btn" id="sendFriendRequest" type="button">Send Request</button></div><div class="status" id="friendStatus"></div></div><div class="social-card"><div class="eyebrow">YOUR FRIENDS</div><div class="social-list" id="friendsList"></div></div></div></div>
+ <div class="social-panel" id="socialRequestsPanel"><div class="social-card"><div class="eyebrow">INCOMING REQUESTS</div><div class="social-list" id="requestsList"></div></div></div>
+ <div class="social-panel" id="socialMessagesPanel"><div class="social-grid"><div class="social-card"><div class="eyebrow">CONVERSATIONS</div><div class="social-list" id="conversationList"></div></div><div class="social-card"><div class="eyebrow" id="messageTitle">SELECT A FRIEND</div><div class="message-list" id="messageList"><div class="status">Choose a friend to start messaging.</div></div><div class="message-compose"><input id="messageInput" placeholder="Write a message..."><button class="btn" id="sendMessageBtn" type="button">Send</button></div></div></div></div>
+ </div></section>
+
+<section id="profile" class="view"><div class="panel"><div class="head"><div><h2>Profile</h2><div class="sub">Customize your public identity and avatar.</div></div></div>
+ <div class="profile-hero"><div class="profile-avatar" id="profileAvatarPreview">M</div><div><div class="profile-name" id="profileDisplayName">Monkey UI User</div><div class="profile-handle" id="profileHandle">@user</div></div><div class="actions"><button class="btn" id="profileSaveBtn" type="button">Save Profile</button></div></div>
+ <div class="profile-settings"><div class="grid two"><div class="field"><label>Display name</label><input id="profileNameInput" maxlength="32" placeholder="Your name"></div><div class="field"><label>Avatar image URL</label><input id="profileAvatarInput" placeholder="https://.../avatar.png"></div><div class="field full"><label>Avatar fallback letter</label><input id="profileAvatarLetter" maxlength="1" placeholder="M"></div></div><div class="status" id="profileStatus"></div></div>
+ </div></section>
 
 <section id="resources" class="view"><div class="panel">
  <div class="head"><div><h2>Resources</h2><div class="sub">Curated free UI resources, textures, plugins, effects and design tools.</div></div><a class="btn" href="https://ui-resources.com/?category=Gfx" target="_blank" rel="noopener">Open ResourceHub ↗</a></div>
@@ -465,7 +559,7 @@ function mix(a,b,p){let aa=a.replace('#',''),bb=b.replace('#','');let r=Math.rou
 
 // ===== NAVIGATION / THEME =====
 function navInit(){
- let primary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['community','Post UIs']];
+ let primary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['community','Post UIs'],['social','Social'],['profile','Profile']];
  let more=[['patterns','Patterns'],['presets','Presets'],['bars','Bars & Icons'],['themes','Themes'],['svg','SVG Lab'],['nineslice','9-Slice'],['resources','Resources']];
  $('nav').innerHTML=primary.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')+`<div class="nav-more" id="navMore"><button class="alt" type="button" id="navMoreBtn">More ▾</button><div class="nav-more-menu">${more.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')}</div></div>`;
  let run=b=>{showView(b.dataset.view);$('nav').classList.remove('mobile-open');$('navMore')?.classList.remove('open')};
@@ -1052,21 +1146,13 @@ function updateAuthUI(){
 async function handleAuth(e){
  e.preventDefault();
  let mode=$('authForm').dataset.mode||'login',username=$('authUser').value.trim(),pass=$('authPass').value;
-
- if(mode==='admin'){
-   $('authSubmit').disabled=true;
-   $('authStatus').textContent='Checking admin access...';
-   try{
-     if(username.toLowerCase()!=='admin'||pass!==ADMIN_PASSWORD)throw new Error('Invalid admin username or password.');
-     currentProfile={id:'admin',username:'Admin',email:'admin@local',isAdmin:true};
-     localStorage.setItem('monkey-admin-session','1');
-     $('authStatus').textContent='Admin access granted.';
-     closeAuth();updateAuthUI();await renderPosts();
-   }catch(err){$('authStatus').textContent=err.message||'Admin authentication failed.'}
-   finally{$('authSubmit').disabled=false}
-   return;
+ if(mode==='login'&&username.toLowerCase()==='admin'&&pass===ADMIN_PASSWORD){
+   currentProfile={id:'admin',username:'Admin',email:'admin@local',isAdmin:true};
+   localStorage.setItem('monkey-admin-session','1');
+   $('authStatus').textContent='Logged in as Admin.';
+   closeAuth();updateAuthUI();await renderPosts();return;
  }
-
+ if(mode==='signup'&&username.toLowerCase()==='admin'){$('authStatus').textContent='That username is reserved.';return}
  if(!hasSupabase()){$('authStatus').textContent='Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY first.';return}
  if(!username||pass.length<6){$('authStatus').textContent='Use a username and a password with at least 6 characters.';return}
  $('authSubmit').disabled=true;$('authStatus').textContent='Working...';
@@ -1144,20 +1230,53 @@ function initVirtualGradients(){
  $('virtualGradientMore').onclick=()=>{VirtualGradients.page++;renderVirtualGradients()};
  renderVirtualGradients(true);selectVirtualGradient(0)
 }
-function initMobile(){ if(!$('mobileMenuBtn'))return; $('mobileMenuBtn').onclick=()=>$('nav').classList.toggle('mobile-open') }
+function initMobile(){let b=$('mobileMenuBtn'),n=$('nav');if(!b||!n)return;b.onclick=()=>{let open=n.classList.toggle('mobile-open');b.setAttribute('aria-expanded',open?'true':'false');b.setAttribute('aria-label',open?'Close navigation':'Open navigation')}}
 function initAuthLegacy(){}
 
 function initCriticalViews(){try{let lc=$('layoutControls');if(lc)lc.innerHTML=layoutFields();renderLayout()}catch(e){layoutRenderError(e)}try{renderGradients()}catch(e){if($('gradientGrid'))$('gradientGrid').innerHTML='<div class="status err">Gradient Studio failed to render: '+esc(e.message||'Unknown error')+'</div>'}try{renderVirtualGradients(true);selectVirtualGradient(0)}catch(e){if($('virtualGradientGrid'))$('virtualGradientGrid').innerHTML='<div class="status err">Gradient library failed to render: '+esc(e.message||'Unknown error')+'</div>'}}
+
+// ===== CSS GRADIENT IMPORT =====
+function parseGradientCSS(input){
+ let raw=String(input||'').trim().replace(/\s*!important\s*/ig,'');
+ let m=raw.match(/(linear-gradient|radial-gradient|conic-gradient)\s*\((.*)\)/is);
+ if(!m)throw new Error('No linear, radial, or conic gradient was found.');
+ let fn=m[1].toLowerCase(),body=m[2],parts=[],buf='',depth=0;
+ for(let i=0;i<body.length;i++){let ch=body[i];if(ch==='(')depth++;if(ch===')')depth--;if(ch===','&&depth===0){parts.push(buf.trim());buf='';}else buf+=ch}if(buf.trim())parts.push(buf.trim());
+ let type=fn==='radial-gradient'?'Radial':fn==='conic-gradient'?'Conic':'Linear',angle=90;
+ if(type!=='Radial'&&parts[0]){let a=parts[0].match(/(-?\d+(?:\.\d+)?)\s*deg/i);if(a){angle=((+a[1]%360)+360)%360;parts.shift()}else if(/^to\s+/i.test(parts[0])){let dir=parts.shift().toLowerCase();angle=dir.includes('right')?(dir.includes('bottom')?135:90):dir.includes('left')?(dir.includes('bottom')?225:270):dir.includes('bottom')?180:0}}
+ let colors=[];for(const part of parts){let c=part.match(/(#[0-9a-f]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\))/i);if(c)colors.push(c[1])}
+ if(colors.length<2)throw new Error('Could not find at least 2 colors.');return {colors:colors.slice(0,6),type,angle};
+}
+function importGradientCSS(){let input=$('gradientCssPaste').value.trim();try{let g=parseGradientCSS(input);$('gColorCount').value=String(g.colors.length);g.colors.forEach((c,i)=>{let el=$(`g${i+1}`);if(el){if(/^#/.test(c)&&[4,7].includes(c.length))el.value=c;else{let temp=document.createElement('span');temp.style.color=c;document.body.appendChild(temp);let rgb=getComputedStyle(temp).color;temp.remove();let mm=rgb.match(/\d+/g);if(mm&&mm.length>=3)el.value='#'+mm.slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join('')}}});$('gType').value=g.type;$('gAngle').value=g.angle;updateGradientPreview();$('gradientCssStatus').textContent=`Imported ${g.colors.length} colors · ${g.type} · ${g.angle}°`;$('gradientCssStatus').className='status ok'}catch(e){$('gradientCssStatus').textContent=e.message;$('gradientCssStatus').className='status err'}}
+
+// ===== PROFILE =====
+function profileData(){let d={name:'Monkey UI User',avatar:'',letter:'M'};try{d={...d,...JSON.parse(localStorage.getItem('monkey-profile')||'{}')}}catch(e){}return d}
+function renderProfile(){let d=profileData(),u=currentProfile||{};let name=d.name||u.username||'Monkey UI User',handle=u.username||'user';$('profileNameInput').value=name;$('profileAvatarInput').value=d.avatar||'';$('profileAvatarLetter').value=(d.letter||name[0]||'M').slice(0,1).toUpperCase();$('profileDisplayName').textContent=name;$('profileHandle').textContent='@'+handle;let av=$('profileAvatarPreview');av.innerHTML=d.avatar?`<img src="${esc(d.avatar)}" alt="">`:esc((d.letter||name[0]||'M').slice(0,1).toUpperCase())}
+function saveProfile(){let name=$('profileNameInput').value.trim()||currentProfile?.username||'Monkey UI User',avatar=$('profileAvatarInput').value.trim(),letter=($('profileAvatarLetter').value.trim()||name[0]||'M').slice(0,1).toUpperCase();localStorage.setItem('monkey-profile',JSON.stringify({name,avatar,letter}));renderProfile();updateAuthUI();$('profileStatus').textContent='Profile saved on this device.';$('profileStatus').className='status ok'}
+
+// ===== SOCIAL =====
+let socialState={friends:[],requests:[],messages:{},selected:''};
+function socialKey(){return currentProfile?.id||'guest'}
+function loadSocial(){try{socialState={friends:[],requests:[],messages:{},selected:'',...(JSON.parse(localStorage.getItem('monkey-social-'+socialKey())||'{}'))}}catch(e){socialState={friends:[],requests:[],messages:{},selected:''}}}
+function saveSocial(){localStorage.setItem('monkey-social-'+socialKey(),JSON.stringify(socialState))}
+function socialAvatar(name){let d=profileData();if((currentProfile?.username||'').toLowerCase()===(name||'').toLowerCase()&&d.avatar)return `<img src="${esc(d.avatar)}" alt="">`;return esc((name||'?')[0].toUpperCase())}
+function renderSocial(){loadSocial();$('requestCount').textContent=socialState.requests.length;$('friendsList').innerHTML=socialState.friends.length?socialState.friends.map(n=>`<div class="social-row"><div class="social-user"><div class="profile-avatar">${socialAvatar(n)}</div><div><b>${esc(n)}</b><div class="meta">Friend</div></div></div><button class="btn alt" data-message-user="${esc(n)}" type="button">Message</button></div>`).join(''):'<div class="status">No friends yet. Add someone by username.</div>';$('requestsList').innerHTML=socialState.requests.length?socialState.requests.map((n,i)=>`<div class="social-row"><div class="social-user"><div class="profile-avatar">${socialAvatar(n)}</div><b>${esc(n)}</b></div><div class="actions"><button class="btn" data-accept-request="${i}" type="button">Accept</button><button class="btn alt" data-decline-request="${i}" type="button">Decline</button></div></div>`).join(''):'<div class="status">No pending friend requests.</div>';$('conversationList').innerHTML=socialState.friends.length?socialState.friends.map(n=>`<button class="social-row" data-message-user="${esc(n)}" type="button"><div class="social-user"><div class="profile-avatar">${socialAvatar(n)}</div><b>${esc(n)}</b></div><span class="meta">${(socialState.messages[n]||[]).length} messages</span></button>`).join(''):'<div class="status">Add friends to start conversations.</div>';wireSocialRows();renderConversation()}
+function wireSocialRows(){document.querySelectorAll('[data-message-user]').forEach(b=>b.onclick=()=>{socialState.selected=b.dataset.messageUser;saveSocial();renderSocial()});document.querySelectorAll('[data-accept-request]').forEach(b=>b.onclick=()=>{let n=socialState.requests.splice(+b.dataset.acceptRequest,1)[0];if(n&&!socialState.friends.includes(n))socialState.friends.push(n);saveSocial();renderSocial()});document.querySelectorAll('[data-decline-request]').forEach(b=>b.onclick=()=>{socialState.requests.splice(+b.dataset.declineRequest,1);saveSocial();renderSocial()})}
+function renderConversation(){let n=socialState.selected;if(!n){$('messageTitle').textContent='SELECT A FRIEND';$('messageList').innerHTML='<div class="status">Choose a friend to start messaging.</div>';return}$('messageTitle').textContent='MESSAGE · '+n;let msgs=socialState.messages[n]||[];$('messageList').innerHTML=msgs.length?msgs.map(m=>`<div class="message ${m.mine?'mine':''}">${esc(m.text)}<div class="meta">${esc(m.time||'now')}</div></div>`).join(''):'<div class="status">No messages yet.</div>';$('messageList').scrollTop=$('messageList').scrollHeight}
+function sendSocialRequest(){let n=$('friendUsername').value.trim();if(!n){$('friendStatus').textContent='Enter a username.';$('friendStatus').className='status warn';return}if(n.toLowerCase()===(currentProfile?.username||'').toLowerCase()){$('friendStatus').textContent='You cannot add yourself.';$('friendStatus').className='status warn';return}if(socialState.friends.some(x=>x.toLowerCase()===n.toLowerCase())){$('friendStatus').textContent='Already in your friends list.';$('friendStatus').className='status warn';return}if(!socialState.requests.some(x=>x.toLowerCase()===n.toLowerCase()))socialState.requests.push(n);saveSocial();renderSocial();$('friendUsername').value='';$('friendStatus').textContent='Friend request added.';$('friendStatus').className='status ok'}
+function sendSocialMessage(){let n=socialState.selected,t=$('messageInput').value.trim();if(!n||!t)return;(socialState.messages[n]||(socialState.messages[n]=[])).push({text:t,mine:true,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});$('messageInput').value='';saveSocial();renderSocial()}
+function initSocial(){document.querySelectorAll('[data-social-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-social-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.social-panel').forEach(x=>x.classList.toggle('active',x.id==='social'+b.dataset.socialTab[0].toUpperCase()+b.dataset.socialTab.slice(1)+'Panel'))});$('sendFriendRequest').onclick=sendSocialRequest;$('sendMessageBtn').onclick=sendSocialMessage;$('messageInput').onkeydown=e=>{if(e.key==='Enter')sendSocialMessage()};$('socialRefreshBtn').onclick=renderSocial;renderSocial()}
+
 function wire(){try{initAuth()}catch(e){console.error('Auth init:',e)}initCriticalViews();navInit();wireThemeGallery();try{initLayoutCustomizer()}catch(e){console.warn('Layout customizer:',e)}$('themeSelect').innerHTML=Object.keys(themes).map(x=>`<option value="${x}">${x}</option>`).join('');$('themeSelect').onchange=e=>setTheme(e.target.value);$('randomTop').onclick=randomAll;
 mountBarControls();wireStudioTabs();renderBar();$('barBuild').onclick=renderBar;$('iconBuild').onclick=buildIcon;$('iconCopy').onclick=()=>fallbackCopy(figmaSafeSVG(svgIcon()));$('iconDownload').onclick=()=>downloadText('monkey-ui-icon.svg',figmaSafeSVG(svgIcon()),'image/svg+xml');['iconGlyph','iconSize','iconColor','iconColor2','iconBg','iconBg2','iconBgOpacity','iconShape','iconRotation','iconOutline','iconOutlineW','iconFont','iconGradient','iconBgGradient','iconShadow','iconShine','iconGlyphSize','iconWeight','iconGlyphOpacity','iconGlyphStroke','iconGlyphStrokeW','iconRing','iconRingColor','iconRingW','iconPadding','iconPattern','iconPatternOpacity'].forEach(id=>$(id).addEventListener('input',buildIcon));$('barRandom').onclick=randomBar;$('barCopy').onclick=()=>fallbackCopy(figmaSafeSVG(svgBar(barState)));$('barDownload').onclick=()=>downloadText('monkey-ui-bar.svg',figmaSafeSVG(svgBar(barState)),'image/svg+xml');
 ['button','header','frame','hud'].forEach(k=>{mountControls(k);mountQuickPresets(k);renderKind(k);$(`${k}Random`).onclick=()=>randomize(k);document.querySelectorAll(`[data-copy="${k}"]`).forEach(b=>b.onclick=()=>fallbackCopy(figmaSafeSVG(svgStore[k])));document.querySelectorAll(`[data-download="${k}"]`).forEach(b=>b.onclick=()=>downloadText(`monkey-ui-${k}.svg`,figmaSafeSVG(svgStore[k]),'image/svg+xml'));document.querySelectorAll(`[data-save="${k}"]`).forEach(b=>b.onclick=()=>savePreset(k))});
 $('gradientCats').innerHTML=['All',...new Set(gradients.map(g=>g.cat))].map(c=>`<button class="chip ${c==='All'?'active':''}">${c}</button>`).join('');$('gradientCats').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{$('gradientCats').querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');gradientCat=b.textContent;gradientPage=80;renderGradients()});
-['gradientSearch','gradientType'].forEach(id=>$(id).addEventListener('input',()=>{gradientPage=80;renderGradients()}));['g1','g2','g3','g4','g5','g6','gAngle','gType','gColorCount'].forEach(id=>$(id)?.addEventListener('input',updateGradientPreview));$('gradientMore').onclick=()=>{gradientPage+=80;renderGradients()};$('gradientRandom').onclick=()=>setGradientEditor(gradients[Math.floor(Math.random()*gradients.length)]);$('gradientPreviewBtn').onclick=()=>{updateGradientPreview();$('gradientPreview').scrollIntoView({behavior:'smooth',block:'center'});};$('gradientPreviewClose').onclick=closeGradientPreview;$('gradientPreviewModal').onclick=e=>{if(e.target===$('gradientPreviewModal'))closeGradientPreview()};$('applyGradient').onclick=applyGradient;$('copyGradient').onclick=()=>fallbackCopy(gradientCSS(gradientColors(),+$('gAngle').value,$('gType').value));
+['gradientSearch','gradientType'].forEach(id=>$(id).addEventListener('input',()=>{gradientPage=80;renderGradients()}));['g1','g2','g3','g4','g5','g6','gAngle','gType','gColorCount'].forEach(id=>$(id)?.addEventListener('input',updateGradientPreview));$('gradientMore').onclick=()=>{gradientPage+=80;renderGradients()};$('gradientRandom').onclick=()=>setGradientEditor(gradients[Math.floor(Math.random()*gradients.length)]);$('gradientCssImport').onclick=importGradientCSS;$('gradientCssClear').onclick=()=>{$('gradientCssPaste').value='';$('gradientCssStatus').textContent=''};$('gradientPreviewBtn').onclick=()=>{updateGradientPreview();$('gradientPreview').scrollIntoView({behavior:'smooth',block:'center'});};$('gradientPreviewClose').onclick=closeGradientPreview;$('gradientPreviewModal').onclick=e=>{if(e.target===$('gradientPreviewModal'))closeGradientPreview()};$('applyGradient').onclick=applyGradient;$('copyGradient').onclick=()=>fallbackCopy(gradientCSS(gradientColors(),+$('gAngle').value,$('gType').value));
 $('patType').innerHTML=patternTypes.map(x=>`<option>${x}</option>`).join('');['patA','patB','patScale','patGap','patRot','patOpacity','patGradient','patBlend','patType'].forEach(id=>$(id).addEventListener('input',()=>{state.pattern={type:$('patType').value,a:$('patA').value,b:$('patB').value,scale:+$('patScale').value,gap:+$('patGap').value,rot:+$('patRot').value,opacity:+$('patOpacity').value,gradient:$('patGradient').value,blend:$('patBlend').value};renderPattern()}));$('patternRandom').onclick=()=>{let p=randomPalette();Object.assign(state.pattern,{type:patternTypes[Math.floor(Math.random()*patternTypes.length)],a:p[0],b:p[2],scale:10+Math.floor(Math.random()*70),rot:Math.floor(Math.random()*360),opacity:20+Math.floor(Math.random()*70)});$('patType').value=state.pattern.type;$('patA').value=state.pattern.a;$('patB').value=state.pattern.b;$('patScale').value=state.pattern.scale;$('patRot').value=state.pattern.rot;$('patOpacity').value=state.pattern.opacity;renderPattern()};$('copyPatternCSS').onclick=()=>{let p=patternCSS();fallbackCopy(`background-image:${p.backgroundImage};background-size:${p.backgroundSize};`)};$('applyPattern').onclick=()=>{$('patternStatus').textContent='Pattern applied to the live preview.';$('patternStatus').className='status ok'};
 $('presetCats').innerHTML=[...presetCategories,'Custom'].map(c=>`<button class="chip ${c==='All'?'active':''}">${c}</button>`).join('');$('presetCats').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{$('presetCats').querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');presetCat=b.textContent;renderPresets()});$('presetSearch').oninput=renderPresets;$('presetType').onchange=renderPresets;$('clearCustom').onclick=()=>{localStorage.removeItem('monkey-custom-presets');renderPresets()};
 $('conceptRandom').onclick=()=>{$('conceptPrompt').value=['anime dungeon quest UI','premium gacha summon screen','cyber raid HUD','cute simulator shop','fantasy inventory menu','neon arena status HUD'][Math.floor(Math.random()*6)];conceptGenerate()};$('conceptApply').onclick=applyConcept;$('conceptCopy').onclick=()=>{if(!conceptData)conceptGenerate();fallbackCopy(JSON.stringify(conceptData,null,2))};
 $('svgChoose').onclick=()=>$('svgFile').click();$('svgDetectBg').onclick=()=>renderSvgSmartInfo();$('svgRemoveBg').onclick=svgRemoveDetectedBg;$('svgFit').onclick=svgFitArtwork;$('svgCenter').onclick=svgCenterArtwork;$('svgSmartRecolor').onclick=svgSmartRecolor;$('svgPasteLoad').onclick=()=>loadSVGPasted();$('svgClear').onclick=()=>{customSVG=null;$('svgPaste').value='';$('svgCanvas').innerHTML='<div class=\"status\">Import an SVG to begin.</div>';$('svgPalette').innerHTML='<span class=\"meta\">Load an SVG to analyze its colors.</span>';$('svgLayers').innerHTML='<div class=\"meta\">Load an SVG to inspect its layers.</div>';$('svgStatus').textContent='SVG cleared.'};$('svgFile').onchange=e=>loadSVGFile(e.target.files[0]);$('svgDrop').ondragover=e=>e.preventDefault();$('svgDrop').ondrop=e=>{e.preventDefault();loadSVGFile(e.dataTransfer.files[0])};$('svgApply').onclick=svgApply;['svgPattern','svgPatternColor','svgPatternOpacity','svgPatternScale','svgShine','svgShineColor','svgShineOpacity','svgShineAngle','svgShineWidth','svgShineSoftness'].forEach(id=>$(id).addEventListener('input',()=>{if(customSVG)svgApply()}));$('svgCopy').onclick=svgCopy;['svgStroke','svgStrokeOpacity','svgStrokeWidth','svgScale','svgRotation','svgGradientize','svgGradientType','svgGradient1','svgGradient2','svgGradient3','svgGradientAngle','svgGradientOpacity','svgShadow','svgFlip','svgLinecap','svgLinejoin','svgDash','svgBg','svgBgOpacity'].forEach(id=>$(id).addEventListener('input',()=>{if(customSVG)svgApply()}));$('svgDownload').onclick=()=>customSVG&&downloadText('monkey-ui-edited.svg',figmaSafeSVG(new XMLSerializer().serializeToString(customSVG)),'image/svg+xml');
-wireSvgModeTabs();initRasterEditor();initNineSlice();try{initCommunity()}catch(e){console.warn('Community:',e)}try{initResources()}catch(e){console.warn('Resources:',e)}try{initVirtualGradients()}catch(e){console.warn('Virtual gradients:',e)}initMobile();
+wireSvgModeTabs();initRasterEditor();initNineSlice();try{initCommunity()}catch(e){console.warn('Community:',e)}try{initResources()}catch(e){console.warn('Resources:',e)}try{initSocial()}catch(e){console.warn('Social:',e)}$('profileSaveBtn').onclick=saveProfile;renderProfile();try{initVirtualGradients()}catch(e){console.warn('Virtual gradients:',e)}initMobile();
 $('layoutControls').innerHTML=layoutFields();$('layoutRandomBtn').onclick=randomLayout;$('layoutCopyBtn').onclick=layoutCopy;$('layoutDownloadBtn').onclick=layoutDownload;$('layoutToSVGBtn').onclick=layoutToSVG;
 $('gTarget').value='Button';wireCopyableColors();let first=gradients[0];setGradientEditor(first);patternCards();renderPattern();renderGradients();renderPresets();renderThemes();conceptGenerate();renderLayout();showView('gradients');setTheme(localStorage.getItem('monkey-theme')||'dark')}
 function loadSVGPasted(){let text=$('svgPaste').value.trim();if(!text){$('svgStatus').textContent='Paste SVG code first.';$('svgStatus').className='status warn';return}try{customSVG=svgSafeParse(text);customSVG.setAttribute('preserveAspectRatio','xMidYMid meet');$('svgCanvas').innerHTML='';$('svgCanvas').appendChild(customSVG);renderSvgSmartInfo();$('svgStatus').textContent='Pasted SVG loaded safely and analyzed.';$('svgStatus').className='status ok'}catch(e){$('svgStatus').textContent='Could not parse pasted SVG: '+e.message;$('svgStatus').className='status err'}}
