@@ -80,8 +80,9 @@ body{background:radial-gradient(1100px 620px at 12% -8%,#8b5cf61c,transparent 60
 /* ===== MONKEY ADDITIONS: MOBILE / AUTH / COMMUNITY / RESOURCES ===== */
 .mobile-menu-btn{display:none}
 .auth-actions{display:flex;gap:7px;align-items:center}
+.profile-avatar-btn{width:34px;height:34px;padding:1px;border:1px solid var(--line);border-radius:50%;background:var(--panel2);cursor:pointer;display:grid;place-items:center;transition:.15s}.profile-avatar-btn:hover{border-color:var(--accent);transform:translateY(-1px)}.profile-avatar-btn .avatar{width:30px;height:30px;flex:0 0 30px}.remember-row{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:var(--muted);cursor:pointer;user-select:none}.remember-row input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer}
 .user-pill{display:flex;align-items:center;gap:7px;padding:7px 9px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);font-size:10px;font-weight:900}
-.avatar{width:24px;height:24px;border-radius:8px;background:var(--accent-grad);display:grid;place-items:center;font-size:9px;color:#fff}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-grad);display:grid;place-items:center;font-size:10px;color:#fff;font-weight:900;overflow:hidden;flex:0 0 30px;border:1px solid var(--line)}.avatar img{width:100%;height:100%;object-fit:cover}.user-pill{display:flex;align-items:center;gap:8px;max-width:190px;padding:4px 9px 4px 4px;border:1px solid var(--line);background:var(--panel2);border-radius:999px;color:var(--text);font-size:10px;font-weight:900;cursor:pointer}.user-pill:hover{border-color:var(--accent);transform:translateY(-1px)}
 .modal-backdrop{position:fixed;inset:0;background:rgba(5,7,12,.96);backdrop-filter:blur(18px);z-index:500;display:none;align-items:center;justify-content:center;padding:18px}
 body.auth-locked #authModal{display:flex!important;visibility:visible!important;pointer-events:auto!important;background:radial-gradient(circle at 50% 0%,rgba(120,90,255,.16),transparent 42%),rgba(5,7,12,.98)}
 body.auth-locked #authModal .auth-modal{width:min(520px,calc(100vw - 32px));padding:32px;border-radius:24px;box-shadow:0 30px 120px rgba(0,0,0,.75),0 0 80px rgba(120,90,255,.08)}
@@ -170,7 +171,7 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
  .brand{font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
  .mobile-menu-btn{display:flex}
  .top .actions{gap:5px;flex:none}
- .top .actions .toolbtn,.top .actions .user-pill{display:none}
+ .top .actions .toolbtn{display:none}
  .top .actions .btn{min-height:40px;padding:8px 10px;font-size:10px}
  .nav{order:4;display:none;width:100%;flex-basis:100%;padding:7px 0 2px;max-height:calc(100vh - 64px);overflow-y:auto;overflow-x:hidden;grid-template-columns:1fr 1fr;gap:6px}
  .nav.mobile-open{display:grid}
@@ -238,14 +239,23 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
 .gradient-css-import{margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:12px;background:var(--panel2)}.gradient-css-import textarea{min-height:92px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px}
 @media(max-width:760px){.profile-hero{grid-template-columns:auto 1fr}.profile-hero .actions{grid-column:1/-1}.social-grid{grid-template-columns:1fr}.message{max-width:88%}.social-topbar{align-items:stretch}.social-topbar .btn{padding-inline:12px}.social-tabs{top:0}.social-post-art img{max-height:320px}}
 
-</style>
+<style>
+.social-post-media{margin-top:12px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel2)}
+.social-post-media img,.social-post-media video{display:block;width:100%;max-height:520px;object-fit:contain;background:#080b12}
+.social-post-svg{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--panel2);overflow:auto}
+.post-replies{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.reply-row{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--line)}
+.reply-avatar{width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--accent-grad);display:grid;place-items:center;font-size:10px;font-weight:900}
+.reply-content{min-width:0;flex:1}.reply-media{margin-top:7px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}.reply-media img,.reply-media video{display:block;max-width:100%;max-height:260px}
+.reply-form{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.reply-form input[type=text]{flex:1;min-width:160px}.reply-form input[type=file]{max-width:100%}
+</style></style>
 </head>
 <body class="auth-locked">
 <header class="top"><div class="topin">
 <div class="brand">Monkey <span>UI Station</span></div>
 <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
 <nav class="nav" id="nav"></nav>
-<div class="actions"><select class="toolbtn" id="themeSelect"></select><button class="btn alt" id="layoutToggle">⚙ Layout</button><button class="btn alt" id="randomTop">✦ Random</button><div class="auth-actions" id="authActions"><button class="btn alt" id="loginBtn">Login</button><button class="btn" id="signupBtn">Sign Up</button></div></div>
+<div class="actions"><select class="toolbtn" id="themeSelect"></select><button class="btn alt" id="layoutToggle">⚙ Layout</button><button class="btn alt" id="randomTop">✦ Random</button><div class="auth-actions" id="authActions" style="display:none"></div></div>
 </div></header>
 <div class="layout-backdrop" id="layoutBackdrop"></div>
 <aside class="layout-drawer" id="layoutDrawer">
@@ -271,6 +281,12 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
 <div class="field"><label>Mood</label><select id="conceptMood"><option>Premium</option><option>Energetic</option><option>Mysterious</option><option>Cute</option><option>Dark</option><option>Futuristic</option></select></div>
 <div class="field"><label>Primary</label><input id="conceptC1" type="color" value="#7c3aed"></div>
 <div class="field"><label>Secondary</label><input id="conceptC2" type="color" value="#22d3ee"></div>
+<div class="field"><label>Accent</label><input id="conceptC3" type="color" value="#a78bfa"></div>
+<div class="field"><label>Gradient</label><select id="conceptGradient"><option>Auto</option><option>Linear</option><option>Radial</option><option>Conic</option></select></div>
+<div class="field"><label>Gradient angle</label><input id="conceptAngle" type="range" min="0" max="360" value="90"><span class="meta" id="conceptAngleVal">90°</span></div>
+<div class="field"><label>Pattern</label><select id="conceptPattern"><option>Auto</option><option>Off</option><option>Dots</option><option>Grid</option><option>Diagonal</option><option>Diamonds</option><option>Hex</option><option>Waves</option><option>Stars</option><option>Sparkles</option><option>Circuit</option><option>Tech Lines</option><option>Scanlines</option><option>Isometric</option><option>Triangles</option><option>Arrows</option></select></div>
+<div class="field"><label>Shine</label><select id="conceptShine"><option>Auto</option><option>Off</option><option>Soft</option><option>Strong</option><option>Gloss</option><option>Sweep</option></select></div>
+<div class="field"><label>Font</label><select id="conceptFont"><option>Auto</option><option>Montserrat</option><option>Poppins</option><option>Orbitron</option><option>Rajdhani</option><option>Exo 2</option><option>Russo One</option><option>Audiowide</option><option>Fredoka</option><option>Baloo 2</option><option>Bangers</option><option>Cinzel</option><option>Press Start 2P</option></select></div>
 <div class="field"><label>Density</label><input id="conceptDensity" type="range" min="1" max="5" value="3"></div>
 <div class="field"><label>Corner style</label><select id="conceptCorners"><option>Soft</option><option>Sharp</option><option>Pill</option><option>Mixed</option></select></div>
 </div><div class="actions"><button class="btn" id="conceptApply">Apply Concept to Generators</button><button class="btn alt" id="conceptCopy">Copy Concept JSON</button></div></div>
@@ -421,6 +437,7 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
       <div class="field"><label>Username</label><input id="authUser" required autocomplete="username"></div>
       <div class="field" id="authEmailWrap" style="display:none"><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div>
       <div class="field"><label>Password</label><input id="authPass" type="password" minlength="6" required autocomplete="current-password"></div>
+      <label class="remember-row" id="authRememberWrap"><input id="authRemember" type="checkbox" checked> <span>Remember me</span></label>
       <div class="field" id="authPass2Wrap" style="display:none"><label>Confirm password</label><input id="authPass2" type="password" minlength="6" autocomplete="new-password"></div>
       <button class="btn" type="submit" id="authSubmit">Login</button>
       <div class="auth-note" id="authNote">Create a real account to enter MONKEY UI STATION.</div>
@@ -434,25 +451,22 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
     <form class="auth-form" id="postForm">
       <div class="field"><label>Title</label><input id="postTitle" maxlength="80" required placeholder="Anime quest UI"></div>
       <div class="field"><label>Description</label><textarea id="postText" maxlength="500" placeholder="Tell people what you made..."></textarea></div>
-      <div class="field"><label>UI image</label><input id="postImage" type="file" accept="image/*"></div>
-      <div class="field"><label>UI SVG</label><textarea id="postSvg" rows="7" placeholder="Paste the SVG for this UI, or use the button below."></textarea></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn alt" type="button" id="postUseCurrentSvg">Use Current SVG</button><button class="btn" type="submit">Publish UI</button></div><div class="auth-status" id="postStatus"></div>
+      <div class="field"><label>Images / video</label><input id="postImage" type="file" accept="image/*,video/*"></div>
+      <div class="field"><label>SVG file or SVG code</label><input id="postSvgFile" type="file" accept=".svg,image/svg+xml"><textarea id="postSvg" rows="7" placeholder="Paste SVG code, or upload an SVG file above."></textarea></div>
+      <div class="field"><label>Current UI SVG</label><button class="btn alt" type="button" id="postUseCurrentSvg">Use Current SVG</button></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="submit">Publish UI</button></div><div class="auth-status" id="postStatus"></div>
     </form>
   </div>
 </div>
 
-<section id="community" class="view"><div class="panel">
- <div class="head"><div><h2>UI Community</h2><div class="sub">Post your UIs, browse the shared community, and copy the SVG from any posted UI.</div></div><button class="btn" id="newPostBtn">＋ Post UI</button></div>
- <div class="community-compose"><div class="field"><label>Search posts</label><input id="postSearch" placeholder="Search UI, anime, HUD, shop..."></div><div class="field"><label>Sort</label><select id="postSort"><option value="new">Newest</option><option value="likes">Most liked</option></select></div></div>
- <div class="post-grid" id="postGrid"></div>
-</div></section>
+
 
 <section id="social" class="view"><div class="panel social-shell">
  <div class="social-topbar"><div class="social-search"><span class="search-icon">⌕</span><input id="socialSearch" placeholder="Search Monkey UI Station" autocomplete="off"><div class="social-search-results" id="socialSearchResults"></div></div><button class="btn alt" id="socialRefreshBtn" type="button">↻ Refresh</button></div>
  <div class="head"><div><h2>Social</h2><div class="sub">Discover creators, follow the UI feed, connect with friends, and message people.</div></div><button class="btn" id="socialPostBtn" type="button">＋ Post UI</button></div>
- <div class="social-tabs"><button class="social-tab active" data-social-tab="feed" type="button">Home</button><button class="social-tab" data-social-tab="discover" type="button">Explore</button><button class="social-tab" data-social-tab="friends" type="button">Friends</button><button class="social-tab" data-social-tab="requests" type="button">Requests <span class="badge" id="requestCount">0</span></button><button class="social-tab" data-social-tab="messages" type="button">Messages</button></div>
+ <div class="social-tabs"><button class="social-tab active" data-social-tab="feed" type="button">Home</button><button class="social-tab" data-social-tab="people" type="button">People</button><button class="social-tab" data-social-tab="friends" type="button">Friends</button><button class="social-tab" data-social-tab="requests" type="button">Requests <span class="badge" id="requestCount">0</span></button><button class="social-tab" data-social-tab="messages" type="button">Messages</button></div>
  <div class="social-panel active" id="socialFeedPanel"><div class="social-feed-head"><div><b>UI feed</b><div class="meta">Latest designs from the community</div></div><button class="btn alt" id="socialFeedRefresh" type="button">Refresh feed</button></div><div class="social-feed" id="socialFeed"></div></div>
- <div class="social-panel" id="socialDiscoverPanel"><div class="social-grid"><div class="social-card"><div class="eyebrow">FIND PEOPLE</div><h3>Discover creators</h3><div class="sub">Search real Monkey UI Station accounts by username.</div><div class="social-list" id="peopleResults"></div></div><div class="social-card"><div class="eyebrow">QUICK SEARCH</div><div class="field"><label>Username</label><input id="friendUsername" placeholder="@username or username"></div><button class="btn" id="sendFriendRequest" type="button">Add Friend</button><div class="status" id="friendStatus"></div></div></div></div>
+ <div class="social-panel" id="socialPeoplePanel"><div class="social-card"><div class="eyebrow">ALL PEOPLE</div><h3>Every account</h3><div class="sub">Every account created in MONKEY UI STATION appears here.</div><div class="field" style="margin-top:12px"><label>Search people</label><input id="peopleSearch" placeholder="Search by username..." autocomplete="off"></div><div class="social-list" id="peopleResults"></div></div></div>
  <div class="social-panel" id="socialFriendsPanel"><div class="social-card"><div class="eyebrow">YOUR NETWORK</div><div class="sub">People you've connected with.</div><div class="social-list" id="friendsList"></div></div></div>
  <div class="social-panel" id="socialRequestsPanel"><div class="social-card"><div class="eyebrow">FRIEND REQUESTS</div><div class="sub">Incoming requests will appear here.</div><div class="social-list" id="requestsList"></div></div></div>
  <div class="social-panel" id="socialMessagesPanel"><div class="social-grid"><div class="social-card"><div class="eyebrow">MESSAGES</div><div class="social-list" id="conversationList"></div></div><div class="social-card"><div class="eyebrow" id="messageTitle">SELECT A FRIEND</div><div class="message-list" id="messageList"><div class="status">Choose a friend to start messaging.</div></div><div class="message-compose"><input id="messageInput" placeholder="Write a message..."><button class="btn" id="sendMessageBtn" type="button">Send</button></div></div></div></div>
@@ -565,7 +579,7 @@ function mix(a,b,p){let aa=a.replace('#',''),bb=b.replace('#','');let r=Math.rou
 
 // ===== NAVIGATION / THEME =====
 function navInit(){
- let primary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['community','Post UIs'],['social','Social'],['profile','Profile']];
+ let primary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['social','Social'],['profile','Profile']];
  let more=[['patterns','Patterns'],['presets','Presets'],['bars','Bars & Icons'],['themes','Themes'],['svg','SVG Lab'],['nineslice','9-Slice'],['resources','Resources']];
  $('nav').innerHTML=primary.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')+`<div class="nav-more" id="navMore"><button class="alt" type="button" id="navMoreBtn">More ▾</button><div class="nav-more-menu">${more.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')}</div></div>`;
  let run=b=>{showView(b.dataset.view);$('nav').classList.remove('mobile-open');$('navMore')?.classList.remove('open')};
@@ -801,7 +815,7 @@ function conceptAnalyze(prompt,genre,mood,density,corners,c1,c2){
 function luminance(hex){let m=hex.replace('#','');if(m.length===3)m=m.split('').map(c=>c+c).join('');let n=parseInt(m,16);if(!Number.isFinite(n))return .5;let r=(n>>16&255)/255,g=(n>>8&255)/255,b=(n&255)/255;[r,g,b]=[r,g,b].map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*r+.7152*g+.0722*b}
 function contrastRatio(hex1,hex2){let l1=luminance(hex1)+.05,l2=luminance(hex2)+.05;return l1>l2?l1/l2:l2/l1}
 function conceptMockup(a){const showPattern=a.pattern!=='Off',showShine=a.shine!=='Off';const base={c1:a.primary,c2:a.secondary,c3:a.accent,font:a.font,gradientType:a.gradientType,angle:a.angle,pattern:a.pattern,showPattern,patternOpacity:showPattern?18+a.density*3:0,shine:a.shine,showShine,shineOpacity:showShine?18+a.density*3:0,shineAngle:a.angle,shineWidth:24+a.density*5,shineSoftness:8+Math.max(0,5-a.density)*3};try{let h=Object.assign({},state.header,base,{shape:a.headerShape,text:a.archetype});let b=Object.assign({},state.button,base,{shape:a.buttonShape,text:'CONTINUE'});let f=Object.assign({},state.frame,base,{shape:a.frameShape,title:a.archetype});return {header:svgHeader(h),button:svgButton(b),frame:svgFrame(f)}}catch(e){return null}}
-function conceptGenerate(){let p=$('conceptPrompt').value||'anime game UI',genre=$('conceptGenre').value,mood=$('conceptMood').value,c1=$('conceptC1').value,c2=$('conceptC2').value,d=+$('conceptDensity').value,corners=$('conceptCorners').value;let a=conceptAnalyze(p,genre,mood,d,corners,c1,c2);conceptData={prompt:p,genre,mood,primary:a.primary,secondary:a.secondary,accent:a.accent,density:a.density,corners,pattern:a.pattern,shine:a.shine,showPattern:a.pattern!=='Off',showShine:a.shine!=='Off',gradientType:a.gradientType,buttonShape:a.buttonShape,headerShape:a.headerShape,frameShape:a.frameShape,hudShape:a.hudShape,hudStyle:a.hudStyle,font:a.font,angle:a.angle,patternScale:10+a.density*7,archetype:a.archetype,contrast:a.contrast,cornerScore:a.cornerScore,reasons:a.reasons,wcag:a.wcag,generatedAt:new Date().toISOString()};
+function conceptGenerate(){let p=$('conceptPrompt').value||'anime game UI',genre=$('conceptGenre').value,mood=$('conceptMood').value,c1=$('conceptC1').value,c2=$('conceptC2').value,c3=$('conceptC3')?.value||'#a78bfa',d=+$('conceptDensity').value,corners=$('conceptCorners').value;let a=conceptAnalyze(p,genre,mood,d,corners,c1,c2);if($('conceptGradient')?.value&&$('conceptGradient').value!=='Auto')a.gradientType=$('conceptGradient').value;if($('conceptAngle'))a.angle=+$('conceptAngle').value;if($('conceptPattern')?.value&&$('conceptPattern').value!=='Auto')a.pattern=$('conceptPattern').value;if($('conceptShine')?.value&&$('conceptShine').value!=='Auto')a.shine=$('conceptShine').value;if($('conceptFont')?.value&&$('conceptFont').value!=='Auto')a.font=$('conceptFont').value;a.accent=c3;conceptData={prompt:p,genre,mood,primary:a.primary,secondary:a.secondary,accent:a.accent,density:a.density,corners,pattern:a.pattern,shine:a.shine,showPattern:a.pattern!=='Off',showShine:a.shine!=='Off',gradientType:a.gradientType,buttonShape:a.buttonShape,headerShape:a.headerShape,frameShape:a.frameShape,hudShape:a.hudShape,hudStyle:a.hudStyle,font:a.font,angle:a.angle,patternScale:10+a.density*7,archetype:a.archetype,contrast:a.contrast,cornerScore:a.cornerScore,reasons:a.reasons,wcag:a.wcag,generatedAt:new Date().toISOString()};
  let mock=conceptMockup(a);
  $('conceptResult').innerHTML=`<div class="eyebrow">${esc(a.archetype)} · ${esc(genre)} · ${esc(a.hudStyle.toUpperCase())}</div><h2 style="margin:8px 0">${esc(p)}</h2><div class="meta">${esc(mood)} mood · Density ${a.density}/5 · ${a.gradientType} ${a.angle}° · ${a.pattern} pattern · ${a.shine} shine · ${a.font}</div>
  <div style="margin:18px 0;padding:22px;border:1px solid var(--line);border-radius:18px;background:${gradientCSS([a.primary,a.accent,a.secondary],a.angle,a.gradientType)};box-shadow:0 18px 50px #0005"><div style="font-size:26px;font-weight:1000">${esc(a.archetype)} CONCEPT</div><div style="margin-top:8px;opacity:.88">${esc(a.frameShape)} frame · ${esc(a.buttonShape)} button · ${esc(a.headerShape)} header · ${esc(a.hudShape)} HUD</div><div style="margin-top:14px;font-size:11px;opacity:.82">Typography: ${esc(a.font)} · Corners: ${esc(a.cornerScore)} · Contrast: ${esc(a.contrast)}</div></div>
@@ -1098,8 +1112,9 @@ function initResources(){
 const SUPABASE_URL='https://wmvcouygzycvfkrpopna.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_jaC_o201T4GLp5f82NOkvQ_3FxUHEM7';
 const hasSupabase=()=>window.supabase&&SUPABASE_URL.startsWith('http')&&SUPABASE_ANON_KEY!=='YOUR_SUPABASE_PUBLISHABLE_KEY';
-const sb=hasSupabase()?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
+const sb=hasSupabase()?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,storageKey:'monkey-ui-station-auth',autoRefreshToken:true,detectSessionInUrl:true}}):null;
 let currentProfile=null;
+
 
 function authCurrent(){return currentProfile}
 function openAuth(mode){$('authModal').classList.add('open');setAuthMode(mode||'login');setTimeout(()=>$('authUser').focus(),40)}
@@ -1111,6 +1126,7 @@ function setAuthMode(mode){
  $('authSubmit').textContent=mode==='login'?'Login':'Create account';
  $('authEmailWrap').style.display=mode==='signup'?'block':'none';
  $('authPass2Wrap').style.display=mode==='signup'?'block':'none';
+ if($('authRememberWrap'))$('authRememberWrap').style.display=mode==='login'?'flex':'none';
  $('authStatus').textContent='';
  $('authForm').dataset.mode=mode;
  $('authUser').placeholder='';
@@ -1119,30 +1135,68 @@ function setAuthMode(mode){
 
 async function loadProfile(user){
  if(!sb||!user)return null;
+ let fallback={id:user.id,username:user.user_metadata?.username||user.email?.split('@')[0]||'User',email:user.email};
  let {data,error}=await sb.from('profiles').select('id,username').eq('id',user.id).maybeSingle();
- if(error)throw error;
- return data||{id:user.id,username:user.user_metadata?.username||user.email?.split('@')[0]||'User',email:user.email}
+ if(error){console.warn('Profile lookup failed, using auth account:',error);return fallback}
+ return data||fallback;
 }
 
 function updateAuthUI(){
  let u=authCurrent(),box=$('authActions');
+ if(!box)return;
  document.body.classList.toggle('auth-locked',!u);
  if(!u){
-   box.innerHTML='<button class="btn alt" id="loginBtn">Login</button><button class="btn" id="signupBtn">Sign Up</button>';
-   $('loginBtn').onclick=()=>openAuth('login');
-   $('signupBtn').onclick=()=>openAuth('signup');
+   box.innerHTML='';
+   box.style.display='none';
    $('authModal').classList.add('open');
    $('authClose').style.display='none';
    $('authStatus').textContent=hasSupabase()?'Log in or create an account to enter Monkey UI Station.':'Add your Supabase credentials to enable real accounts.';
    $('authLockSub').textContent='Create an account or log in to unlock the full UI design station.';
- }else{
-   box.innerHTML=`<div class="user-pill"><span class="avatar">${(u.username||'?')[0].toUpperCase()}</span>${escapeHtml(u.username||'User')}</div><button class="btn alt" id="logoutBtn">Logout</button>`;
-   $('authClose').style.display='block';
-   $('logoutBtn').onclick=async()=>{
-     if(sb)await sb.auth.signOut();
-     currentProfile=null;updateAuthUI();renderPosts()
-   }
+   return;
  }
+ let pd=profileData();
+ let name=u.username||u.user_metadata?.username||'User';
+ let letter=(pd.letter||name[0]||'U').slice(0,1).toUpperCase();
+ let avatarUrl=pd.avatar||u.user_metadata?.avatar_url||u.user_metadata?.avatar||'';
+ let avatar=avatarUrl
+   ? `<img src="${esc(avatarUrl)}" alt="" onerror="this.onerror=null;this.style.display='none';this.parentElement.textContent='${letter}'">`
+   : letter;
+ // Rebuild the signed-in header controls from scratch every time auth state is rendered.
+ box.replaceChildren();
+ const pfpBtn=document.createElement('button');
+ pfpBtn.className='profile-avatar-btn';
+ pfpBtn.id='profileUserBtn';
+ pfpBtn.type='button';
+ pfpBtn.title=`Open ${name}'s profile`;
+ pfpBtn.setAttribute('aria-label',`Open ${name}'s profile`);
+ const pfp=document.createElement('span');
+ pfp.className='avatar';
+ if(avatarUrl){
+   const img=document.createElement('img');
+   img.src=avatarUrl;
+   img.alt='';
+   img.onerror=()=>{img.remove();pfp.textContent=letter};
+   pfp.appendChild(img);
+ }else{pfp.textContent=letter}
+ pfpBtn.appendChild(pfp);
+ const logout=document.createElement('button');
+ logout.className='btn alt';
+ logout.id='logoutBtn';
+ logout.type='button';
+ logout.textContent='Logout';
+ box.append(pfpBtn,logout);
+ box.style.setProperty('display','flex','important');
+ box.style.alignItems='center';
+ box.style.gap='7px';
+ $('authClose').style.display='block';
+ pfpBtn.onclick=()=>showView('profile');
+ logout.onclick=async()=>{
+   try{if(sb)await sb.auth.signOut()}catch(err){console.warn('Logout:',err)}
+   currentProfile=null;
+   updateAuthUI();
+   renderProfile();
+   await renderPosts();
+ };
 }
 
 async function handleAuth(e){
@@ -1217,6 +1271,13 @@ async function handleAuth(e){
 
      show('Account created successfully.','ok');
    }else{
+     const remember=$('authRemember')?.checked!==false;
+     window.localStorage.setItem('monkey-remember-me',remember?'1':'0');
+     if(remember){
+       window.sessionStorage.setItem('monkey-auth-active','1');
+     }else{
+       window.sessionStorage.setItem('monkey-auth-active','1');
+     }
      let email=username;
 
      if(!username.includes('@')){
@@ -1261,38 +1322,67 @@ async function initAuth(){
  if(hasSupabase()){
    try{
      let {data}=await sb.auth.getSession();
-     if(data.session){
-       currentProfile=await loadProfile(data.session.user);
+     let session=data?.session||null;
+     const remember=window.localStorage.getItem('monkey-remember-me')!=='0';
+     const active=window.sessionStorage.getItem('monkey-auth-active')==='1';
+     // If Remember Me was disabled, do not restore an old browser session into a new tab/window.
+     if(session&&!remember&&!active){
+       await sb.auth.signOut();
+       session=null;
+     }
+     if(session){
+       currentProfile=await loadProfile(session.user);
+       window.sessionStorage.setItem('monkey-auth-active','1');
        if(window.location.hash.includes('access_token=')||window.location.search.includes('code=')){
          history.replaceState({},document.title,window.location.pathname);
        }
      }
-     sb.auth.onAuthStateChange(async(_event,session)=>{
+     sb.auth.onAuthStateChange(async(event,session)=>{
        try{
-         currentProfile=session?await loadProfile(session.user):null;
+         // Only an explicit SIGNED_OUT event should clear the UI. Other auth events can carry a null session transiently.
+         if(event==='SIGNED_OUT'){
+           currentProfile=null;
+           window.sessionStorage.removeItem('monkey-auth-active');
+           document.body.classList.add('auth-locked');
+           updateAuthUI();
+           return;
+         }
          if(session){
+           currentProfile=await loadProfile(session.user);
+           window.sessionStorage.setItem('monkey-auth-active','1');
+           document.body.classList.remove('auth-locked');
            $('authStatus').textContent='Signed in successfully.';
            closeAuth();
+           updateAuthUI();
+           await renderPosts();
          }
-         updateAuthUI();
-         await renderPosts();
        }catch(err){
-         currentProfile=null;
-         document.body.classList.add('auth-locked');
-         $('authStatus').textContent=err?.message||'Could not load your account profile.';
-         updateAuthUI();
+         console.error('Auth state refresh:',err);
        }
-     })
+     });
    }catch(e){console.warn('Supabase auth:',e)}
  }
- setAuthMode('login');
+ if(currentProfile){document.body.classList.remove('auth-locked');}else{setAuthMode('login');}
  updateAuthUI()
 }
 function getCurrentUISVG(){try{if(typeof layoutSVG==='string'&&layoutSVG.trim())return figmaSafeSVG(layoutSVG);if(typeof customSVG!=='undefined'&&customSVG)return figmaSafeSVG(new XMLSerializer().serializeToString(customSVG));for(let k of ['button','header','frame','hud'])if(typeof svgStore!=='undefined'&&svgStore[k])return figmaSafeSVG(svgStore[k])}catch(e){}return ''}
 let communityPosts=[];
-async function posts(){if(!sb)return communityPosts;let {data,error}=await sb.from('posts').select('id,user_id,title,description,image_data,ui_svg,likes,created_at,profiles(username)').order('created_at',{ascending:false});if(error){console.warn('Posts:',error);return communityPosts}return data||[]}
-async function renderPosts(){let q=($('postSearch')?.value||'').toLowerCase(),sort=$('postSort')?.value||'new',arr=await posts();arr=arr.filter(p=>!q||`${p.title} ${p.description||''} ${p.profiles?.username||''}`.toLowerCase().includes(q));if(sort==='likes')arr.sort((a,b)=>(b.likes||0)-(a.likes||0));$('postGrid').innerHTML=arr.length?arr.map(p=>`<article class="post-card"><div class="post-art">${p.image_data?`<img src="${p.image_data}" alt="">`:'<div class="eyebrow">UI POST</div>'}</div><div class="post-body"><div class="post-top"><span class="post-user">@${escapeHtml(p.profiles?.username||'User')}</span><span class="post-time">${new Date(p.created_at).toLocaleDateString()}</span></div><div class="post-title">${escapeHtml(p.title)}</div><div class="post-text">${escapeHtml(p.description||'')}</div><div class="post-actions"><button class="btn alt" data-like="${p.id}">♡ ${p.likes||0}</button>${p.ui_svg?`<button class="btn alt" data-copy-svg="${p.id}">Copy SVG</button>`:''}</div></div></article>`).join(''):'<div class="theme-empty" style="grid-column:1/-1">No UI posts yet. Sign up and publish the first one.</div>';$('postGrid').querySelectorAll('[data-like]').forEach(b=>b.onclick=async()=>{if(!sb)return;let p=arr.find(x=>x.id===b.dataset.like);if(p)await sb.rpc('increment_post_likes',{p_post_id:p.id});renderPosts()});$('postGrid').querySelectorAll('[data-copy-svg]').forEach(b=>b.onclick=()=>{let p=arr.find(x=>x.id===b.dataset.copySvg);if(p?.ui_svg){fallbackCopy(p.ui_svg);if(typeof toastU==='function')toastU('SVG copied')}})}
-function initCommunity(){ $('newPostBtn').onclick=()=>{if(!authCurrent()){openAuth('login');$('authStatus').textContent='Log in or sign up before posting.';return}$('postModal').classList.add('open')};$('postClose').onclick=()=>$('postModal').classList.remove('open');$('postSearch').oninput=renderPosts;$('postSort').onchange=renderPosts;$('postUseCurrentSvg').onclick=()=>{$('postSvg').value=getCurrentUISVG();if(!$('postSvg').value)$('postStatus').textContent='No generated SVG is available yet.'};$('postForm').onsubmit=async e=>{e.preventDefault();let u=authCurrent();if(!sb||!u)return;let f=$('postImage').files[0],image='';if(f){if(f.size>1.5*1024*1024){$('postStatus').textContent='Image must be 1.5MB or smaller.';return}image=await new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}let uiSvg=$('postSvg').value.trim();if(uiSvg.length>500000){$('postStatus').textContent='SVG is too large (500KB max).';return}let {error}=await sb.from('posts').insert({user_id:u.id,title:$('postTitle').value.trim(),description:$('postText').value.trim(),image_data:image||null,ui_svg:uiSvg||null,likes:0});if(error){$('postStatus').textContent=error.message;return}$('postForm').reset();$('postModal').classList.remove('open');renderPosts()}}
+async function posts(){if(!sb)return communityPosts;let {data,error}=await sb.from('posts').select('id,user_id,title,description,image_data,media_data,media_type,ui_svg,likes,created_at,profiles(username)').order('created_at',{ascending:false});if(error){console.warn('Posts:',error);return communityPosts}return data||[]}
+async function renderPosts(){if(!$('postGrid'))return;let q=($('postSearch')?.value||'').toLowerCase(),sort=$('postSort')?.value||'new',arr=await posts();arr=arr.filter(p=>!q||`${p.title} ${p.description||''} ${p.profiles?.username||''}`.toLowerCase().includes(q));if(sort==='likes')arr.sort((a,b)=>(b.likes||0)-(a.likes||0));$('postGrid').innerHTML=arr.length?arr.map(p=>`<article class="post-card"><div class="post-art">${p.image_data?`<img src="${p.image_data}" alt="">`:'<div class="eyebrow">UI POST</div>'}</div><div class="post-body"><div class="post-top"><span class="post-user">@${escapeHtml(p.profiles?.username||'User')}</span><span class="post-time">${new Date(p.created_at).toLocaleDateString()}</span></div><div class="post-title">${escapeHtml(p.title)}</div><div class="post-text">${escapeHtml(p.description||'')}</div><div class="post-actions"><button class="btn alt" data-like="${p.id}">♡ ${p.likes||0}</button>${p.ui_svg?`<button class="btn alt" data-copy-svg="${p.id}">Copy SVG</button>`:''}</div></div></article>`).join(''):'<div class="theme-empty" style="grid-column:1/-1">No UI posts yet. Sign up and publish the first one.</div>';$('postGrid').querySelectorAll('[data-like]').forEach(b=>b.onclick=async()=>{if(!sb)return;let p=arr.find(x=>x.id===b.dataset.like);if(p)await sb.rpc('increment_post_likes',{p_post_id:p.id});renderPosts()});$('postGrid').querySelectorAll('[data-copy-svg]').forEach(b=>b.onclick=()=>{let p=arr.find(x=>x.id===b.dataset.copySvg);if(p?.ui_svg){fallbackCopy(p.ui_svg);if(typeof toastU==='function')toastU('SVG copied')}})}
+function initCommunity(){
+ if(!$('postModal'))return;
+ if($('postClose'))$('postClose').onclick=()=>$('postModal').classList.remove('open');
+ if($('postUseCurrentSvg'))$('postUseCurrentSvg').onclick=()=>{$('postSvg').value=getCurrentUISVG();if(!$('postSvg').value)$('postStatus').textContent='No generated SVG is available yet.'};
+ if($('postSvgFile'))$('postSvgFile').onchange=async()=>{let f=$('postSvgFile').files[0];if(f)$('postSvg').value=await f.text()};
+ if($('postForm'))$('postForm').onsubmit=async e=>{
+  e.preventDefault();let u=authCurrent();if(!sb||!u){$('postStatus').textContent='Log in to publish.';return}
+  let f=$('postImage').files[0],mediaData=null,mediaType=null,image=null;
+  if(f){let isVideo=f.type.startsWith('video/'),max=isVideo?7*1024*1024:3*1024*1024;if(f.size>max){$('postStatus').textContent=`${isVideo?'Video':'Image'} must be ${isVideo?'7MB':'3MB'} or smaller.`;return}mediaData=await readFileData(f);mediaType=f.type||'application/octet-stream';if(!isVideo)image=mediaData}
+  let uiSvg=$('postSvg').value.trim();if(uiSvg.length>1000000){$('postStatus').textContent='SVG is too large (1MB max).';return}
+  let {error}=await sb.from('posts').insert({user_id:u.id,title:$('postTitle').value.trim(),description:$('postText').value.trim(),image_data:image,media_data:mediaData,media_type:mediaType,ui_svg:uiSvg||null,likes:0});
+  if(error){$('postStatus').textContent=error.message;return}$('postForm').reset();$('postModal').classList.remove('open');$('postStatus').textContent='';renderSocialFeed();renderPosts()
+ };
+}
 
 function initVirtualGradients(){
  $('gColorCount').onchange=syncGradientStops;['g1','g2','g3','g4','g5','g6','gAngle','gType'].forEach(id=>$(id).addEventListener('input',updateGradientPreview));$('gradientSvgExport').onclick=()=>exportGradientSvg(gradientColors(),+$('gAngle').value,$('gType').value);syncGradientStops();
@@ -1333,10 +1423,42 @@ function loadSocial(){try{socialState={friends:[],requests:[],messages:{},select
 function saveSocial(){localStorage.setItem('monkey-social-'+socialKey(),JSON.stringify(socialState))}
 function socialAvatar(name){let d=profileData();if((currentProfile?.username||'').toLowerCase()===(name||'').toLowerCase()&&d.avatar)return `<img src="${esc(d.avatar)}" alt="">`;return esc((name||'?')[0].toUpperCase())}
 function socialUserCard(u,actions=true){let n=typeof u==='string'?u:u.username,id=typeof u==='string'?'':u.id;return `<div class="social-row"><div class="social-user"><div class="profile-avatar">${socialAvatar(n)}</div><div class="social-user-copy"><b>@${esc(n)}</b><div class="meta">${id?'Monkey UI creator':'Friend'}</div></div></div>${actions?`<div class="social-actions"><button class="btn alt" data-view-user="${esc(n)}" type="button">View</button><button class="btn" data-add-user="${esc(n)}" type="button">Add</button></div>`:''}</div>`}
-async function searchSocialUsers(q){if(!sb||!q)return[];let {data,error}=await sb.from('profiles').select('id,username').ilike('username','%'+q.replace(/[%_]/g,'')+'%').neq('id',currentProfile?.id||'').limit(8);if(error){console.warn('User search:',error);return[]}return data||[]}
-async function renderSocialSearch(q){let box=$('socialSearchResults');if(!q||q.length<2){box.classList.remove('open');box.innerHTML='';return}let users=await searchSocialUsers(q),arr=users.slice();let postArr=await posts();let postsFound=postArr.filter(p=>`${p.title} ${p.description||''} ${p.profiles?.username||''}`.toLowerCase().includes(q.toLowerCase())).slice(0,4);box.innerHTML=(arr.length?`<div class="eyebrow" style="padding:10px 13px">PEOPLE</div>`+arr.map(u=>`<div class="social-search-result" data-search-user="${esc(u.username)}"><div class="profile-avatar" style="width:34px;height:34px;font-size:12px">${socialAvatar(u.username)}</div><div><b>@${esc(u.username)}</b><div class="meta">View profile / add friend</div></div></div>`).join(''):'')+(postsFound.length?`<div class="eyebrow" style="padding:10px 13px">UI POSTS</div>`+postsFound.map(p=>`<div class="social-search-result" data-search-post="${esc(p.id)}"><div><b>${esc(p.title)}</b><div class="meta">@${esc(p.profiles?.username||'User')}</div></div></div>`).join(''):'')+(!arr.length&&!postsFound.length?'<div class="status" style="padding:15px">No users or posts found.</div>':'');box.classList.add('open');box.querySelectorAll('[data-search-user]').forEach(el=>el.onclick=()=>{let n=el.dataset.searchUser;$('friendUsername').value=n;box.classList.remove('open');document.querySelector('[data-social-tab="discover"]')?.click();renderPeople([n])});box.querySelectorAll('[data-search-post]').forEach(el=>el.onclick=()=>{box.classList.remove('open');document.querySelector('[data-social-tab="feed"]')?.click();setTimeout(()=>document.querySelector(`[data-social-post="${CSS.escape(el.dataset.searchPost)}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),60)})}
-async function renderPeople(seed){let q=($('socialSearch')?.value||$('friendUsername')?.value||'').trim();if(seed&&seed.length)q=seed[0];let users=await searchSocialUsers(q);if(seed&&!users.length)users=[{username:seed[0]}];$('peopleResults').innerHTML=users.length?users.map(u=>socialUserCard(u)).join(''):'<div class="social-empty">Search for a username to discover creators.</div>';wireSocialRows()}
-async function renderSocialFeed(){let arr=await posts();$('socialFeed').innerHTML=arr.length?arr.slice(0,30).map(p=>`<article class="social-post" data-social-post="${esc(p.id)}"><div class="social-post-head"><div class="profile-avatar">${socialAvatar(p.profiles?.username||'U')}</div><div style="min-width:0"><b>@${esc(p.profiles?.username||'User')}</b><div class="meta">${new Date(p.created_at).toLocaleDateString()}</div></div></div><div class="social-post-body"><div class="social-post-title">${esc(p.title)}</div><div class="social-post-text">${esc(p.description||'')}</div>${p.image_data?`<div class="social-post-art"><img src="${p.image_data}" alt="${esc(p.title)}"></div>`:''}<div class="social-post-actions"><button class="btn alt" data-social-like="${p.id}">♡ ${p.likes||0}</button>${p.ui_svg?`<button class="btn alt" data-social-copy="${p.id}">Copy SVG</button>`:''}<button class="btn alt" data-social-user-post="${esc(p.profiles?.username||'User')}">View creator</button></div></div></article>`).join(''):'<div class="social-empty">No UI posts yet. Publish one from Post UIs.</div>';$('socialFeed').querySelectorAll('[data-social-like]').forEach(b=>b.onclick=async()=>{if(!sb)return;await sb.rpc('increment_post_likes',{p_post_id:b.dataset.socialLike});renderSocialFeed();renderPosts()});$('socialFeed').querySelectorAll('[data-social-copy]').forEach(b=>b.onclick=async()=>{let p=arr.find(x=>x.id===b.dataset.socialCopy);if(p?.ui_svg){fallbackCopy(p.ui_svg);if(typeof toastU==='function')toastU('SVG copied')}});$('socialFeed').querySelectorAll('[data-social-user-post]').forEach(b=>b.onclick=()=>{$('socialSearch').value=b.dataset.socialUserPost;document.querySelector('[data-social-tab="discover"]')?.click();renderPeople([b.dataset.socialUserPost])})}
+async function searchSocialUsers(q=''){if(!sb)return[];let clean=String(q||'').trim().replace(/[%_]/g,'');let query=sb.from('profiles').select('id,username').order('username',{ascending:true}).limit(500);if(clean)query=query.ilike('username','%'+clean+'%');let {data,error}=await query;if(error){console.warn('User search:',error);return[]}return data||[]}
+async function renderSocialSearch(q){let box=$('socialSearchResults');if(!q||q.length<2){box.classList.remove('open');box.innerHTML='';return}let users=await searchSocialUsers(q),arr=users.slice();let postArr=await posts();let postsFound=postArr.filter(p=>`${p.title} ${p.description||''} ${p.profiles?.username||''}`.toLowerCase().includes(q.toLowerCase())).slice(0,4);box.innerHTML=(arr.length?`<div class="eyebrow" style="padding:10px 13px">PEOPLE</div>`+arr.map(u=>`<div class="social-search-result" data-search-user="${esc(u.username)}"><div class="profile-avatar" style="width:34px;height:34px;font-size:12px">${socialAvatar(u.username)}</div><div><b>@${esc(u.username)}</b><div class="meta">View profile / add friend</div></div></div>`).join(''):'')+(postsFound.length?`<div class="eyebrow" style="padding:10px 13px">UI POSTS</div>`+postsFound.map(p=>`<div class="social-search-result" data-search-post="${esc(p.id)}"><div><b>${esc(p.title)}</b><div class="meta">@${esc(p.profiles?.username||'User')}</div></div></div>`).join(''):'')+(!arr.length&&!postsFound.length?'<div class="status" style="padding:15px">No users or posts found.</div>':'');box.classList.add('open');box.querySelectorAll('[data-search-user]').forEach(el=>el.onclick=()=>{let n=el.dataset.searchUser;$('friendUsername').value=n;box.classList.remove('open');document.querySelector('[data-social-tab="people"]')?.click();renderPeople([n])});box.querySelectorAll('[data-search-post]').forEach(el=>el.onclick=()=>{box.classList.remove('open');document.querySelector('[data-social-tab="feed"]')?.click();setTimeout(()=>document.querySelector(`[data-social-post="${CSS.escape(el.dataset.searchPost)}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),60)})}
+async function renderPeople(seed){let q=($('peopleSearch')?.value||'').trim();if(seed&&seed.length)q=seed[0];let users=await searchSocialUsers(q);$('peopleResults').innerHTML=users.length?users.map(u=>socialUserCard(u)).join(''):'<div class="social-empty">No accounts found.</div>';wireSocialRows()}
+async function renderSocialFeed(){
+ let arr=await posts();
+ $('socialFeed').innerHTML=arr.length?arr.slice(0,30).map(p=>{
+   let media=p.media_data&&p.media_type?(p.media_type.startsWith('video/')?`<video controls preload="metadata" src="${esc(p.media_data)}"></video>`:`<img src="${esc(p.media_data)}" alt="${esc(p.title)}">`):'';
+   let legacy=p.image_data&&!media?`<img src="${esc(p.image_data)}" alt="${esc(p.title)}">`:'';
+   let svg=p.ui_svg?`<div class="social-post-svg">${sanitizeSvgForPreview(p.ui_svg)}</div>`:'';
+   return `<article class="social-post" data-social-post="${esc(p.id)}"><div class="social-post-head"><div class="profile-avatar">${socialAvatar(p.profiles?.username||'U')}</div><div style="min-width:0"><b>@${esc(p.profiles?.username||'User')}</b><div class="meta">${new Date(p.created_at).toLocaleDateString()}</div></div></div><div class="social-post-body"><div class="social-post-title">${esc(p.title)}</div><div class="social-post-text">${esc(p.description||'')}</div>${media||legacy?`<div class="social-post-media">${media||legacy}</div>`:''}${svg}<div class="social-post-actions"><button class="btn alt" data-social-like="${p.id}">♡ ${p.likes||0}</button>${p.ui_svg?`<button class="btn alt" data-social-copy="${p.id}">Copy SVG</button>`:''}<button class="btn alt" data-social-user-post="${esc(p.profiles?.username||'User')}">View creator</button></div><div class="post-replies"><div class="eyebrow">REPLIES</div><div data-replies="${p.id}"><div class="status">Loading replies…</div></div><form class="reply-form" data-reply-form="${p.id}"><input type="text" maxlength="500" placeholder="Reply with text…" aria-label="Reply text"><input type="file" accept="image/*,video/*,.svg,image/svg+xml" aria-label="Reply image, video, or SVG"><button class="btn alt" type="submit">Reply</button></form></div></div></article>`;
+ }).join(''):'<div class="social-empty">No UI posts yet. Publish one from Post UIs.</div>';
+ $('socialFeed').querySelectorAll('[data-social-like]').forEach(b=>b.onclick=async()=>{if(!sb)return;await sb.rpc('increment_post_likes',{p_post_id:b.dataset.socialLike});renderSocialFeed();renderPosts()});
+ $('socialFeed').querySelectorAll('[data-social-copy]').forEach(b=>b.onclick=()=>{let p=arr.find(x=>x.id===b.dataset.socialCopy);if(p?.ui_svg){fallbackCopy(p.ui_svg);if(typeof toastU==='function')toastU('SVG copied')}});
+ $('socialFeed').querySelectorAll('[data-social-user-post]').forEach(b=>b.onclick=()=>{$('socialSearch').value=b.dataset.socialUserPost;document.querySelector('[data-social-tab="people"]')?.click();renderPeople([b.dataset.socialUserPost])});
+ $('socialFeed').querySelectorAll('[data-reply-form]').forEach(form=>form.onsubmit=async e=>{
+   e.preventDefault();let u=authCurrent();if(!sb||!u){if(typeof toastU==='function')toastU('Log in to reply.');return}
+   let input=form.querySelector('input[type=text]'),file=form.querySelector('input[type=file]'),body=input.value.trim(),f=file.files[0];if(!body&&!f)return;
+   let mediaData=null,mediaType=null;
+   if(f){let isVideo=f.type.startsWith('video/'),max=isVideo?7*1024*1024:3*1024*1024;if(f.size>max){if(typeof toastU==='function')toastU(`File too large. Max ${isVideo?'7MB':'3MB'}.`);return}mediaData=await readFileData(f);mediaType=f.type||'application/octet-stream';}
+   let {error}=await sb.from('post_replies').insert({post_id:form.dataset.replyForm,user_id:u.id,body,media_data:mediaData,media_type:mediaType});
+   if(error){if(typeof toastU==='function')toastU(error.message);return}input.value='';file.value='';await renderPostReplies(form.dataset.replyForm);
+ });
+ arr.slice(0,30).forEach(p=>renderPostReplies(p.id));
+}
+async function renderPostReplies(postId){
+ let box=document.querySelector(`[data-replies="${CSS.escape(postId)}"]`);if(!box)return;
+ if(!sb){box.innerHTML='<div class="status">Replies require Supabase.</div>';return}
+ let {data,error}=await sb.from('post_replies').select('id,user_id,body,media_data,media_type,created_at,profiles(username)').eq('post_id',postId).order('created_at',{ascending:true});
+ if(error){box.innerHTML='<div class="status">Replies need the Social Replies SQL setup.</div>';return}
+ box.innerHTML=data?.length?data.map(r=>`<div class="reply-row"><div class="reply-avatar">${socialAvatar(r.profiles?.username||'U')}</div><div class="reply-content"><b>@${esc(r.profiles?.username||'User')}</b><div>${esc(r.body||'')}</div>${r.media_data?`<div class="reply-media">${r.media_type==='image/svg+xml'?sanitizeSvgForPreview(r.media_data):r.media_type?.startsWith('video/')?`<video controls preload="metadata" src="${esc(r.media_data)}"></video>`:`<img src="${esc(r.media_data)}" alt="Reply media">`}</div>`:''}<div class="meta">${new Date(r.created_at).toLocaleString()}</div></div></div>`).join(''):'<div class="meta">No replies yet.</div>';
+}
+function readFileData(file){return new Promise((resolve,reject)=>{let r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+function sanitizeSvgForPreview(raw){
+ try{let parser=new DOMParser(),doc=parser.parseFromString(raw,'image/svg+xml'),svg=doc.documentElement;if(!svg||svg.nodeName.toLowerCase()!=='svg')return '';doc.querySelectorAll('script,foreignObject,iframe,object,embed').forEach(n=>n.remove());doc.querySelectorAll('*').forEach(n=>[...n.attributes].forEach(a=>{if(/^on/i.test(a.name)||/^(href|src)$/i.test(a.name)&&/javascript:/i.test(a.value))n.removeAttribute(a.name)}));return new XMLSerializer().serializeToString(svg)}catch(e){return '<div class="meta">Invalid SVG</div>'}
+}
+
 async function loadSharedSocial(){if(!sb||!currentProfile)return false;try{let uid=currentProfile.id;let rq=await sb.from('friend_requests').select('id,sender_id,receiver_id,status,created_at').eq('receiver_id',uid).eq('status','pending').order('created_at',{ascending:false});if(rq.error)throw rq.error;let senders=[...new Set((rq.data||[]).map(x=>x.sender_id))];let profs=senders.length?(await sb.from('profiles').select('id,username').in('id',senders)).data||[]:[];socialState.requests=(rq.data||[]).map(x=>({id:x.id,userId:x.sender_id,username:(profs.find(p=>p.id===x.sender_id)||{}).username||'User'}));let fr=await sb.from('friendships').select('user_id,friend_id').or(`user_id.eq.${uid},friend_id.eq.${uid}`);if(fr.error)throw fr.error;let ids=(fr.data||[]).map(x=>x.user_id===uid?x.friend_id:x.user_id);let fp=ids.length?(await sb.from('profiles').select('id,username').in('id',ids)).data||[]:[];socialState.friends=fp.map(x=>({id:x.id,username:x.username}));return true}catch(e){console.warn('Shared social tables unavailable:',e);return false}}
 async function sendSharedRequest(username){if(!sb||!currentProfile)return false;let {data:u}=await sb.from('profiles').select('id,username').ilike('username',username).maybeSingle();if(!u)return false;if(u.id===currentProfile.id)return false;let {data:existing}=await sb.from('friend_requests').select('id,status').eq('sender_id',currentProfile.id).eq('receiver_id',u.id).maybeSingle();if(existing)return false;let {error}=await sb.from('friend_requests').insert({sender_id:currentProfile.id,receiver_id:u.id,status:'pending'});return !error}
 async function renderSocial(){loadSocial();let shared=await loadSharedSocial();if(!shared){}$('requestCount').textContent=Array.isArray(socialState.requests)?socialState.requests.length:0;$('friendsList').innerHTML=socialState.friends.length?socialState.friends.map(u=>`<div class="social-row"><div class="social-user"><div class="profile-avatar">${socialAvatar(u.username||u)}</div><div class="social-user-copy"><b>@${esc(u.username||u)}</b><div class="meta">Friend</div></div></div><div class="social-actions"><button class="btn alt" data-message-user="${esc(u.username||u)}" type="button">Message</button></div></div>`).join(''):'<div class="social-empty">No friends yet. Use Explore to find creators.</div>';$('requestsList').innerHTML=socialState.requests.length?socialState.requests.map((r,i)=>{let n=r.username||r;return `<div class="social-row"><div class="social-user"><div class="profile-avatar">${socialAvatar(n)}</div><div class="social-user-copy"><b>@${esc(n)}</b><div class="meta">Wants to connect</div></div></div><div class="social-actions"><button class="btn" data-accept-request="${i}" type="button">Accept</button><button class="btn alt" data-decline-request="${i}" type="button">Decline</button></div></div>`}).join(''):'<div class="social-empty">You have no pending requests.</div>';$('conversationList').innerHTML=socialState.friends.length?socialState.friends.map(u=>`<button class="social-row" data-message-user="${esc(u.username||u)}" type="button"><div class="social-user"><div class="profile-avatar">${socialAvatar(u.username||u)}</div><div class="social-user-copy"><b>@${esc(u.username||u)}</b><div class="meta">Open conversation</div></div></div><span class="meta">›</span></button>`).join(''):'<div class="social-empty">Add friends to start conversations.</div>';wireSocialRows();renderConversation()}
@@ -1345,7 +1467,7 @@ function renderConversation(){let n=socialState.selected;if(!n){$('messageTitle'
 async function sendSocialRequest(){let n=$('friendUsername').value.trim().replace(/^@/,'');if(!n){$('friendStatus').textContent='Enter a username.';$('friendStatus').className='status warn';return}if(n.toLowerCase()===(currentProfile?.username||'').toLowerCase()){$('friendStatus').textContent='You cannot add yourself.';$('friendStatus').className='status warn';return}if(sb&&currentProfile){let ok=await sendSharedRequest(n);if(ok){$('friendStatus').textContent='Friend request sent.';$('friendStatus').className='status ok';$('friendUsername').value='';await renderSocial();return}let found=await searchSocialUsers(n);if(!found.length){$('friendStatus').textContent='User not found.';$('friendStatus').className='status warn';return}}if(!socialState.requests.some(x=>(x.username||x).toLowerCase()===n.toLowerCase()))socialState.requests.push(n);saveSocial();renderSocial();$('friendUsername').value='';$('friendStatus').textContent='Request saved on this device.';$('friendStatus').className='status warn'}
 async function sendSocialMessage(){let n=socialState.selected,t=$('messageInput').value.trim();if(!n||!t)return;if(sb&&currentProfile){let friend=(socialState.friends||[]).find(x=>(x.username||x).toLowerCase()===n.toLowerCase());if(friend?.id){let {error}=await sb.from('messages').insert({sender_id:currentProfile.id,receiver_id:friend.id,body:t});if(!error){$('messageInput').value='';await loadSharedMessages(friend.id,n);return}}}(socialState.messages[n]||(socialState.messages[n]=[])).push({text:t,mine:true,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});$('messageInput').value='';saveSocial();renderConversation()}
 async function loadSharedMessages(friendId,name){if(!sb||!currentProfile)return;let {data,error}=await sb.from('messages').select('sender_id,receiver_id,body,created_at').or(`and(sender_id.eq.${currentProfile.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${currentProfile.id})`).order('created_at',{ascending:true});if(error){renderConversation();return}socialState.messages[name]=(data||[]).map(m=>({text:m.body,mine:m.sender_id===currentProfile.id,time:new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}));saveSocial();renderConversation()}
-async function initSocial(){document.querySelectorAll('[data-social-tab]').forEach(b=>b.onclick=async()=>{document.querySelectorAll('[data-social-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.social-panel').forEach(x=>x.classList.toggle('active',x.id==='social'+b.dataset.socialTab[0].toUpperCase()+b.dataset.socialTab.slice(1)+'Panel'));if(b.dataset.socialTab==='feed')renderSocialFeed();if(b.dataset.socialTab==='discover')renderPeople();if(b.dataset.socialTab==='messages'&&socialState.selected){let f=(socialState.friends||[]).find(x=>(x.username||x).toLowerCase()===socialState.selected.toLowerCase());if(f?.id)await loadSharedMessages(f.id,socialState.selected)}});$('sendFriendRequest').onclick=sendSocialRequest;$('sendMessageBtn').onclick=sendSocialMessage;$('messageInput').onkeydown=e=>{if(e.key==='Enter')sendSocialMessage()};$('socialRefreshBtn').onclick=async()=>{await renderSocial();await renderSocialFeed();renderPeople()};$('socialFeedRefresh').onclick=renderSocialFeed;$('socialPostBtn').onclick=()=>$('newPostBtn').click();$('socialSearch').oninput=e=>renderSocialSearch(e.target.value.trim());$('socialSearch').onfocus=()=>{if($('socialSearch').value.trim())renderSocialSearch($('socialSearch').value.trim())};document.addEventListener('click',e=>{if(!e.target.closest('.social-search'))$('socialSearchResults').classList.remove('open')});await renderSocial();await renderSocialFeed()}
+async function initSocial(){document.querySelectorAll('[data-social-tab]').forEach(b=>b.onclick=async()=>{document.querySelectorAll('[data-social-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.social-panel').forEach(x=>x.classList.toggle('active',x.id==='social'+b.dataset.socialTab[0].toUpperCase()+b.dataset.socialTab.slice(1)+'Panel'));if(b.dataset.socialTab==='feed')renderSocialFeed();if(b.dataset.socialTab==='people')renderPeople();if(b.dataset.socialTab==='messages'&&socialState.selected){let f=(socialState.friends||[]).find(x=>(x.username||x).toLowerCase()===socialState.selected.toLowerCase());if(f?.id)await loadSharedMessages(f.id,socialState.selected)}});if($('sendFriendRequest'))$('sendFriendRequest').onclick=sendSocialRequest;if($('sendMessageBtn'))$('sendMessageBtn').onclick=sendSocialMessage;if($('messageInput'))$('messageInput').onkeydown=e=>{if(e.key==='Enter')sendSocialMessage()};if($('socialRefreshBtn'))$('socialRefreshBtn').onclick=async()=>{await renderSocial();await renderSocialFeed();renderPeople()};if($('socialFeedRefresh'))$('socialFeedRefresh').onclick=renderSocialFeed;if($('peopleSearch'))$('peopleSearch').oninput=()=>renderPeople();if($('socialPostBtn'))$('socialPostBtn').onclick=()=>{$('postModal').classList.add('open');$('postTitle')?.focus()};if($('socialSearch')){$('socialSearch').oninput=e=>renderSocialSearch(e.target.value.trim());$('socialSearch').onfocus=()=>{if($('socialSearch').value.trim())renderSocialSearch($('socialSearch').value.trim())}};document.addEventListener('click',e=>{if(!e.target.closest('.social-search'))$('socialSearchResults').classList.remove('open')});await renderSocial();await renderSocialFeed();await renderPeople()}
 
 function wire(){try{initAuth()}catch(e){console.error('Auth init:',e)}initCriticalViews();navInit();wireThemeGallery();try{initLayoutCustomizer()}catch(e){console.warn('Layout customizer:',e)}$('themeSelect').innerHTML=Object.keys(themes).map(x=>`<option value="${x}">${x}</option>`).join('');$('themeSelect').onchange=e=>setTheme(e.target.value);$('randomTop').onclick=randomAll;
 mountBarControls();wireStudioTabs();renderBar();$('barBuild').onclick=renderBar;$('iconBuild').onclick=buildIcon;$('iconCopy').onclick=()=>fallbackCopy(figmaSafeSVG(svgIcon()));$('iconDownload').onclick=()=>downloadText('monkey-ui-icon.svg',figmaSafeSVG(svgIcon()),'image/svg+xml');['iconGlyph','iconSize','iconColor','iconColor2','iconBg','iconBg2','iconBgOpacity','iconShape','iconRotation','iconOutline','iconOutlineW','iconFont','iconGradient','iconBgGradient','iconShadow','iconShine','iconGlyphSize','iconWeight','iconGlyphOpacity','iconGlyphStroke','iconGlyphStrokeW','iconRing','iconRingColor','iconRingW','iconPadding','iconPattern','iconPatternOpacity'].forEach(id=>$(id).addEventListener('input',buildIcon));$('barRandom').onclick=randomBar;$('barCopy').onclick=()=>fallbackCopy(figmaSafeSVG(svgBar(barState)));$('barDownload').onclick=()=>downloadText('monkey-ui-bar.svg',figmaSafeSVG(svgBar(barState)),'image/svg+xml');
@@ -1354,7 +1476,7 @@ $('gradientCats').innerHTML=['All',...new Set(gradients.map(g=>g.cat))].map(c=>`
 ['gradientSearch','gradientType'].forEach(id=>$(id).addEventListener('input',()=>{gradientPage=80;renderGradients()}));['g1','g2','g3','g4','g5','g6','gAngle','gType','gColorCount'].forEach(id=>$(id)?.addEventListener('input',updateGradientPreview));$('gradientMore').onclick=()=>{gradientPage+=80;renderGradients()};$('gradientRandom').onclick=()=>setGradientEditor(gradients[Math.floor(Math.random()*gradients.length)]);$('gradientCssImport').onclick=importGradientCSS;$('gradientCssClear').onclick=()=>{$('gradientCssPaste').value='';$('gradientCssStatus').textContent=''};$('gradientPreviewBtn').onclick=()=>{updateGradientPreview();$('gradientPreview').scrollIntoView({behavior:'smooth',block:'center'});};$('gradientPreviewClose').onclick=closeGradientPreview;$('gradientPreviewModal').onclick=e=>{if(e.target===$('gradientPreviewModal'))closeGradientPreview()};$('applyGradient').onclick=applyGradient;$('copyGradient').onclick=()=>fallbackCopy(gradientCSS(gradientColors(),+$('gAngle').value,$('gType').value));
 $('patType').innerHTML=patternTypes.map(x=>`<option>${x}</option>`).join('');['patA','patB','patScale','patGap','patRot','patOpacity','patGradient','patBlend','patType'].forEach(id=>$(id).addEventListener('input',()=>{state.pattern={type:$('patType').value,a:$('patA').value,b:$('patB').value,scale:+$('patScale').value,gap:+$('patGap').value,rot:+$('patRot').value,opacity:+$('patOpacity').value,gradient:$('patGradient').value,blend:$('patBlend').value};renderPattern()}));$('patternRandom').onclick=()=>{let p=randomPalette();Object.assign(state.pattern,{type:patternTypes[Math.floor(Math.random()*patternTypes.length)],a:p[0],b:p[2],scale:10+Math.floor(Math.random()*70),rot:Math.floor(Math.random()*360),opacity:20+Math.floor(Math.random()*70)});$('patType').value=state.pattern.type;$('patA').value=state.pattern.a;$('patB').value=state.pattern.b;$('patScale').value=state.pattern.scale;$('patRot').value=state.pattern.rot;$('patOpacity').value=state.pattern.opacity;renderPattern()};$('copyPatternCSS').onclick=()=>{let p=patternCSS();fallbackCopy(`background-image:${p.backgroundImage};background-size:${p.backgroundSize};`)};$('applyPattern').onclick=()=>{$('patternStatus').textContent='Pattern applied to the live preview.';$('patternStatus').className='status ok'};
 $('presetCats').innerHTML=[...presetCategories,'Custom'].map(c=>`<button class="chip ${c==='All'?'active':''}">${c}</button>`).join('');$('presetCats').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{$('presetCats').querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');presetCat=b.textContent;renderPresets()});$('presetSearch').oninput=renderPresets;$('presetType').onchange=renderPresets;$('clearCustom').onclick=()=>{localStorage.removeItem('monkey-custom-presets');renderPresets()};
-$('conceptRandom').onclick=()=>{$('conceptPrompt').value=['anime dungeon quest UI','premium gacha summon screen','cyber raid HUD','cute simulator shop','fantasy inventory menu','neon arena status HUD'][Math.floor(Math.random()*6)];conceptGenerate()};$('conceptApply').onclick=applyConcept;$('conceptCopy').onclick=()=>{if(!conceptData)conceptGenerate();fallbackCopy(JSON.stringify(conceptData,null,2))};
+$('conceptAngle')?.addEventListener('input',()=>{$('conceptAngleVal').textContent=$('conceptAngle').value+'°';conceptGenerate()});['conceptC1','conceptC2','conceptC3','conceptGradient','conceptPattern','conceptShine','conceptFont','conceptDensity','conceptCorners','conceptGenre','conceptMood'].forEach(id=>$(id)?.addEventListener('input',conceptGenerate));$('conceptRandom').onclick=()=>{$('conceptPrompt').value=['anime dungeon quest UI','premium gacha summon screen','cyber raid HUD','cute simulator shop','fantasy inventory menu','neon arena status HUD'][Math.floor(Math.random()*6)];['conceptGradient','conceptPattern','conceptShine','conceptFont'].forEach(id=>{if($(id))$(id).value='Auto'});conceptGenerate()};$('conceptApply').onclick=applyConcept;$('conceptCopy').onclick=()=>{if(!conceptData)conceptGenerate();fallbackCopy(JSON.stringify(conceptData,null,2))};
 $('svgChoose').onclick=()=>$('svgFile').click();$('svgDetectBg').onclick=()=>renderSvgSmartInfo();$('svgRemoveBg').onclick=svgRemoveDetectedBg;$('svgFit').onclick=svgFitArtwork;$('svgCenter').onclick=svgCenterArtwork;$('svgSmartRecolor').onclick=svgSmartRecolor;$('svgPasteLoad').onclick=()=>loadSVGPasted();$('svgClear').onclick=()=>{customSVG=null;$('svgPaste').value='';$('svgCanvas').innerHTML='<div class=\"status\">Import an SVG to begin.</div>';$('svgPalette').innerHTML='<span class=\"meta\">Load an SVG to analyze its colors.</span>';$('svgLayers').innerHTML='<div class=\"meta\">Load an SVG to inspect its layers.</div>';$('svgStatus').textContent='SVG cleared.'};$('svgFile').onchange=e=>loadSVGFile(e.target.files[0]);$('svgDrop').ondragover=e=>e.preventDefault();$('svgDrop').ondrop=e=>{e.preventDefault();loadSVGFile(e.dataTransfer.files[0])};$('svgApply').onclick=svgApply;['svgPattern','svgPatternColor','svgPatternOpacity','svgPatternScale','svgShine','svgShineColor','svgShineOpacity','svgShineAngle','svgShineWidth','svgShineSoftness'].forEach(id=>$(id).addEventListener('input',()=>{if(customSVG)svgApply()}));$('svgCopy').onclick=svgCopy;['svgStroke','svgStrokeOpacity','svgStrokeWidth','svgScale','svgRotation','svgGradientize','svgGradientType','svgGradient1','svgGradient2','svgGradient3','svgGradientAngle','svgGradientOpacity','svgShadow','svgFlip','svgLinecap','svgLinejoin','svgDash','svgBg','svgBgOpacity'].forEach(id=>$(id).addEventListener('input',()=>{if(customSVG)svgApply()}));$('svgDownload').onclick=()=>customSVG&&downloadText('monkey-ui-edited.svg',figmaSafeSVG(new XMLSerializer().serializeToString(customSVG)),'image/svg+xml');
 wireSvgModeTabs();initRasterEditor();initNineSlice();try{initCommunity()}catch(e){console.warn('Community:',e)}try{initResources()}catch(e){console.warn('Resources:',e)}try{initSocial()}catch(e){console.warn('Social:',e)}$('profileSaveBtn').onclick=saveProfile;renderProfile();try{initVirtualGradients()}catch(e){console.warn('Virtual gradients:',e)}initMobile();
 $('layoutControls').innerHTML=layoutFields();$('layoutRandomBtn').onclick=randomLayout;$('layoutCopyBtn').onclick=layoutCopy;$('layoutDownloadBtn').onclick=layoutDownload;$('layoutToSVGBtn').onclick=layoutToSVG;
