@@ -454,7 +454,7 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
     <div class="eyebrow">MONKEY UI STATION</div><h2 id="authTitle" style="margin:6px 0 0">Welcome back</h2><div class="auth-lock-sub" id="authLockSub">Log in or create an account to enter the station.</div>
     <div class="auth-tabs"><button type="button" class="active" data-auth-tab="login">LOGIN</button><button type="button" data-auth-tab="signup">SIGN UP</button></div>
     <form class="auth-form" id="authForm" novalidate>
-      <div class="field"><label>Username</label><input id="authUser" required autocomplete="username"></div>
+      <div class="field"><label id="authUserLabel">Username or email</label><input id="authUser" required autocomplete="username"></div>
       <div class="field" id="authEmailWrap" style="display:none"><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div>
       <div class="field" id="authAccountTypeWrap" style="display:none"><label>Account type</label><select id="authAccountType"><option value="user">Normal account — Social only</option><option value="artist">UI Artist — application required</option></select></div>
       <div class="field" id="artistApplicationWrap" style="display:none"><label>Portfolio URL</label><input id="authPortfolio" type="url" placeholder="https://your-portfolio.com" autocomplete="url"><div class="meta" style="margin-top:5px">UI Artist applications accept a portfolio URL only. Your account stays Social-only until Hako approves it.</div></div>
@@ -1256,84 +1256,47 @@ function updateAuthUI(){
 }
 
 async function handleAuth(e){
- e.preventDefault();
- e.stopPropagation();
+ e.preventDefault(); e.stopPropagation();
  const status=$('authStatus'),submit=$('authSubmit'),form=$('authForm');
- const mode=form?.dataset.mode||'login';
- const username=$('authUser').value.trim();
- const pass=$('authPass').value;
+ const mode=form?.dataset.mode||'login',identifier=$('authUser').value.trim(),pass=$('authPass').value;
  const show=(msg,cls='')=>{status.textContent=msg;status.className='auth-status '+cls};
- if(!hasSupabase()){show('Supabase is not loaded. Please refresh the page.','err');return}
- if(!username){show('Enter your username or email.','warn');return}
+ if(!hasSupabase()){show('Supabase is not loaded. Refresh the page and try again.','err');return}
+ if(!identifier){show(mode==='signup'?'Enter a username.':'Enter your username or email.','warn');return}
  if(pass.length<6){show('Password must be at least 6 characters.','warn');return}
- submit.disabled=true;
- show(mode==='signup'?'Creating your account…':'Signing you in…');
+ submit.disabled=true;show(mode==='signup'?'Creating your account…':'Signing you in…');
  try{
-   if(mode==='signup'){
-     const email=$('authEmail').value.trim();
-     const pass2=$('authPass2').value;
-     const accountType=$('authAccountType')?.value||'user';
-     const portfolio=$('authPortfolio')?.value.trim()||'';
-     const discord=$('authDiscord')?.value.trim()||'';
-     if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){show('Enter a valid email address.','warn');return}
-     if(pass!==pass2){show('Passwords do not match.','warn');return}
-     if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(username)){show('Username must be 3–24 characters and use only letters, numbers, _, - or .','warn');return}
-     let portfolioType='link',portfolioData=portfolio;
-     if(accountType==='artist'){
-       if(!portfolioData){show('Portfolio URL is required for UI Artist applications.','warn');return}
-       if(!/^https?:\/\//i.test(portfolioData)){show('Portfolio must start with http:// or https://.','warn');return}
-       if(!discord){show('Discord username is required for UI Artist applications.','warn');return}
-     }
-     const redirectTo='https://hakogamingdev.github.io/Monkey-Station/';
-     const result=await sb.auth.signUp({email,password:pass,options:{data:{username,account_type:accountType,portfolio_url:accountType==='artist'&&portfolioType==='link'?portfolioData:'',discord_username:accountType==='artist'?discord:''},emailRedirectTo:redirectTo}});
-     if(result.error)throw result.error;
-     if(!result.data?.user)throw new Error('Supabase did not create the account.');
-     try{
-       const saved=JSON.parse(localStorage.getItem('monkey-auth-accounts')||'{}');
-       saved[username.toLowerCase()]=email;
-       localStorage.setItem('monkey-auth-accounts',JSON.stringify(saved));
-     }catch(_){}
-     if(!result.data.session){
-       show('Account created. Check your email for the confirmation link, then log in with your EMAIL first.','ok');
-       return;
-     }
-     currentProfile=await loadProfile(result.data.user);
-     if(accountType==='artist'){
-       const app=await sb.rpc('submit_artist_application',{p_portfolio_url:portfolioType==='link'?portfolioData:'',p_discord_username:discord,p_portfolio_type:portfolioType,p_portfolio_data:portfolioData});
-       if(app.error)throw app.error;
-       currentProfile=await loadProfile(result.data.user);
-     }
-     show('Account created successfully.','ok');
-   }else{
-     let email=username;
-     if(!username.includes('@')){
-       // Server lookup is preferred; local fallback keeps username login working on the
-       // same browser even if the optional RPC has not been installed yet.
-       let q=null;
-       try{q=await sb.rpc('get_auth_email',{p_username:username})}catch(_){}
-       if(q?.data) email=q.data;
-       else {
-         const saved=JSON.parse(localStorage.getItem('monkey-auth-accounts')||'{}');
-         email=saved[username.toLowerCase()]||'';
-       }
-       if(!email)throw new Error('Username login needs the email used when you signed up. If this is a new browser, log in with your email once.');
-     }
-     const result=await sb.auth.signInWithPassword({email,password:pass});
-     if(result.error)throw result.error;
-     if(!result.data?.user)throw new Error('Supabase did not return a signed-in user.');
-     const ep=await sb.rpc('ensure_my_monkey_profile');
-     if(ep.error)console.warn('Profile auto-create:',ep.error);
-     currentProfile=await loadProfile(result.data.user);
-     currentProfile={...currentProfile,user_metadata:result.data.user.user_metadata||{}};
-     show('Signed in successfully.','ok');
+  if(mode==='signup'){
+   const email=$('authEmail').value.trim(),pass2=$('authPass2').value,accountType=$('authAccountType')?.value||'user',portfolio=$('authPortfolio')?.value.trim()||'',discord=$('authDiscord')?.value.trim()||'';
+   if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(identifier))throw new Error('Username must be 3–24 characters and use only letters, numbers, _, - or .');
+   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('Enter a valid email address.');
+   if(pass!==pass2)throw new Error('Passwords do not match.');
+   if(accountType==='artist'){if(!portfolio)throw new Error('Portfolio URL is required for UI Artist applications.');if(!/^https?:\/\//i.test(portfolio))throw new Error('Portfolio must start with http:// or https://.');if(!discord)throw new Error('Discord username is required for UI Artist applications.')}
+   const result=await sb.auth.signUp({email,password:pass,options:{data:{username:identifier,account_type:accountType,portfolio_url:accountType==='artist'?portfolio:'',discord_username:accountType==='artist'?discord:''},emailRedirectTo:'https://hakogamingdev.github.io/Monkey-Station/'}});
+   if(result.error)throw result.error;
+   if(!result.data?.user)throw new Error('Supabase did not create the account.');
+   try{const saved=JSON.parse(localStorage.getItem('monkey-auth-accounts')||'{}');saved[identifier.toLowerCase()]=email;localStorage.setItem('monkey-auth-accounts',JSON.stringify(saved))}catch(_){}
+   if(!result.data.session){show('Account created. Check your email, click the confirmation link, then log in with your EMAIL.','ok');return}
+   const ep=await sb.rpc('ensure_my_monkey_profile');if(ep.error)console.warn('Profile auto-create:',ep.error);
+   currentProfile=await loadProfile(result.data.user);
+   if(accountType==='artist'){const app=await sb.rpc('submit_artist_application',{p_portfolio_url:portfolio,p_discord_username:discord,p_portfolio_type:'link',p_portfolio_data:portfolio});if(app.error)throw app.error;currentProfile=await loadProfile(result.data.user)}
+   show('Account created successfully.','ok');
+  }else{
+   let email=identifier;
+   if(!identifier.includes('@')){
+    let q=null;try{q=await sb.rpc('get_auth_email',{p_username:identifier})}catch(_){}
+    if(q?.data)email=q.data;else{try{const saved=JSON.parse(localStorage.getItem('monkey-auth-accounts')||'{}');email=saved[identifier.toLowerCase()]||''}catch(_){email=''}}
+    if(!email)throw new Error('Username lookup is not installed on this database yet. Log in with the EMAIL used when you signed up.');
    }
-   document.body.classList.remove('auth-locked');
-   closeAuth();updateAuthUI();navInit();await renderPosts();
- }catch(err){
-   console.error('Authentication failed:',err);
-   show(err?.message||'Authentication failed.','err');
- }finally{submit.disabled=false}
+   const result=await sb.auth.signInWithPassword({email,password:pass});
+   if(result.error)throw result.error;
+   if(!result.data?.user)throw new Error('Supabase did not return a signed-in user.');
+   const ep=await sb.rpc('ensure_my_monkey_profile');if(ep.error)console.warn('Profile auto-create:',ep.error);
+   currentProfile=await loadProfile(result.data.user);currentProfile={...(currentProfile||{}),user_metadata:result.data.user.user_metadata||{}};show('Signed in successfully.','ok');
+  }
+  document.body.classList.remove('auth-locked');closeAuth();updateAuthUI();navInit();await renderPosts();
+ }catch(err){console.error('Authentication failed:',err);show(err?.message||'Authentication failed.','err')}finally{submit.disabled=false}
 }
+
 async function initAuth(){
  $('authClose').onclick=closeAuth;
  $('authModal').onclick=e=>{e.preventDefault();e.stopPropagation();if(!authCurrent())return;if(e.target===$('authModal'))closeAuth()};
