@@ -1147,48 +1147,105 @@ function updateAuthUI(){
 
 async function handleAuth(e){
  e.preventDefault();
- let mode=$('authForm').dataset.mode||'login',username=$('authUser').value.trim(),pass=$('authPass').value;
- if(!hasSupabase()){$('authStatus').textContent='Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY first.';return}
- if(!username||pass.length<6){$('authStatus').textContent='Use a username and a password with at least 6 characters.';return}
- $('authSubmit').disabled=true;$('authStatus').textContent='Working...';
+ e.stopPropagation();
+ const status=$('authStatus');
+ const submit=$('authSubmit');
+ const form=$('authForm');
+ let mode=form?.dataset.mode||'login';
+ let username=$('authUser').value.trim();
+ let pass=$('authPass').value;
+
+ const show=(msg,cls='')=>{
+   status.textContent=msg;
+   status.className='auth-status '+cls;
+ };
+
+ if(!hasSupabase()){
+   show('Supabase is not loaded. Refresh the page and make sure the Supabase script is available.','err');
+   return;
+ }
+ if(!username){show('Enter a username.','warn');return}
+ if(pass.length<6){show('Password must be at least 6 characters.','warn');return}
+
+ submit.disabled=true;
+ show(mode==='signup'?'Creating your account…':'Signing you in…');
+
  try{
    if(mode==='signup'){
-     let email=$('authEmail').value.trim(),pass2=$('authPass2').value;
-     if(!email){$('authStatus').textContent='Enter your email.';return}
-     if(pass!==pass2){$('authStatus').textContent='Passwords do not match.';return}
-     let taken=await sb.from('profiles').select('id').eq('username',username).maybeSingle();
-     if(taken.error)throw taken.error;
-     if(taken.data){$('authStatus').textContent='That username already exists.';return}
-     let redirectTo=(window.location.protocol==='http:'||window.location.protocol==='https:')?window.location.href:null;
-     let {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{username},...(redirectTo?{emailRedirectTo:redirectTo}: {})}});
-     if(error)throw error;
-     if(!data.user){throw new Error('Supabase did not return a user. Check your project URL/key and Auth settings.')}
-     if(!data.session){
-       $('authStatus').textContent='Account created. Check your email to confirm it, then log in.';
-       return
+     const email=$('authEmail').value.trim();
+     const pass2=$('authPass2').value;
+
+     if(!email){show('Enter your email address.','warn');return}
+     if(!/^\S+@\S+\.\S+$/.test(email)){show('Enter a valid email address.','warn');return}
+     if(pass!==pass2){show('Passwords do not match.','warn');return}
+     if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(username)){
+       show('Username must be 3–24 characters and use only letters, numbers, _, - or .','warn');
+       return;
      }
-     currentProfile=await loadProfile(data.user)
+
+     // Check case-insensitively so usernames cannot collide later.
+     const taken=await sb.from('profiles')
+       .select('id,username')
+       .ilike('username',username)
+       .limit(1);
+     if(taken.error)throw taken.error;
+     if(taken.data?.length){show('That username is already taken.','warn');return}
+
+     const redirectTo=(window.location.protocol==='http:'||window.location.protocol==='https:')
+       ?window.location.href:null;
+
+     const result=await sb.auth.signUp({
+       email,
+       password:pass,
+       options:{
+         data:{username},
+         ...(redirectTo?{emailRedirectTo:redirectTo}:{})
+       }
+     });
+
+     if(result.error)throw result.error;
+     if(!result.data?.user)throw new Error('Supabase did not create the account. Check your Supabase Auth settings.');
+
+     // Email confirmation enabled: Supabase intentionally returns no session.
+     if(!result.data.session){
+       show('Account created! Check your email and click the confirmation link, then log in here.','ok');
+       return;
+     }
+
+     currentProfile=await loadProfile(result.data.user);
+     if(!currentProfile)throw new Error('Account was created, but its profile could not be loaded. Run the database setup SQL again.');
+
+     show('Account created successfully.','ok');
    }else{
      let email=username;
+
      if(!username.includes('@')){
-       let q=await sb.rpc('get_auth_email',{p_username:username});
+       const q=await sb.rpc('get_auth_email',{p_username:username});
        if(q.error)throw q.error;
-       if(!q.data){$('authStatus').textContent='Username not found.';return}
-       email=q.data
+       if(!q.data){show('Username not found.','warn');return}
+       email=q.data;
      }
-     let {data,error}=await sb.auth.signInWithPassword({email,password:pass});
-     if(error)throw error;
-     currentProfile=await loadProfile(data.user)
+
+     const result=await sb.auth.signInWithPassword({email,password:pass});
+     if(result.error)throw result.error;
+     if(!result.data?.user)throw new Error('Supabase did not return a signed-in user.');
+
+     currentProfile=await loadProfile(result.data.user);
+     if(!currentProfile)throw new Error('Login worked, but your profile could not be loaded.');
+
+     show('Signed in successfully.','ok');
    }
-   $('authStatus').textContent='Signed in successfully.';
+
+   document.body.classList.remove('auth-locked');
    closeAuth();
    updateAuthUI();
    await renderPosts();
  }catch(err){
    console.error('Authentication failed:',err);
-   $('authStatus').textContent=err?.message||'Authentication failed. Check your username/email and password.';
+   show(err?.message||'Authentication failed. Check your details and try again.','err');
+ }finally{
+   submit.disabled=false;
  }
- finally{$('authSubmit').disabled=false}
 }
 
 async function initAuth(){
