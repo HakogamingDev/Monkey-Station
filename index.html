@@ -1210,7 +1210,7 @@ function updateAuthUI(){
  renderProfile();
  let name=u.username||u.user_metadata?.username||'User';
  let letter=(pd.letter||name[0]||'U').slice(0,1).toUpperCase();
- let avatarUrl=pd.avatar||u.user_metadata?.avatar_url||u.user_metadata?.avatar||localStorage.getItem('monkey-pfp-'+u.id)||'';
+ let avatarUrl=currentProfile?.avatar_url||localStorage.getItem('monkey-pfp-'+u.id)||u.user_metadata?.avatar_url||u.user_metadata?.avatar||pd.avatar||'';
  let avatar=avatarUrl
    ? `<img src="${esc(avatarUrl)}" alt="" onerror="this.onerror=null;this.style.display='none';this.parentElement.textContent='${letter}'">`
    : letter;
@@ -1652,7 +1652,7 @@ async function renderAdminFeedback(){
 async function renderArtistApplications(){
  if(!isAdmin()||!$('artistApplications'))return;
  if(!sb){$('artistApplications').innerHTML='<div class="status err">Supabase is required.</div>';return}
- let {data,error}=await sb.from('artist_applications').select('id,user_id,status,portfolio_type,portfolio_data,discord_username,created_at,profiles(username,role)').eq('status','pending').order('created_at',{ascending:true});
+ let {data,error}=await sb.from('artist_applications').select('id,user_id,status,portfolio_type,portfolio_data,discord_username,created_at').eq('status','pending').order('created_at',{ascending:true});
  if(error){$('artistApplications').innerHTML=`<div class="status err">${esc(error.message)}</div>`;return}
  $('artistApplications').innerHTML=data?.length?data.map(a=>{
    const profile=Array.isArray(a.profiles)?a.profiles[0]:a.profiles;
