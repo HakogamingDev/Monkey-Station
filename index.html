@@ -668,7 +668,7 @@ function gradientColors(){let n=Math.max(2,Math.min(6,+($('gColorCount')?.value|
 function syncGradientStops(){let n=Math.max(2,Math.min(6,+($('gColorCount')?.value||4)));document.querySelectorAll('[data-gstop]').forEach(el=>el.style.display=(+el.dataset.gstop<=n?'block':'none'));updateGradientPreview()}
 function setGradientEditor(g){let colors=g.colors||g.c||['#7c3aed','#22d3ee','#ec4899','#facc15'];let n=Math.max(2,Math.min(6,colors.length));if($('gColorCount'))$('gColorCount').value=n;for(let i=0;i<6;i++)$(`g${i+1}`).value=colors[i%colors.length];$('gAngle').value=g.angle||90;$('gType').value=['Linear','Radial','Conic'].includes(g.type)?g.type:'Linear';syncGradientStops()}
 function updateGradientPreview(){$('gradientPreview').style.background=gradientCSS(gradientColors(),+$('gAngle').value,$('gType').value)}
-function useGradient(g){setGradientEditor(g);applyGradient()}
+function useGradient(g){if(!g)return;setGradientEditor(g);showView('gradients');setTimeout(()=>{let target=document.querySelector('#gradients .gradient-layout > .panel');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},40)}
 function gradientToSquareSvg(colors,angle,type){let stops=colors.map((c,i)=>`<stop offset="${Math.round(i/(colors.length-1)*100)}%" stop-color="${c}"/>`).join('');let grad=type==='Radial'?`<radialGradient id="g" cx="50%" cy="50%" r="72%">${stops}</radialGradient>`:`<linearGradient id="g" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(${angle} .5 .5)">${stops}</linearGradient>`;return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs>${grad}</defs><rect width="1024" height="1024" fill="url(#g)"/></svg>`}
 function exportGradientSvg(colors,angle,type,name='monkey-gradient'){downloadText(`${name}.svg`,gradientToSquareSvg(colors,angle,type),'image/svg+xml')}
 function applyGradient(){let c=gradientColors(),a=+$('gAngle').value,gt=$('gType').value,t=$('gTarget').value.toLowerCase();if(t==='button'){Object.assign(state.button,{c1:c[0],c2:c[c.length-1],c3:c[Math.min(2,c.length-1)],angle:a,gradientType:gt});mountControls('button');renderKind('button');showView('buttons')}else if(t==='header'){Object.assign(state.header,{c1:c[0],c2:c[c.length-1],c3:c[Math.min(2,c.length-1)],angle:a,gradientType:gt});mountControls('header');renderKind('header');showView('headers')}else if(t==='frame'){Object.assign(state.frame,{c1:c[0],c2:c[c.length-1],c3:c[Math.min(2,c.length-1)],angle:a,gradientType:gt});mountControls('frame');renderKind('frame');showView('frames')}else if(t==='hud'){Object.assign(state.hud,{c1:c[0],c2:c[c.length-1],c3:c[Math.min(2,c.length-1)],angle:a,gradientType:gt});mountControls('hud');renderKind('hud');showView('hud')}else{state.pattern.a=c[0];state.pattern.b=c[c.length-1];renderPattern()}}
@@ -1091,27 +1091,24 @@ function initResources(){
 // ===== REAL AUTH + SHARED COMMUNITY (SUPABASE) =====
 const SUPABASE_URL='https://wmvcouygzycvfkrpopna.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_jaC_o201T4GLp5f82NOkvQ_3FxUHEM7';
-const ADMIN_PASSWORD='hakogaming26';
 const hasSupabase=()=>window.supabase&&SUPABASE_URL.startsWith('http')&&SUPABASE_ANON_KEY!=='YOUR_SUPABASE_PUBLISHABLE_KEY';
 const sb=hasSupabase()?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
 let currentProfile=null;
 
 function authCurrent(){return currentProfile}
-function isAdmin(){return !!(currentProfile&&currentProfile.isAdmin)}
 function openAuth(mode){$('authModal').classList.add('open');setAuthMode(mode||'login');setTimeout(()=>$('authUser').focus(),40)}
 function closeAuth(){if(!authCurrent())return;$('authModal').classList.remove('open')}
 
 function setAuthMode(mode){
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.classList.toggle('active',b.dataset.authTab===mode));
- $('authTitle').textContent=mode==='login'?'Welcome back':mode==='signup'?'Create your account':'Admin login';
- $('authSubmit').textContent=mode==='login'?'Login':mode==='signup'?'Create account':'Enter Admin';
+ $('authTitle').textContent=mode==='login'?'Welcome back':'Create your account';
+ $('authSubmit').textContent=mode==='login'?'Login':'Create account';
  $('authEmailWrap').style.display=mode==='signup'?'block':'none';
  $('authPass2Wrap').style.display=mode==='signup'?'block':'none';
  $('authStatus').textContent='';
  $('authForm').dataset.mode=mode;
- $('authUser').placeholder=mode==='admin'?'admin':'';
- $('authUser').value=mode==='admin'?'admin':$('authUser').value;
- if($('authNote'))$('authNote').textContent=mode==='admin'?'Admin access is separate from Supabase accounts.':'Your account is stored securely with Supabase.';
+ $('authUser').placeholder='';
+ if($('authNote'))$('authNote').textContent='Your account is stored securely with Supabase.';
 }
 
 async function loadProfile(user){
@@ -1136,8 +1133,7 @@ function updateAuthUI(){
    box.innerHTML=`<div class="user-pill"><span class="avatar">${(u.username||'?')[0].toUpperCase()}</span>${escapeHtml(u.username||'User')}</div><button class="btn alt" id="logoutBtn">Logout</button>`;
    $('authClose').style.display='block';
    $('logoutBtn').onclick=async()=>{
-     if(isAdmin()){localStorage.removeItem('monkey-admin-session')}
-     else if(sb)await sb.auth.signOut();
+     if(sb)await sb.auth.signOut();
      currentProfile=null;updateAuthUI();renderPosts()
    }
  }
@@ -1146,13 +1142,6 @@ function updateAuthUI(){
 async function handleAuth(e){
  e.preventDefault();
  let mode=$('authForm').dataset.mode||'login',username=$('authUser').value.trim(),pass=$('authPass').value;
- if(mode==='login'&&username.toLowerCase()==='admin'&&pass===ADMIN_PASSWORD){
-   currentProfile={id:'admin',username:'Admin',email:'admin@local',isAdmin:true};
-   localStorage.setItem('monkey-admin-session','1');
-   $('authStatus').textContent='Logged in as Admin.';
-   closeAuth();updateAuthUI();await renderPosts();return;
- }
- if(mode==='signup'&&username.toLowerCase()==='admin'){$('authStatus').textContent='That username is reserved.';return}
  if(!hasSupabase()){$('authStatus').textContent='Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY first.';return}
  if(!username||pass.length<6){$('authStatus').textContent='Use a username and a password with at least 6 characters.';return}
  $('authSubmit').disabled=true;$('authStatus').textContent='Working...';
@@ -1195,9 +1184,7 @@ async function initAuth(){
  $('authModal').onclick=e=>{if(e.target===$('authModal')&&authCurrent())closeAuth()};
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.onclick=()=>setAuthMode(b.dataset.authTab));
  $('authForm').onsubmit=handleAuth;
- if(localStorage.getItem('monkey-admin-session')==='1'){
-   currentProfile={id:'admin',username:'Admin',email:'admin@local',isAdmin:true}
- }else if(hasSupabase()){
+ if(hasSupabase()){
    try{
      let {data}=await sb.auth.getSession();
      if(data.session){
@@ -1207,7 +1194,6 @@ async function initAuth(){
        }
      }
      sb.auth.onAuthStateChange(async(_event,session)=>{
-       if(localStorage.getItem('monkey-admin-session')==='1')return;
        currentProfile=session?await loadProfile(session.user):null;
        updateAuthUI();renderPosts()
      })
