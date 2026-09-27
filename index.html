@@ -606,8 +606,8 @@ function mix(a,b,p){let aa=a.replace('#',''),bb=b.replace('#','');let r=Math.rou
 // ===== NAVIGATION / THEME =====
 function canUseStudio(){return ['artist','admin'].includes(currentProfile?.role)}
 function isAdmin(){return currentProfile?.role==='admin'}
-function navInit(){let studioPrimary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['social','Social'],['profile','Profile']];let studioMore=[['patterns','Patterns'],['presets','Presets'],['bars','Bars & Icons'],['themes','Themes'],['svg','SVG Lab'],['nineslice','9-Slice'],['resources','Resources']];let primary=canUseStudio()?studioPrimary:[['social','Social']];let more=canUseStudio()?studioMore:[];if(isAdmin())primary.push(['admin','Admin']);$('nav').innerHTML=primary.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')+(more.length?`<div class="nav-more" id="navMore"><button class="alt" type="button" id="navMoreBtn">More ▾</button><div class="nav-more-menu">${more.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')}</div></div>`:'');let run=b=>{showView(b.dataset.view);$('nav').classList.remove('mobile-open');$('navMore')?.classList.remove('open')};$('nav').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>run(b));$('navMoreBtn')?.addEventListener('click',e=>{e.stopPropagation();$('navMore').classList.toggle('open')});document.addEventListener('click',e=>{if(!$('navMore')?.contains(e.target))$('navMore')?.classList.remove('open')})}
-function showView(id){if(id==='admin'&&!isAdmin())id='social';if(!canUseStudio()&&!['social'].includes(id))id='social';activeView=id;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id));if(id==='themes')renderThemes();if(id==='admin'){renderArtistApplications();renderAdminAccounts()}}
+function navInit(){let studioPrimary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['social','Social'],['profile','Profile']];let studioMore=[['patterns','Patterns'],['presets','Presets'],['bars','Bars & Icons'],['themes','Themes'],['svg','SVG Lab'],['nineslice','9-Slice'],['resources','Resources']];let primary=canUseStudio()?studioPrimary:[['social','Social']];let more=canUseStudio()?studioMore:[['themes','Themes']];if(isAdmin())primary.push(['admin','Admin']);$('nav').innerHTML=primary.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')+(more.length?`<div class="nav-more" id="navMore"><button class="alt" type="button" id="navMoreBtn">More ▾</button><div class="nav-more-menu">${more.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')}</div></div>`:'');let run=b=>{showView(b.dataset.view);$('nav').classList.remove('mobile-open');$('navMore')?.classList.remove('open')};$('nav').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>run(b));$('navMoreBtn')?.addEventListener('click',e=>{e.stopPropagation();$('navMore').classList.toggle('open')});document.addEventListener('click',e=>{if(!$('navMore')?.contains(e.target))$('navMore')?.classList.remove('open')})}
+function showView(id){if(id==='admin'&&!isAdmin())id='social';if(!canUseStudio()&&!['social','themes'].includes(id))id='social';activeView=id;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id));if(id==='themes')renderThemes();if(id==='admin'){renderArtistApplications();renderAdminAccounts()}}
 function randomPalette(){return palettes[Math.floor(Math.random()*palettes.length)]}
 
 // ===== SVG SHAPE + EFFECT ENGINE =====
@@ -1222,7 +1222,7 @@ function updateAuthUI(){
  box.style.alignItems='center';
  box.style.gap='7px';
  $('authClose').style.display='block';
- pfpBtn.onclick=()=>showView('profile');
+ pfpBtn.onclick=()=>{showView('social');setTimeout(()=>document.querySelector('[data-social-tab="settings"]')?.click(),30)};
  logout.onclick=async()=>{
    try{if(sb)await sb.auth.signOut()}catch(err){console.warn('Logout:',err)}
    currentProfile=null;
@@ -1494,6 +1494,53 @@ function socialUserCard(u,actions=true){let n=typeof u==='string'?u:u.username,i
 async function renderSocialSearch(q){let box=$('socialSearchResults');if(!q||q.length<2){box.classList.remove('open');box.innerHTML='';return}let users=await searchSocialUsers(q),arr=users.slice();let postArr=await posts();let postsFound=postArr.filter(p=>`${p.title} ${p.description||''} ${p.profiles?.username||''}`.toLowerCase().includes(q.toLowerCase())).slice(0,4);box.innerHTML=(arr.length?`<div class="eyebrow" style="padding:10px 13px">PEOPLE</div>`+arr.map(u=>`<div class="social-search-result" data-search-user="${esc(u.username)}"><div class="profile-avatar" style="width:34px;height:34px;font-size:12px">${socialAvatar(u.username)}</div><div><b>@${esc(u.username)}</b><div class="meta">View profile / add friend</div></div></div>`).join(''):'')+(postsFound.length?`<div class="eyebrow" style="padding:10px 13px">UI POSTS</div>`+postsFound.map(p=>`<div class="social-search-result" data-search-post="${esc(p.id)}"><div><b>${esc(p.title)}</b><div class="meta">@${esc(p.profiles?.username||'User')}</div></div></div>`).join(''):'')+(!arr.length&&!postsFound.length?'<div class="status" style="padding:15px">No users or posts found.</div>':'');box.classList.add('open');box.querySelectorAll('[data-search-user]').forEach(el=>el.onclick=()=>{let n=el.dataset.searchUser;$('friendUsername').value=n;box.classList.remove('open');document.querySelector('[data-social-tab="people"]')?.click();renderPeople([n])});box.querySelectorAll('[data-search-post]').forEach(el=>el.onclick=()=>{box.classList.remove('open');document.querySelector('[data-social-tab="feed"]')?.click();setTimeout(()=>document.querySelector(`[data-social-post="${CSS.escape(el.dataset.searchPost)}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),60)})}
 async function renderHireable(){if(!$('hireableResults'))return;if(!sb){$('hireableResults').innerHTML='<div class="social-empty">Hireable artists require Supabase.</div>';return}let {data,error}=await sb.from('profiles').select('id,username,avatar_url,role,portfolio_url,discord_username,hireable').eq('role','artist').eq('hireable',true).order('username',{ascending:true});if(error){$('hireableResults').innerHTML=`<div class="status err">${esc(error.message)}</div>`;return}$('hireableResults').innerHTML=data?.length?data.map(u=>`<div class="social-row"><div class="social-user"><div class="profile-avatar">${socialAvatar(u)}</div><div class="social-user-copy"><b>@${esc(u.username)} <span class="artist-badge approved">UI ARTIST</span></b><div class="meta">${u.discord_username?`Discord: ${esc(u.discord_username)}`:'Discord not listed'}${u.portfolio_url?' · Portfolio available':''}</div></div></div><div class="social-actions">${u.portfolio_url?`<a class="btn alt" href="${esc(u.portfolio_url)}" target="_blank" rel="noopener">Portfolio ↗</a>`:''}<button class="btn alt" data-view-user="${esc(u.username)}" type="button">View</button></div></div>`).join(''):'<div class="social-empty">No approved UI artists are marked hireable yet.</div>';wireSocialRows()}
 async function renderPeople(seed){let q=($('peopleSearch')?.value||'').trim();if(seed&&seed.length)q=seed[0];let users=await searchSocialUsers(q);$('peopleResults').innerHTML=users.length?users.map(u=>socialUserCard(u)).join(''):'<div class="social-empty">No accounts found.</div>';wireSocialRows()}
+function ensureSocialSettingsTab(){
+ const tabs=document.querySelector('.social-tabs');
+ if(!tabs)return;
+ let b=tabs.querySelector('[data-social-tab="settings"]');
+ if(!b){
+  b=document.createElement('button'); b.type='button'; b.className='social-tab'; b.dataset.socialTab='settings'; b.textContent='Profile Settings';
+  tabs.appendChild(b);
+ }
+ b.onclick=()=>{
+  tabs.querySelectorAll('.social-tab').forEach(x=>x.classList.toggle('active',x===b));
+  document.querySelectorAll('.social-panel').forEach(p=>p.classList.toggle('active',p.id==='socialSettingsPanel'));
+  renderProfileSettings();
+ };
+}
+function renderProfileSettings(){
+ let host=document.getElementById('socialSettingsPanel');
+ if(!host){
+  host=document.createElement('section');
+  host.id='socialSettingsPanel';
+  host.className='social-panel';
+  const parent=document.querySelector('.social-content')||document.querySelector('#socialView')||document.querySelector('main');
+  if(parent)parent.appendChild(host);
+ }
+ const n=currentProfile?.username||'';
+ const avatar=currentProfile?.avatar_url||'';
+ const letter=(n[0]||'U').toUpperCase();
+ host.innerHTML=`<div class="card"><div class="eyebrow">PROFILE SETTINGS</div><h2>Profile</h2><div class="profile-settings-avatar"><div class="profile-avatar">${avatar?`<img src="${esc(avatar)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`:letter}</div><div><b>Profile picture</b><div class="sub">Use a PNG image, or leave it blank to use the first letter of your nickname.</div></div></div><label class="field"><span>Nickname</span><input id="socialNickname" value="${esc(n)}" maxlength="32" autocomplete="nickname"></label><label class="field"><span>PNG profile picture</span><input id="socialPfpFile" type="file" accept="image/png,.png"></label><button id="saveSocialProfile" class="btn" type="button">Save profile</button><div id="socialNicknameStatus" class="status"></div></div>`;
+ const file=document.getElementById('socialPfpFile');
+ const save=document.getElementById('saveSocialProfile');
+ const status=document.getElementById('socialNicknameStatus');
+ save.onclick=async()=>{
+  const v=document.getElementById('socialNickname').value.trim();
+  if(!v){status.textContent='Enter a nickname.';status.className='status err';return}
+  let avatarUrl=currentProfile?.avatar_url||`data:image/png;base64,${avatarPngBase64(v[0])}`;
+  const f=file?.files?.[0];
+  if(f){
+   if(f.type!=='image/png'){status.textContent='Please choose a PNG image.';status.className='status err';return}
+   avatarUrl=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f)});
+  }
+  const r=await sb.from('profiles').update({username:v,avatar_url:avatarUrl}).eq('id',currentProfile.id);
+  if(r.error){status.textContent=r.error.message;status.className='status err';return}
+  currentProfile.username=v; currentProfile.avatar_url=avatarUrl;
+  status.textContent='Saved.'; status.className='status ok';
+  updateAuthUI(); await renderSocial(); renderProfileSettings();
+ };
+}
+function avatarPngBase64(ch){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.fillStyle='#111827';x.fillRect(0,0,256,256);x.fillStyle='#fff';x.font='bold 150px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText((ch||'U').toUpperCase(),128,138);return c.toDataURL('image/png').split(',')[1]}
 async function renderSocialFeed(){
  let arr=await posts();
  $('socialFeed').innerHTML=arr.length?arr.slice(0,30).map(p=>{
@@ -1645,7 +1692,7 @@ function initRasterEditor(){
 }
 function wireSvgModeTabs(){$('svgModeTabs').querySelectorAll('[data-svg-mode]').forEach(b=>b.onclick=()=>{$('svgModeTabs').querySelectorAll('.settings-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');let raster=b.dataset.svgMode==='raster';$('svgVectorPanel').style.display=raster?'none':'block';$('svgRasterPanel').style.display=raster?'block':'none';if(raster)$('rasterStatus').textContent=$('rasterStatus').textContent||'Ready.'})}
 function loadSVGFile(file){if(!file)return;let r=new FileReader();r.onload=()=>{try{customSVG=svgSafeParse(String(r.result));let vb=customSVG.getAttribute('viewBox')||'0 0 600 400';customSVG.setAttribute('preserveAspectRatio','xMidYMid meet');$('svgCanvas').innerHTML='';$('svgCanvas').appendChild(customSVG);renderSvgSmartInfo();$('svgStatus').textContent=`Loaded ${file.name} · viewBox ${vb} · smart background/palette scan complete`;$('svgStatus').className='status ok'}catch(e){$('svgStatus').textContent=e.message;$('svgStatus').className='status err'}};r.readAsText(file)}
-document.addEventListener('DOMContentLoaded',wire);
+document.addEventListener('DOMContentLoaded',()=>{wire();setTimeout(ensureSocialSettingsTab,300)});
 </script>
 <script>
 // Portfolio input enhancement: artists may submit a URL or image/video file.
