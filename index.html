@@ -1436,12 +1436,22 @@ async function handleAuth(e){
 }
 
 async function initAuth(){
+ // Bind auth controls immediately, before any async Supabase calls. This keeps Login/Sign Up
+ // clickable even if the Supabase session request is slow or blocked by the browser.
+ const loginBtn=document.getElementById('loginBtn');
+ const signupBtn=document.getElementById('signupBtn');
+ if(loginBtn)loginBtn.onclick=()=>openAuth('login');
+ if(signupBtn)signupBtn.onclick=()=>openAuth('signup');
  $('authClose').onclick=closeAuth;
  $('authModal').onclick=e=>{e.preventDefault();e.stopPropagation();if(!authCurrent())return;if(e.target===$('authModal'))closeAuth()};
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.onclick=()=>setAuthMode(b.dataset.authTab));
  const authForm=$('authForm');
- if(authForm)authForm.onsubmit=handleAuth;
- // The form submit handler is the single source of truth. Do not also bind a click handler to the submit button.
+ if(authForm){
+   authForm.onsubmit=handleAuth;
+   // Extra click fallback: some embedded/static hosts interfere with form submit events.
+   const submitBtn=$('authSubmit');
+   if(submitBtn)submitBtn.onclick=()=>{if(!submitBtn.disabled)authForm.requestSubmit?authForm.requestSubmit():handleAuth({preventDefault(){},stopPropagation(){}})};
+ }
  document.querySelectorAll('[data-auth-tab]').forEach(b=>b.type='button');
  if(hasSupabase()){
    try{
@@ -1886,7 +1896,17 @@ function initRasterEditor(){
 }
 function wireSvgModeTabs(){$('svgModeTabs').querySelectorAll('[data-svg-mode]').forEach(b=>b.onclick=()=>{$('svgModeTabs').querySelectorAll('.settings-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');let raster=b.dataset.svgMode==='raster';$('svgVectorPanel').style.display=raster?'none':'block';$('svgRasterPanel').style.display=raster?'block':'none';if(raster)$('rasterStatus').textContent=$('rasterStatus').textContent||'Ready.'})}
 function loadSVGFile(file){if(!file)return;let r=new FileReader();r.onload=()=>{try{customSVG=svgSafeParse(String(r.result));let vb=customSVG.getAttribute('viewBox')||'0 0 600 400';customSVG.setAttribute('preserveAspectRatio','xMidYMid meet');$('svgCanvas').innerHTML='';$('svgCanvas').appendChild(customSVG);renderSvgSmartInfo();$('svgStatus').textContent=`Loaded ${file.name} · viewBox ${vb} · smart background/palette scan complete`;$('svgStatus').className='status ok'}catch(e){$('svgStatus').textContent=e.message;$('svgStatus').className='status err'}};r.readAsText(file)}
-document.addEventListener('DOMContentLoaded',()=>{wire();setTimeout(ensureSocialSettingsTab,300)});
+document.addEventListener('DOMContentLoaded',()=>{
+  try{wire()}catch(e){console.error('Monkey UI startup:',e);}
+  // Never let a startup error leave the auth buttons dead.
+  try{
+    const form=document.getElementById('authForm');
+    const tabs=document.querySelectorAll('[data-auth-tab]');
+    tabs.forEach(b=>{b.type='button';b.onclick=()=>setAuthMode(b.dataset.authTab)});
+    if(form)form.onsubmit=handleAuth;
+  }catch(e){console.error('Auth fallback binding:',e)}
+  setTimeout(ensureSocialSettingsTab,300)
+});
 </script>
 <script>
 // Portfolio input enhancement: artists may submit a URL or image/video file.
