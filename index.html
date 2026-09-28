@@ -269,7 +269,29 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
 .artist-badge.pending{background:color-mix(in srgb,#f59e0b 16%,var(--panel2));border-color:color-mix(in srgb,#f59e0b 45%,var(--line))}
 .admin-application{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--panel2);margin-bottom:10px}.admin-application:last-child{margin-bottom:0}.admin-application .actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}@media(max-width:700px){.admin-application{grid-template-columns:1fr}.admin-application .actions{justify-content:flex-start}}.admin-account{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--panel2);margin-bottom:10px}.admin-account .actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;align-items:center}.admin-account select{min-width:130px;padding:9px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-weight:800}@media(max-width:700px){.admin-account{grid-template-columns:1fr}.admin-account .actions{justify-content:flex-start}}
 .application-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,var(--panel2),var(--panel));}.application-hero .artist-badge{white-space:nowrap}.application-hero+.auth-form{padding:2px 0}.application-hero h2{font-size:22px}@media(max-width:700px){.application-hero{flex-direction:column}.application-hero .artist-badge{align-self:flex-start}}
-</style></style>
+</style><style>
+/* ===== VISUAL POLISH — same layout, cleaner hierarchy ===== */
+.panel{box-shadow:0 14px 42px rgba(0,0,0,.12);backdrop-filter:blur(10px)}
+.head,.section-head{padding-bottom:14px;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);margin-bottom:14px}
+.head h2,.section-head h2{letter-spacing:-.45px}
+.sub{line-height:1.5}
+.field label{letter-spacing:.25px}
+.field input,.field select,.field textarea{transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent)}
+.btn{transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}.btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 14%,transparent)}
+.controls,.controls-grid{gap:10px}
+.generator{align-items:stretch}
+.generator>div:first-child{min-width:0}
+.generator>.preview{min-height:100%;border-radius:16px;background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 48%),var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 75%,transparent)}
+/* Layout Generator uses the same control/preview rhythm as the other generators. */
+#builder .generator{gap:14px}
+#builder #layoutControls{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--panel2);box-shadow:0 10px 28px rgba(0,0,0,.08)}
+#builder #layoutControls .field{background:color-mix(in srgb,var(--panel) 72%,transparent);border:1px solid color-mix(in srgb,var(--line) 80%,transparent);border-radius:12px;padding:10px}
+#builder #layoutControls .field label{margin-bottom:7px}
+#builder #layoutPreview{min-height:420px;padding:14px;border-radius:16px}
+#builder .actions{gap:7px}
+@media(max-width:760px){#builder #layoutPreview{min-height:300px}}
+</style>
 </head>
 <body class="auth-locked">
 <header class="top"><div class="topin">
@@ -365,7 +387,7 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
 </div>
 </div></section>
 
-<section id="themes" class="view"><div class="panel"><div class="head"><div><h2>Theme Library</h2><div class="sub">A visual theme gallery for the whole station. Preview the mood, compare palettes, then apply one instantly.</div></div><div class="badge" id="themeCount">0 THEMES</div></div><div class="theme-toolbar"><div class="theme-search"><input id="themeSearch" placeholder="Search themes..." autocomplete="off"></div><div class="theme-filters" id="themeFilters"><button class="theme-filter active" data-theme-filter="All">ALL</button><button class="theme-filter" data-theme-filter="Dark">DARK</button><button class="theme-filter" data-theme-filter="Bright">BRIGHT</button><button class="theme-filter" data-theme-filter="Fantasy">FANTASY</button><button class="theme-filter" data-theme-filter="Game">GAME</button><button class="theme-filter" data-theme-filter="Coffee">COFFEE</button></div></div><div class="theme-grid" id="themeGrid"></div></div></section>
+<section id="themes" class="view"><div class="panel"><div class="head"><div><h2>Theme Library</h2><div class="sub">A visual theme gallery for the whole station. Preview the mood, compare palettes, then apply one instantly.</div></div><div class="badge" id="themeCount">0 THEMES</div></div><div class="theme-toolbar"><div class="theme-search"><input id="themeSearch" placeholder="Search themes..." autocomplete="off"></div><div class="theme-filters" id="themeFilters"><button class="theme-filter active" data-theme-filter="All">ALL</button><button class="theme-filter" data-theme-filter="Dark">DARK</button><button class="theme-filter" data-theme-filter="Bright">BRIGHT</button><button class="theme-filter" data-theme-filter="Fantasy">FANTASY</button><button class="theme-filter" data-theme-filter="Game">GAME</button><button class="theme-filter" data-theme-filter="Roblox">ROBLOX</button><button class="theme-filter" data-theme-filter="Coffee">COFFEE</button></div></div><div class="theme-grid" id="themeGrid"></div></div></section>
 
 <section id="svg" class="view"><div class="panel"><div class="head"><div><h2>Safe SVG Lab</h2><div class="sub">Import an SVG, preserve its structure, then customize presentation without rewriting its internal geometry — or switch to the raster studio for full pixel-level editing.</div></div></div>
 <div class="settings-tabs" id="svgModeTabs" style="margin-bottom:12px"><button type="button" class="settings-tab active" data-svg-mode="vector">VECTOR SVG</button><button type="button" class="settings-tab" data-svg-mode="raster">RASTER / PNG STUDIO</button></div>
@@ -502,10 +524,6 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
 
 <section id="application" class="view"><div class="panel"><div class="head"><div><h2>Application</h2><div class="sub">Apply to join the approved UI Artist team.</div></div></div><div id="applicationViewContent"></div></div></section>
 
-<section id="profile" class="view"><div class="panel"><div class="head"><div><h2>Profile</h2><div class="sub">Customize your public identity and avatar.</div></div></div>
- <div class="profile-hero"><div class="profile-avatar" id="profileAvatarPreview">M</div><div><div class="profile-name" id="profileDisplayName">Monkey UI User</div><div class="profile-handle" id="profileHandle">@user</div></div><div class="actions"><button class="btn" id="profileSaveBtn" type="button">Save Profile</button></div></div>
- <div class="profile-settings"><div class="grid two"><div class="field"><label>Username</label><input id="profileUsernameInput" maxlength="24" placeholder="your_username" autocomplete="off"></div><div class="field" id="profileRoleField" style="display:none"><label>Role</label><select id="profileRoleInput"><option value="user">User</option><option value="artist_pending">Artist Pending</option><option value="artist">Artist</option><option value="artist_declined">Artist Declined</option><option value="admin">Admin</option></select><div class="meta">Only hakogaming3/admin can change account roles.</div></div><div class="field"><label>Custom profile picture</label><input id="profileAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></div><div class="field"><label>Avatar image URL</label><input id="profileAvatarInput" placeholder="https://.../avatar.png"></div><div class="field"><label>Avatar fallback letter</label><input id="profileAvatarLetter" maxlength="1" placeholder="M"></div></div><div class="artist-profile-box" id="artistProfileBox" style="display:none"><div class="eyebrow">UI ARTIST PROFILE</div><div class="grid two"><div class="field"><label>Portfolio</label><input id="profilePortfolioInput" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Discord</label><input id="profileDiscordInput" placeholder="your Discord username"></div></div><label class="remember-row"><input id="profileHireable" type="checkbox"> <span>Show me in Hireable</span></label><div class="meta">Your role is controlled by admin approval. The Hireable switch only controls whether approved artists appear in the Hireable tab.</div></div><div class="meta" style="margin-top:8px">Your username and profile picture are shared with Social, People, Friends, posts, and messages. Image uploads are stored in your profile as a compact image.</div><div class="status" id="profileStatus"></div></div>
- </div></section>
 
 <section id="admin" class="view"><div class="panel"><div class="head"><div><h2>Admin Panel</h2><div class="sub">hakogaming3 can manage every account, change roles, approve artists, and control Hireable access.</div></div></div><div class="social-card"><div class="eyebrow">ACCOUNT MANAGEMENT</div><div class="field" style="margin-top:10px"><label>Search accounts</label><input id="adminAccountSearch" placeholder="Search username..." autocomplete="off"></div><div class="social-list" id="adminAccounts"><div class="status">Loading accounts…</div></div></div><div class="social-card" style="margin-top:14px"><div class="eyebrow">ARTIST APPLICATIONS</div><div class="social-list" id="artistApplications"><div class="status">Loading applications…</div></div></div></div><div class="social-card" style="margin-top:14px"><div class="eyebrow">USER FEEDBACK</div><div class="sub">Feedback from every role appears here.</div><div class="social-list" id="adminFeedback"><div class="status">Loading feedback…</div></div></div></div></section>
 
@@ -572,6 +590,36 @@ nebula:['#070817','#111334','#1c1d4d','#818cf8','#e879f9'],aurora:['#031312','#0
 gold:['#120e04','#241a07','#38290b','#f59e0b','#fde68a'],ice:['#041018','#09202d','#10374a','#38bdf8','#bae6fd'],toxic:['#071006','#10210b','#183610','#84cc16','#bef264'],plasma:['#12051b','#250b32','#3b0d4d','#d946ef','#22d3ee'],
 royalblue:['#050b1b','#0c1734','#132552','#3b82f6','#93c5fd'],lavender:['#100b19','#1d1430','#2a1d45','#a78bfa','#ddd6fe'],coral:['#170907','#2b1210','#401b16','#fb7185','#fdba74'],obsidian:['#050505','#0b0b0d','#15151a','#9ca3af','#f4f4f5'],
 stealth:['#05070a','#0b1015','#111923','#64748b','#94a3b8'],sunset:['#160806','#24100c','#381711','#f97316','#fda4af'],ocean:['#03111a','#07202b','#0b3443','#06b6d4','#67e8f9'],cyberlime:['#071006','#102008','#18350b','#84cc16','#d9f99d'],magenta:['#160617','#280a2e','#3d0e45','#ec4899','#f0abfc'],royalgold:['#120d03','#211806','#35260b','#f59e0b','#fde68a'],lavendernight:['#0d0a19','#17112d','#241942','#8b5cf6','#c4b5fd'],mint:['#03130f','#07231b','#0d382a','#34d399','#99f6e4'],bloodmoon:['#130407','#25070c','#3b0b12','#dc2626','#fca5a5'],arcade:['#090616','#160b2c','#24104a','#22d3ee','#f472b6'],peach:['#160b08','#2b1510','#452018','#fb923c','#fed7aa'],matrix:['#030807','#06110d','#0b1f16','#22c55e','#86efac'],royalviolet:['#0d0617','#190c2b','#291345','#8b5cf6','#e9d5ff'],crimsonnight:['#12050a','#220912','#360f1b','#e11d48','#fda4af'],skyforge:['#06111b','#0b2030','#10394d','#0ea5e9','#bae6fd'],dragon:['#120703','#240c05','#3a1307','#ef4444','#fb923c'],moonlight:['#070b16','#0d1426','#15213b','#60a5fa','#dbeafe'],synthgold:['#100b03','#201507','#33230a','#facc15','#fef08a'],rosevoid:['#12060d','#220a18','#351027','#f43f5e','#f9a8d4'],
+robloxclassic:['#0b0f14','#151b24','#202a36','#00a2ff','#ffffff'],
+robloxstudio:['#111216','#1b1d23','#262a33','#00a2ff','#ffb400'],
+robloxobby:['#07131d','#0d2433','#14384d','#22c55e','#38bdf8'],
+robloxanime:['#160916','#27122c','#3d1a48','#ff4fd8','#8b5cf6'],
+robloxhorror:['#070708','#121216','#1b1b21','#ef4444','#991b1b'],
+robloxrpg:['#0b0d16','#151a2b','#202842','#a78bfa','#f59e0b'],
+robloxbloxfruit:['#07131a','#102632','#183b49','#22d3ee','#facc15'],
+robloxdungeon:['#09080d','#16121e','#241b31','#c084fc','#ef4444'],
+robloxmilitary:['#0b100d','#151d17','#202c22','#84cc16','#a3a3a3'],
+robloxracing:['#10090a','#1e1012','#32191c','#f43f5e','#facc15'],
+robloxneoncity:['#070714','#11112b','#1b1b42','#00e5ff','#ff2bd6'],
+robloxspace:['#040612','#0b1024','#111b3b','#60a5fa','#c084fc'],
+robloxpirate:['#0d0b08','#21170d','#33230f','#f59e0b','#38bdf8'],
+robloxmedieval:['#100b08','#21150f','#302017','#d4a373','#c084fc'],
+robloxroyal:['#080817','#151538','#22225a','#facc15','#a78bfa'],
+robloxpastel:['#15111a','#241b2b','#34263d','#f9a8d4','#a7f3d0'],
+robloxpixel:['#080a0e','#141923','#202938','#22c55e','#60a5fa'],
+robloxcartoon:['#11100a','#211f12','#302e1b','#facc15','#fb7185'],
+robloxwinter:['#061018','#0d202d','#15364a','#67e8f9','#dbeafe'],
+robloxsummer:['#11100a','#22200e','#343018','#f59e0b','#22c55e'],
+robloxunderwater:['#031014','#06222a','#0b3945','#22d3ee','#2dd4bf'],
+robloxvolcano:['#140806','#26100a','#3b160b','#ff6b00','#ef4444'],
+robloxfairy:['#120a18','#21122e','#351b47','#e879f9','#86efac'],
+robloxcyberpunk:['#080612','#170c24','#28113a','#00f5ff','#ff00aa'],
+robloxsimulator:['#08110d','#102217','#193522','#84cc16','#facc15'],
+robloxtycoon:['#0b0e16','#171c2a','#232b3e','#3b82f6','#22c55e'],
+robloxroleplay:['#0d0b12','#191521','#272132','#c084fc','#fb7185'],
+robloxbattle:['#100707','#21100f','#321615','#ff3b30','#38bdf8'],
+robloxuiwhite:['#e9edf3','#ffffff','#dfe5ee','#2563eb','#7c3aed'],
+robloxgolden:['#100c03','#201806','#38280a','#f59e0b','#fde68a'],
 coffee:['#160f0a','#24170f','#342117','#b87945','#f2c38b'],
 espresso:['#090604','#140c08','#21130d','#c08457','#f5d0a0'],
 latte:['#21170f','#34251b','#493527','#c49a6c','#f1dfc5'],
@@ -610,16 +658,16 @@ function setTheme(t){let x=themes[t]||themes.dark;document.documentElement.style
 function mix(a,b,p){let aa=a.replace('#',''),bb=b.replace('#','');let r=Math.round(parseInt(aa.slice(0,2),16)*(1-p)+parseInt(bb.slice(0,2),16)*p),g=Math.round(parseInt(aa.slice(2,4),16)*(1-p)+parseInt(bb.slice(2,4),16)*p),z=Math.round(parseInt(aa.slice(4,6),16)*(1-p)+parseInt(bb.slice(4,6),16)*p);return '#'+[r,g,z].map(n=>n.toString(16).padStart(2,'0')).join('')}
 
 // ===== NAVIGATION / THEME =====
-function canUseStudio(){return ['artist','admin'].includes(currentProfile?.role)}
+function canUseStudio(){return ['artist','admin','owner'].includes(String(currentProfile?.role||'').toLowerCase())}
 function isAdmin(){return normalizedRole()==='owner'}
 function navInit(){
- let studioPrimary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['social','Social'],['profile','Profile']];
+ let studioPrimary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['social','Social']];
  let studioMore=[['patterns','Patterns'],['presets','Presets'],['bars','Bars & Icons'],['themes','Themes'],['svg','SVG Lab'],['nineslice','9-Slice'],['resources','Resources']];
  const role=normalizedRole();
  let primary=canUseStudio()?studioPrimary:[['social','Social']];
  let more=canUseStudio()?studioMore:[];
  if(canApplyForArtist())primary.push(['application','Application']);
- if(isAdmin())primary.push(['admin','Owner']);
+ if(isAdmin())primary.push(['admin','Owner / Admin']);
  $('nav').innerHTML=primary.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')+(more.length?`<div class="nav-more" id="navMore"><button class="alt" type="button" id="navMoreBtn">More ▾</button><div class="nav-more-menu">${more.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')}</div></div>`:'');
  let run=b=>{showView(b.dataset.view);$('nav').classList.remove('mobile-open');$('navMore')?.classList.remove('open')};
  $('nav').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>run(b));
@@ -787,7 +835,7 @@ function usePreset(id){let x=builtins.find(a=>a.id===id)||JSON.parse(localStorag
 function savePreset(kind){let arr=JSON.parse(localStorage.getItem('monkey-custom-presets')||'[]');let obj=JSON.parse(JSON.stringify(state[kind]));arr.unshift({id:'custom-'+Date.now(),name:obj.text||obj.title||obj.style||obj.shape,kind:kind[0].toUpperCase()+kind.slice(1),category:'Custom',obj});localStorage.setItem('monkey-custom-presets',JSON.stringify(arr.slice(0,300)));showView('presets')}
 function deleteCustom(id){let a=JSON.parse(localStorage.getItem('monkey-custom-presets')||'[]').filter(x=>x.id!==id);localStorage.setItem('monkey-custom-presets',JSON.stringify(a));renderPresets()}
 let themeFilter='All';
-function themeCategory(n){let x=n.toLowerCase();if(/coffee|espresso|latte|mocha|caramel|coffeehouse|roast|vanilla|matcha/.test(x))return 'Coffee';if(/light|peach|candy|sakura|coral|mint|ice|gold|lavender|sky|aurora|rose/.test(x))return 'Bright';if(/fantasy|dragon|royal|nebula|moonlight|jade|forest|ember|bloodmoon|crimson|violet|lavender/.test(x))return 'Fantasy';if(/arcade|cyber|matrix|synth|plasma|toxic|stealth|skyforge|royalblue|royalgold/.test(x))return 'Game';return 'Dark'}
+function themeCategory(n){let x=n.toLowerCase();if(/roblox/.test(x))return 'Roblox';if(/coffee|espresso|latte|mocha|caramel|coffeehouse|roast|vanilla|matcha/.test(x))return 'Coffee';if(/light|peach|candy|sakura|coral|mint|ice|gold|lavender|sky|aurora|rose/.test(x))return 'Bright';if(/fantasy|dragon|royal|nebula|moonlight|jade|forest|ember|bloodmoon|crimson|violet|lavender/.test(x))return 'Fantasy';if(/arcade|cyber|matrix|synth|plasma|toxic|stealth|skyforge|royalblue|royalgold/.test(x))return 'Game';return 'Dark'}
 function renderThemes(){
  let q=($('themeSearch')?.value||'').toLowerCase().trim();let names=Object.keys(themes).filter(n=>(themeFilter==='All'||themeCategory(n)===themeFilter)&&(!q||n.toLowerCase().includes(q)));
  $('themeCount').textContent=`${names.length} THEME${names.length===1?'':'S'}`;
@@ -1177,7 +1225,7 @@ function normalizedRole(){
  if(raw==='artist_declined'||app==='declined'||app==='rejected')return 'artist_declined';
  return 'normal';
 }
-function isAdmin(){return String(currentProfile?.role||'').trim().toLowerCase()==='admin'}
+function isAdmin(){const r=String(currentProfile?.role||'').trim().toLowerCase();return r==='admin'||r==='owner'}
 function canUseStudio(){return ['artist_approved','owner'].includes(normalizedRole())}
 function canApplyForArtist(){return ['normal','artist_pending','artist_declined'].includes(normalizedRole())}
 function roleLabel(role=normalizedRole()){return ({owner:'OWNER',artist_approved:'ARTIST — APPROVED',artist_pending:'ARTIST — PENDING',artist_declined:'ARTIST — DECLINED',normal:'NORMAL USER'})[role]||'NORMAL USER'}
@@ -1586,7 +1634,7 @@ function importGradientCSS(){let input=$('gradientCssPaste').value.trim();try{le
 // ===== PROFILE =====
 function profileData(){let d={name:'Monkey UI User',avatar:'',letter:'M'};try{d={...d,...JSON.parse(localStorage.getItem('monkey-profile')||'{}')}}catch(e){}return d}
 function currentAvatar(){return currentProfile?.avatar_url||profileData().avatar||currentProfile?.user_metadata?.avatar_url||''}
-function renderProfile(){let d=profileData(),u=currentProfile||{};let username=u.username||d.name||'User';$('profileUsernameInput').value=username;if($('profileRoleField'))$('profileRoleField').style.display=(u.role==='admin'?'block':'none');if($('profileRoleInput'))$('profileRoleInput').value=['user','artist','artist_pending','artist_declined','admin'].includes(u.role)?u.role:'user';$('profileAvatarInput').value=(u.avatar_url||d.avatar||'').startsWith('data:')?'':(u.avatar_url||d.avatar||'');$('profileAvatarLetter').value=(d.letter||username[0]||'M').slice(0,1).toUpperCase();$('profileDisplayName').textContent=username;$('profileHandle').textContent='@'+username;let av=$('profileAvatarPreview'),src=currentAvatar();av.innerHTML=src?`<img src="${esc(src)}" alt="">`:esc((d.letter||username[0]||'M').slice(0,1).toUpperCase());let artist=['artist','artist_pending','artist_declined'].includes(u.role);if($('artistProfileBox'))$('artistProfileBox').style.display=artist?'block':'none';if(artist){$('profilePortfolioInput').value=u.portfolio_url||'';$('profileDiscordInput').value=u.discord_username||'';$('profileHireable').checked=u.role==='artist'&&!!u.hireable;$('profileHireable').disabled=u.role!=='artist';$('profileStatus').textContent=u.role==='artist_pending'?'UI Artist application pending admin approval.':u.role==='artist_declined'?'UI Artist application was declined. Update the details and save to reapply.':'Approved UI Artist — your profile can appear in Hireable.';$('profileStatus').className='status '+(u.role==='artist'?'ok':'warn')}}
+function renderProfile(){let d=profileData(),u=currentProfile||{};let username=u.username||d.name||'User';$('profileUsernameInput').value=username;if($('profileRoleField'))$('profileRoleField').style.display=(u.role==='admin'||u.role==='owner'?'block':'none');if($('profileRoleInput'))$('profileRoleInput').value=['user','artist','artist_pending','artist_declined','admin','owner'].includes(u.role)?u.role:'user';$('profileAvatarInput').value=(u.avatar_url||d.avatar||'').startsWith('data:')?'':(u.avatar_url||d.avatar||'');$('profileAvatarLetter').value=(d.letter||username[0]||'M').slice(0,1).toUpperCase();$('profileDisplayName').textContent=username;$('profileHandle').textContent='@'+username;let av=$('profileAvatarPreview'),src=currentAvatar();av.innerHTML=src?`<img src="${esc(src)}" alt="">`:esc((d.letter||username[0]||'M').slice(0,1).toUpperCase());let artist=['artist','artist_pending','artist_declined'].includes(u.role);if($('artistProfileBox'))$('artistProfileBox').style.display=artist?'block':'none';if(artist){$('profilePortfolioInput').value=u.portfolio_url||'';$('profileDiscordInput').value=u.discord_username||'';$('profileHireable').checked=u.role==='artist'&&!!u.hireable;$('profileHireable').disabled=u.role!=='artist';$('profileStatus').textContent=u.role==='artist_pending'?'UI Artist application pending admin approval.':u.role==='artist_declined'?'UI Artist application was declined. Update the details and save to reapply.':'Approved UI Artist — your profile can appear in Hireable.';$('profileStatus').className='status '+(u.role==='artist'?'ok':'warn')}}
 async function saveProfile(){
  let u=authCurrent();
  if(!sb||!u){
@@ -1660,11 +1708,22 @@ async function saveProfile(){
   }
  }
 
- const {data,error}=await sb.from('profiles').update(updates).eq('id',u.id)
-  .select('id,username,avatar_url,role,portfolio_url,discord_username,hireable').maybeSingle();
-
+ let data=null,error=null;
+ const saved=await sb.rpc('update_my_profile',{p_username:username,p_avatar_url:avatarUrl});
+ if(!saved.error){
+  data=saved.data||null;
+ }else{
+  const direct=await sb.from('profiles').update(updates).eq('id',u.id)
+   .select('id,username,avatar_url,role,portfolio_url,discord_username,hireable').maybeSingle();
+  data=direct.data; error=direct.error;
+ }
  if(error){
-  $('profileStatus').textContent=error.message;
+  $('profileStatus').textContent='Could not save nickname: '+error.message;
+  $('profileStatus').className='status err';
+  return;
+ }
+ if(saved.error && !data){
+  $('profileStatus').textContent='Could not save nickname: '+saved.error.message;
   $('profileStatus').className='status err';
   return;
  }
@@ -1672,7 +1731,7 @@ async function saveProfile(){
  // Role changes are intentionally done through the protected admin RPC,
  // never by exposing a writable role column to normal users.
  const requestedRole=$('profileRoleInput')?.value||u.role;
- if(u.role==='admin' && requestedRole!==u.role){
+ if((u.role==='admin'||u.role==='owner') && requestedRole!==u.role){
   const rr=await sb.rpc('admin_manage_account',{p_user_id:u.id,p_role:requestedRole});
   if(rr.error){
    $('profileStatus').textContent='Profile saved, but role change failed: '+rr.error.message;
@@ -1691,7 +1750,7 @@ async function saveProfile(){
  }
 
  currentProfile={...u,...(data||{}),username,avatar_url:avatarUrl};
- if(u.role==='admin' && requestedRole!==u.role) currentProfile.role=requestedRole;
+ if((u.role==='admin'||u.role==='owner') && requestedRole!==u.role) currentProfile.role=requestedRole;
 
  // Keep the auth metadata in sync too, so the edited name persists everywhere.
  await sb.auth.updateUser({data:{username,avatar_url:avatarUrl}}).catch(()=>{});
