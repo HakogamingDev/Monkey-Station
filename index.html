@@ -458,7 +458,7 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
       <div class="field"><label id="authUserLabel">Username or email</label><input id="authUser" required autocomplete="username"></div>
       <div class="field" id="authEmailWrap" style="display:none"><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div>
       <div class="field" id="authAccountTypeWrap" style="display:none"><label>Account type</label><select id="authAccountType"><option value="user">Normal account — Social only</option><option value="artist">UI Artist — application required</option></select></div>
-      <div class="field" id="artistApplicationWrap" style="display:none"><label>Portfolio URL</label><input id="authPortfolio" type="url" placeholder="https://your-portfolio.com" autocomplete="url"><div class="meta" style="margin-top:5px">UI Artist applications accept a portfolio URL only. Your account stays Social-only until Hako approves it.</div></div>
+      <div class="field" id="artistApplicationWrap" style="display:none"><label>Portfolio URL</label><input id="authPortfolio" type="url" placeholder="https://your-portfolio.com" autocomplete="url"><div class="meta" style="margin-top:5px">UI Artist applications accept a portfolio URL only. Your account stays Social-only until hakogaming3 approves it.</div></div>
       <div class="field" id="artistDiscordWrap" style="display:none"><label>Discord username</label><input id="authDiscord" placeholder="your Discord username" autocomplete="off"></div>
       <div class="field"><label>Password</label><input id="authPass" type="password" minlength="6" required autocomplete="current-password"></div>
       <label class="remember-row" id="authRememberWrap"><input id="authRemember" type="checkbox" checked> <span>Remember me</span></label>
@@ -497,17 +497,17 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
  <div class="social-panel" id="socialFeedbackPanel"><div class="social-card"><div class="eyebrow">FEEDBACK</div><h3>Help improve MONKEY UI STATION</h3><div class="sub">Send feedback, bug reports, ideas, or anything you want Hako to see.</div><form id="feedbackForm" class="auth-form"><div class="field"><label>Feedback</label><textarea id="feedbackText" maxlength="2000" rows="7" placeholder="Tell us what you think, what is broken, or what you want added..." required></textarea></div><button class="btn" type="submit">Send Feedback</button><div class="status" id="feedbackStatus"></div></form></div></div>
  <div class="social-panel" id="socialMessagesPanel"><div class="social-grid"><div class="social-card"><div class="eyebrow">MESSAGES</div><div class="social-list" id="conversationList"></div></div><div class="social-card"><div class="conversation-title" id="conversationHeader"><div class="profile-avatar">M</div><div class="conversation-title-copy"><b id="messageTitle">SELECT A FRIEND</b><div class="meta" id="messageSubtitle">Choose a friend to start messaging.</div></div></div><div class="message-list" id="messageList"><div class="status">Choose a friend to start messaging.</div></div><div class="message-compose"><input id="messageInput" maxlength="4000" placeholder="Write a message..." autocomplete="off"><button class="btn" id="sendMessageBtn" type="button">Send</button></div></div></div></div>
  </div>
-<section class="social-panel" id="socialApplyPanel"><div class="panel-card"><div class="eyebrow">UI ARTIST</div><h2 style="margin:6px 0 10px">Apply to become a UI Artist</h2><div class="sub" style="margin-bottom:14px">Send your portfolio and Discord username. Your account stays Social-only until Hako approves it.</div><form id="socialArtistApplyForm" class="auth-form"><div class="field"><label>Portfolio link</label><input id="socialApplyPortfolio" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Discord username</label><input id="socialApplyDiscord" placeholder="your Discord username"></div><button class="btn" type="submit">Submit UI Artist Application</button><div id="socialApplyStatus" class="auth-status"></div></form></div></section>
+<section class="social-panel" id="socialApplyPanel"><div class="panel-card"><div class="eyebrow">UI ARTIST</div><h2 style="margin:6px 0 10px">Apply to become a UI Artist</h2><div class="sub" style="margin-bottom:14px">Send your portfolio and Discord username. Your account stays Social-only until hakogaming3 approves it.</div><form id="socialArtistApplyForm" class="auth-form"><div class="field"><label>Portfolio link</label><input id="socialApplyPortfolio" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Discord username</label><input id="socialApplyDiscord" placeholder="your Discord username"></div><button class="btn" type="submit">Submit UI Artist Application</button><div id="socialApplyStatus" class="auth-status"></div></form></div></section>
 </section>
 
 <section id="application" class="view"><div class="panel"><div class="head"><div><h2>Application</h2><div class="sub">Apply to join the approved UI Artist team.</div></div></div><div id="applicationViewContent"></div></div></section>
 
 <section id="profile" class="view"><div class="panel"><div class="head"><div><h2>Profile</h2><div class="sub">Customize your public identity and avatar.</div></div></div>
  <div class="profile-hero"><div class="profile-avatar" id="profileAvatarPreview">M</div><div><div class="profile-name" id="profileDisplayName">Monkey UI User</div><div class="profile-handle" id="profileHandle">@user</div></div><div class="actions"><button class="btn" id="profileSaveBtn" type="button">Save Profile</button></div></div>
- <div class="profile-settings"><div class="grid two"><div class="field"><label>Username</label><input id="profileUsernameInput" maxlength="24" placeholder="your_username" autocomplete="off"></div><div class="field"><label>Custom profile picture</label><input id="profileAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></div><div class="field"><label>Avatar image URL</label><input id="profileAvatarInput" placeholder="https://.../avatar.png"></div><div class="field"><label>Avatar fallback letter</label><input id="profileAvatarLetter" maxlength="1" placeholder="M"></div></div><div class="artist-profile-box" id="artistProfileBox" style="display:none"><div class="eyebrow">UI ARTIST PROFILE</div><div class="grid two"><div class="field"><label>Portfolio</label><input id="profilePortfolioInput" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Discord</label><input id="profileDiscordInput" placeholder="your Discord username"></div></div><label class="remember-row"><input id="profileHireable" type="checkbox"> <span>Show me in Hireable</span></label><div class="meta">Your role is controlled by admin approval. The Hireable switch only controls whether approved artists appear in the Hireable tab.</div></div><div class="meta" style="margin-top:8px">Your username and profile picture are shared with Social, People, Friends, posts, and messages. Image uploads are stored in your profile as a compact image.</div><div class="status" id="profileStatus"></div></div>
+ <div class="profile-settings"><div class="grid two"><div class="field"><label>Username</label><input id="profileUsernameInput" maxlength="24" placeholder="your_username" autocomplete="off"></div><div class="field" id="profileRoleField" style="display:none"><label>Role</label><select id="profileRoleInput"><option value="user">User</option><option value="artist_pending">Artist Pending</option><option value="artist">Artist</option><option value="artist_declined">Artist Declined</option><option value="admin">Admin</option></select><div class="meta">Only hakogaming3/admin can change account roles.</div></div><div class="field"><label>Custom profile picture</label><input id="profileAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></div><div class="field"><label>Avatar image URL</label><input id="profileAvatarInput" placeholder="https://.../avatar.png"></div><div class="field"><label>Avatar fallback letter</label><input id="profileAvatarLetter" maxlength="1" placeholder="M"></div></div><div class="artist-profile-box" id="artistProfileBox" style="display:none"><div class="eyebrow">UI ARTIST PROFILE</div><div class="grid two"><div class="field"><label>Portfolio</label><input id="profilePortfolioInput" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Discord</label><input id="profileDiscordInput" placeholder="your Discord username"></div></div><label class="remember-row"><input id="profileHireable" type="checkbox"> <span>Show me in Hireable</span></label><div class="meta">Your role is controlled by admin approval. The Hireable switch only controls whether approved artists appear in the Hireable tab.</div></div><div class="meta" style="margin-top:8px">Your username and profile picture are shared with Social, People, Friends, posts, and messages. Image uploads are stored in your profile as a compact image.</div><div class="status" id="profileStatus"></div></div>
  </div></section>
 
-<section id="admin" class="view"><div class="panel"><div class="head"><div><h2>Admin Panel</h2><div class="sub">Hako can manage every account, change roles, approve artists, and control Hireable access.</div></div></div><div class="social-card"><div class="eyebrow">ACCOUNT MANAGEMENT</div><div class="field" style="margin-top:10px"><label>Search accounts</label><input id="adminAccountSearch" placeholder="Search username..." autocomplete="off"></div><div class="social-list" id="adminAccounts"><div class="status">Loading accounts…</div></div></div><div class="social-card" style="margin-top:14px"><div class="eyebrow">ARTIST APPLICATIONS</div><div class="social-list" id="artistApplications"><div class="status">Loading applications…</div></div></div></div><div class="social-card" style="margin-top:14px"><div class="eyebrow">USER FEEDBACK</div><div class="sub">Feedback from every role appears here.</div><div class="social-list" id="adminFeedback"><div class="status">Loading feedback…</div></div></div></div></section>
+<section id="admin" class="view"><div class="panel"><div class="head"><div><h2>Admin Panel</h2><div class="sub">hakogaming3 can manage every account, change roles, approve artists, and control Hireable access.</div></div></div><div class="social-card"><div class="eyebrow">ACCOUNT MANAGEMENT</div><div class="field" style="margin-top:10px"><label>Search accounts</label><input id="adminAccountSearch" placeholder="Search username..." autocomplete="off"></div><div class="social-list" id="adminAccounts"><div class="status">Loading accounts…</div></div></div><div class="social-card" style="margin-top:14px"><div class="eyebrow">ARTIST APPLICATIONS</div><div class="social-list" id="artistApplications"><div class="status">Loading applications…</div></div></div></div><div class="social-card" style="margin-top:14px"><div class="eyebrow">USER FEEDBACK</div><div class="sub">Feedback from every role appears here.</div><div class="social-list" id="adminFeedback"><div class="status">Loading feedback…</div></div></div></div></section>
 
 <section id="resources" class="view"><div class="panel">
  <div class="head"><div><h2>Resources</h2><div class="sub">Curated free UI resources, textures, plugins, effects and design tools.</div></div><a class="btn" href="https://ui-resources.com/?category=Gfx" target="_blank" rel="noopener">Open ResourceHub ↗</a></div>
@@ -1586,8 +1586,127 @@ function importGradientCSS(){let input=$('gradientCssPaste').value.trim();try{le
 // ===== PROFILE =====
 function profileData(){let d={name:'Monkey UI User',avatar:'',letter:'M'};try{d={...d,...JSON.parse(localStorage.getItem('monkey-profile')||'{}')}}catch(e){}return d}
 function currentAvatar(){return currentProfile?.avatar_url||profileData().avatar||currentProfile?.user_metadata?.avatar_url||''}
-function renderProfile(){let d=profileData(),u=currentProfile||{};let username=u.username||d.name||'User';$('profileUsernameInput').value=username;$('profileAvatarInput').value=(u.avatar_url||d.avatar||'').startsWith('data:')?'':(u.avatar_url||d.avatar||'');$('profileAvatarLetter').value=(d.letter||username[0]||'M').slice(0,1).toUpperCase();$('profileDisplayName').textContent=username;$('profileHandle').textContent='@'+username;let av=$('profileAvatarPreview'),src=currentAvatar();av.innerHTML=src?`<img src="${esc(src)}" alt="">`:esc((d.letter||username[0]||'M').slice(0,1).toUpperCase());let artist=['artist','artist_pending','artist_declined'].includes(u.role);if($('artistProfileBox'))$('artistProfileBox').style.display=artist?'block':'none';if(artist){$('profilePortfolioInput').value=u.portfolio_url||'';$('profileDiscordInput').value=u.discord_username||'';$('profileHireable').checked=u.role==='artist'&&!!u.hireable;$('profileHireable').disabled=u.role!=='artist';$('profileStatus').textContent=u.role==='artist_pending'?'UI Artist application pending admin approval.':u.role==='artist_declined'?'UI Artist application was declined. Update the details and save to reapply.':'Approved UI Artist — your profile can appear in Hireable.';$('profileStatus').className='status '+(u.role==='artist'?'ok':'warn')}}
-async function saveProfile(){let u=authCurrent();if(!sb||!u){$('profileStatus').textContent='Log in to save your profile.';$('profileStatus').className='status warn';return}let username=$('profileUsernameInput').value.trim(),avatarUrl=$('profileAvatarInput').value.trim(),letter=($('profileAvatarLetter').value.trim()||username[0]||'M').slice(0,1).toUpperCase(),file=$('profileAvatarFile')?.files?.[0];if(!/^[a-zA-Z0-9_.-]{3,24}$/.test(username)){$('profileStatus').textContent='Username must be 3–24 characters and use only letters, numbers, _, - or .';$('profileStatus').className='status warn';return}let taken=await sb.from('profiles').select('id').ilike('username',username).neq('id',u.id).limit(1);if(taken.error){$('profileStatus').textContent=taken.error.message;$('profileStatus').className='status err';return}if(taken.data?.length){$('profileStatus').textContent='That username is already taken.';$('profileStatus').className='status warn';return}if(file){if(!file.type.startsWith('image/')){$('profileStatus').textContent='Choose an image file.';$('profileStatus').className='status warn';return}if(file.size>1200000){$('profileStatus').textContent='Profile pictures must be 1.2MB or smaller.';$('profileStatus').className='status warn';return}avatarUrl=await readFileData(file)}let updates={username,avatar_url:avatarUrl};if(['artist','artist_pending','artist_declined'].includes(u.role)){updates.portfolio_url=$('profilePortfolioInput').value.trim();updates.discord_username=$('profileDiscordInput').value.trim();if(u.role==='artist'){}if(u.role==='artist_declined'&&updates.portfolio_url&&updates.discord_username){let app=await sb.rpc('submit_artist_application',{p_portfolio_url:updates.portfolio_url,p_discord_username:updates.discord_username});if(app.error){$('profileStatus').textContent=app.error.message;$('profileStatus').className='status err';return}}}if(u.role==='artist'){let hr=await sb.rpc('set_hireable',{p_hireable:$('profileHireable').checked});if(hr.error){$('profileStatus').textContent=hr.error.message;$('profileStatus').className='status err';return}}let {data,error}=await sb.from('profiles').update(updates).eq('id',u.id).select('id,username,role,portfolio_url,discord_username,hireable').maybeSingle();if(error){$('profileStatus').textContent=error.message;$('profileStatus').className='status err';return}currentProfile={...u,...(data||{}),username,avatar_url:avatarUrl};await sb.auth.updateUser({data:{username,avatar_url:avatarUrl}}).catch(()=>{});localStorage.setItem('monkey-profile',JSON.stringify({name:username,avatar:avatarUrl,letter}));if($('profileAvatarFile'))$('profileAvatarFile').value='';renderProfile();updateAuthUI();await renderSocial();await renderSocialFeed();await renderPeople();await renderHireable();$('profileStatus').textContent='Profile synced with Social.';$('profileStatus').className='status ok'}
+function renderProfile(){let d=profileData(),u=currentProfile||{};let username=u.username||d.name||'User';$('profileUsernameInput').value=username;if($('profileRoleField'))$('profileRoleField').style.display=(u.role==='admin'?'block':'none');if($('profileRoleInput'))$('profileRoleInput').value=['user','artist','artist_pending','artist_declined','admin'].includes(u.role)?u.role:'user';$('profileAvatarInput').value=(u.avatar_url||d.avatar||'').startsWith('data:')?'':(u.avatar_url||d.avatar||'');$('profileAvatarLetter').value=(d.letter||username[0]||'M').slice(0,1).toUpperCase();$('profileDisplayName').textContent=username;$('profileHandle').textContent='@'+username;let av=$('profileAvatarPreview'),src=currentAvatar();av.innerHTML=src?`<img src="${esc(src)}" alt="">`:esc((d.letter||username[0]||'M').slice(0,1).toUpperCase());let artist=['artist','artist_pending','artist_declined'].includes(u.role);if($('artistProfileBox'))$('artistProfileBox').style.display=artist?'block':'none';if(artist){$('profilePortfolioInput').value=u.portfolio_url||'';$('profileDiscordInput').value=u.discord_username||'';$('profileHireable').checked=u.role==='artist'&&!!u.hireable;$('profileHireable').disabled=u.role!=='artist';$('profileStatus').textContent=u.role==='artist_pending'?'UI Artist application pending admin approval.':u.role==='artist_declined'?'UI Artist application was declined. Update the details and save to reapply.':'Approved UI Artist — your profile can appear in Hireable.';$('profileStatus').className='status '+(u.role==='artist'?'ok':'warn')}}
+async function saveProfile(){
+ let u=authCurrent();
+ if(!sb||!u){
+  $('profileStatus').textContent='Log in to save your profile.';
+  $('profileStatus').className='status warn';
+  return;
+ }
+ const username=$('profileUsernameInput').value.trim();
+ let avatarUrl=$('profileAvatarInput').value.trim();
+ const letter=($('profileAvatarLetter').value.trim()||username[0]||'M').slice(0,1).toUpperCase();
+ const file=$('profileAvatarFile')?.files?.[0];
+
+ if(!/^[a-zA-Z0-9_.-]{3,24}$/.test(username)){
+  $('profileStatus').textContent='Username must be 3–24 characters and use only letters, numbers, _, - or .';
+  $('profileStatus').className='status warn';
+  return;
+ }
+
+ const taken=await sb.from('profiles').select('id').ilike('username',username).neq('id',u.id).limit(1);
+ if(taken.error){
+  $('profileStatus').textContent=taken.error.message;
+  $('profileStatus').className='status err';
+  return;
+ }
+ if(taken.data?.length){
+  $('profileStatus').textContent='That username is already taken.';
+  $('profileStatus').className='status warn';
+  return;
+ }
+
+ if(file){
+  if(!file.type.startsWith('image/')){
+   $('profileStatus').textContent='Choose an image file.';
+   $('profileStatus').className='status warn';
+   return;
+  }
+  if(file.size>1200000){
+   $('profileStatus').textContent='Profile pictures must be 1.2MB or smaller.';
+   $('profileStatus').className='status warn';
+   return;
+  }
+  avatarUrl=await readFileData(file);
+ }
+
+ let updates={username,avatar_url:avatarUrl};
+
+ if(['artist','artist_pending','artist_declined'].includes(u.role)){
+  updates.portfolio_url=$('profilePortfolioInput')?.value.trim()||'';
+  updates.discord_username=$('profileDiscordInput')?.value.trim()||'';
+  if(u.role==='artist_declined'&&updates.portfolio_url&&updates.discord_username){
+   const app=await sb.rpc('submit_artist_application',{
+    p_portfolio_url:updates.portfolio_url,
+    p_discord_username:updates.discord_username,
+    p_portfolio_type:'link',
+    p_portfolio_data:updates.portfolio_url
+   });
+   if(app.error){
+    $('profileStatus').textContent=app.error.message;
+    $('profileStatus').className='status err';
+    return;
+   }
+  }
+ }
+
+ if(u.role==='artist'){
+  const hr=await sb.rpc('set_hireable',{p_hireable:$('profileHireable').checked});
+  if(hr.error){
+   $('profileStatus').textContent=hr.error.message;
+   $('profileStatus').className='status err';
+   return;
+  }
+ }
+
+ const {data,error}=await sb.from('profiles').update(updates).eq('id',u.id)
+  .select('id,username,avatar_url,role,portfolio_url,discord_username,hireable').maybeSingle();
+
+ if(error){
+  $('profileStatus').textContent=error.message;
+  $('profileStatus').className='status err';
+  return;
+ }
+
+ // Role changes are intentionally done through the protected admin RPC,
+ // never by exposing a writable role column to normal users.
+ const requestedRole=$('profileRoleInput')?.value||u.role;
+ if(u.role==='admin' && requestedRole!==u.role){
+  const rr=await sb.rpc('admin_manage_account',{p_user_id:u.id,p_role:requestedRole});
+  if(rr.error){
+   $('profileStatus').textContent='Profile saved, but role change failed: '+rr.error.message;
+   $('profileStatus').className='status err';
+   currentProfile={...u,...(data||{}),username,avatar_url:avatarUrl};
+   renderProfile();
+   return;
+  }
+  if(!rr.data){
+   $('profileStatus').textContent='Profile saved, but the role was not changed.';
+   $('profileStatus').className='status warn';
+   currentProfile={...u,...(data||{}),username,avatar_url:avatarUrl};
+   renderProfile();
+   return;
+  }
+ }
+
+ currentProfile={...u,...(data||{}),username,avatar_url:avatarUrl};
+ if(u.role==='admin' && requestedRole!==u.role) currentProfile.role=requestedRole;
+
+ // Keep the auth metadata in sync too, so the edited name persists everywhere.
+ await sb.auth.updateUser({data:{username,avatar_url:avatarUrl}}).catch(()=>{});
+ localStorage.setItem('monkey-profile',JSON.stringify({name:username,avatar:avatarUrl,letter}));
+
+ if($('profileAvatarFile'))$('profileAvatarFile').value='';
+ renderProfile();
+ updateAuthUI();
+ await renderSocial();
+ await renderSocialFeed();
+ await renderPeople();
+ await renderHireable();
+ $('profileStatus').textContent='Profile saved to the database.';
+ $('profileStatus').className='status ok';
+}
 function socialAvatar(user){let n=typeof user==='string'?user:(user?.username||'User'),avatar=typeof user==='string'?'':(user?.avatar_url||'');if(!avatar&&currentProfile?.username?.toLowerCase()===n.toLowerCase())avatar=currentProfile?.avatar_url||localStorage.getItem('monkey-pfp-'+currentProfile.id)||currentAvatar();return avatar?`<img src="${esc(avatar)}" alt="" onerror="this.remove();this.parentElement.textContent='${esc((n||'?')[0].toUpperCase())}'">`:esc((n||'?')[0].toUpperCase())}
 function friendshipStatus(id){if(!id||id===currentProfile?.id)return 'self';if((socialState.friends||[]).some(x=>x.id===id))return 'friend';if((socialState.requests||[]).some(x=>x.userId===id))return 'incoming';if((socialState.sentRequests||[]).some(x=>x.userId===id))return 'pending';return 'none'}
 function socialUserCard(u,actions=true){let n=typeof u==='string'?u:u.username,id=typeof u==='string'?'':u.id,status=friendshipStatus(id),role=typeof u==='string'?'':u.role;let action=status==='self'?'':status==='friend'?`<button class="btn danger" data-remove-user="${esc(id)}" type="button">Remove Friend</button>`:status==='pending'?`<button class="btn alt" disabled type="button">Pending</button>`:status==='incoming'?`<button class="btn" data-accept-user="${esc(id)}" type="button">Accept</button>`:`<button class="btn" data-add-user="${esc(n)}" data-add-id="${esc(id)}" type="button">Add Friend</button>`;let badge=role==='artist'?'<span class="artist-badge approved">UI ARTIST</span>':role==='artist_pending'?'<span class="artist-badge pending">PENDING</span>':'';return `<div class="social-row"><div class="social-user"><div class="profile-avatar">${socialAvatar(u)}</div><div class="social-user-copy"><b>@${esc(n)} ${badge}</b><div class="meta">${status==='friend'?'Friend':role==='artist'?'Approved UI Artist':id?'Social member':'Friend'}</div></div></div>${actions?`<div class="social-actions"><button class="btn alt" data-view-user="${esc(n)}" type="button">View</button>${action}</div>`:''}</div>`}
@@ -1637,7 +1756,7 @@ function ensureSocialArtistApplyTab(){
 
 function renderArtistApplyForm(){
  const form=$('socialArtistApplyForm');if(!form||form.dataset.wired)return;if(!['user','artist_declined'].includes(normalizedRole()))return;form.dataset.wired='1';
- form.onsubmit=async e=>{e.preventDefault();const status=$('socialApplyStatus'),link=$('socialApplyPortfolio')?.value.trim()||'',discord=$('socialApplyDiscord')?.value.trim()||'';status.className='auth-status';status.textContent='Submitting…';try{if(!link)throw new Error('Portfolio URL is required.');if(!/^https?:\/\//i.test(link))throw new Error('Portfolio must start with http:// or https://.');if(!discord)throw new Error('Discord username is required.');if(!sb)throw new Error('Supabase is required.');const r=await sb.rpc('submit_artist_application',{p_portfolio_url:link,p_discord_username:discord,p_portfolio_type:'link',p_portfolio_data:link});if(r.error)throw r.error;status.textContent='Application submitted. Hako can now review it.';status.className='auth-status ok';}catch(err){status.textContent=err?.message||'Application failed.';status.className='auth-status err';}};
+ form.onsubmit=async e=>{e.preventDefault();const status=$('socialApplyStatus'),link=$('socialApplyPortfolio')?.value.trim()||'',discord=$('socialApplyDiscord')?.value.trim()||'';status.className='auth-status';status.textContent='Submitting…';try{if(!link)throw new Error('Portfolio URL is required.');if(!/^https?:\/\//i.test(link))throw new Error('Portfolio must start with http:// or https://.');if(!discord)throw new Error('Discord username is required.');if(!sb)throw new Error('Supabase is required.');const r=await sb.rpc('submit_artist_application',{p_portfolio_url:link,p_discord_username:discord,p_portfolio_type:'link',p_portfolio_data:link});if(r.error)throw r.error;status.textContent='Application submitted. hakogaming3 can now review it.';status.className='auth-status ok';}catch(err){status.textContent=err?.message||'Application failed.';status.className='auth-status err';}};
 }
 
 function ensureSocialSettingsTab(){
