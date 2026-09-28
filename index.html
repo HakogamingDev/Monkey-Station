@@ -268,6 +268,7 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
 .artist-badge.approved{background:color-mix(in srgb,#22c55e 16%,var(--panel2));border-color:color-mix(in srgb,#22c55e 45%,var(--line))}
 .artist-badge.pending{background:color-mix(in srgb,#f59e0b 16%,var(--panel2));border-color:color-mix(in srgb,#f59e0b 45%,var(--line))}
 .admin-application{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--panel2);margin-bottom:10px}.admin-application:last-child{margin-bottom:0}.admin-application .actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}@media(max-width:700px){.admin-application{grid-template-columns:1fr}.admin-application .actions{justify-content:flex-start}}.admin-account{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--panel2);margin-bottom:10px}.admin-account .actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;align-items:center}.admin-account select{min-width:130px;padding:9px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-weight:800}@media(max-width:700px){.admin-account{grid-template-columns:1fr}.admin-account .actions{justify-content:flex-start}}
+.application-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,var(--panel2),var(--panel));}.application-hero .artist-badge{white-space:nowrap}.application-hero+.auth-form{padding:2px 0}.application-hero h2{font-size:22px}@media(max-width:700px){.application-hero{flex-direction:column}.application-hero .artist-badge{align-self:flex-start}}
 </style></style>
 </head>
 <body class="auth-locked">
@@ -499,6 +500,8 @@ body.auth-locked > *:not(#authModal){pointer-events:none!important;user-select:n
 <section class="social-panel" id="socialApplyPanel"><div class="panel-card"><div class="eyebrow">UI ARTIST</div><h2 style="margin:6px 0 10px">Apply to become a UI Artist</h2><div class="sub" style="margin-bottom:14px">Send your portfolio and Discord username. Your account stays Social-only until Hako approves it.</div><form id="socialArtistApplyForm" class="auth-form"><div class="field"><label>Portfolio link</label><input id="socialApplyPortfolio" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Discord username</label><input id="socialApplyDiscord" placeholder="your Discord username"></div><button class="btn" type="submit">Submit UI Artist Application</button><div id="socialApplyStatus" class="auth-status"></div></form></div></section>
 </section>
 
+<section id="application" class="view"><div class="panel"><div class="head"><div><h2>Application</h2><div class="sub">Apply to join the approved UI Artist team.</div></div></div><div id="applicationViewContent"></div></div></section>
+
 <section id="profile" class="view"><div class="panel"><div class="head"><div><h2>Profile</h2><div class="sub">Customize your public identity and avatar.</div></div></div>
  <div class="profile-hero"><div class="profile-avatar" id="profileAvatarPreview">M</div><div><div class="profile-name" id="profileDisplayName">Monkey UI User</div><div class="profile-handle" id="profileHandle">@user</div></div><div class="actions"><button class="btn" id="profileSaveBtn" type="button">Save Profile</button></div></div>
  <div class="profile-settings"><div class="grid two"><div class="field"><label>Username</label><input id="profileUsernameInput" maxlength="24" placeholder="your_username" autocomplete="off"></div><div class="field"><label>Custom profile picture</label><input id="profileAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></div><div class="field"><label>Avatar image URL</label><input id="profileAvatarInput" placeholder="https://.../avatar.png"></div><div class="field"><label>Avatar fallback letter</label><input id="profileAvatarLetter" maxlength="1" placeholder="M"></div></div><div class="artist-profile-box" id="artistProfileBox" style="display:none"><div class="eyebrow">UI ARTIST PROFILE</div><div class="grid two"><div class="field"><label>Portfolio</label><input id="profilePortfolioInput" type="url" placeholder="https://your-portfolio.com"></div><div class="field"><label>Discord</label><input id="profileDiscordInput" placeholder="your Discord username"></div></div><label class="remember-row"><input id="profileHireable" type="checkbox"> <span>Show me in Hireable</span></label><div class="meta">Your role is controlled by admin approval. The Hireable switch only controls whether approved artists appear in the Hireable tab.</div></div><div class="meta" style="margin-top:8px">Your username and profile picture are shared with Social, People, Friends, posts, and messages. Image uploads are stored in your profile as a compact image.</div><div class="status" id="profileStatus"></div></div>
@@ -609,8 +612,32 @@ function mix(a,b,p){let aa=a.replace('#',''),bb=b.replace('#','');let r=Math.rou
 // ===== NAVIGATION / THEME =====
 function canUseStudio(){return ['artist','admin'].includes(currentProfile?.role)}
 function isAdmin(){return currentProfile?.role==='admin'}
-function navInit(){let studioPrimary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['social','Social'],['profile','Profile']];let studioMore=[['patterns','Patterns'],['presets','Presets'],['bars','Bars & Icons'],['themes','Themes'],['svg','SVG Lab'],['nineslice','9-Slice'],['resources','Resources']];let primary=canUseStudio()?studioPrimary:[['social','Social']];let more=canUseStudio()?studioMore:[['themes','Themes']];if(isAdmin())primary.push(['admin','Admin']);$('nav').innerHTML=primary.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')+(more.length?`<div class="nav-more" id="navMore"><button class="alt" type="button" id="navMoreBtn">More ▾</button><div class="nav-more-menu">${more.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')}</div></div>`:'');let run=b=>{showView(b.dataset.view);$('nav').classList.remove('mobile-open');$('navMore')?.classList.remove('open')};$('nav').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>run(b));$('navMoreBtn')?.addEventListener('click',e=>{e.stopPropagation();$('navMore').classList.toggle('open')});document.addEventListener('click',e=>{if(!$('navMore')?.contains(e.target))$('navMore')?.classList.remove('open')})}
-function showView(id){if(id==='admin'&&!isAdmin())id='social';if(!canUseStudio()&&!['social','themes'].includes(id))id='social';activeView=id;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id));if(id==='themes')renderThemes();if(id==='admin'){renderArtistApplications();renderAdminAccounts();renderAdminFeedback()}}
+function navInit(){
+ let studioPrimary=[['home','Concept'],['gradients','Gradients'],['builder','Layouts'],['buttons','Buttons'],['headers','Headers'],['frames','Frames'],['hud','HUD'],['social','Social'],['profile','Profile']];
+ let studioMore=[['patterns','Patterns'],['presets','Presets'],['bars','Bars & Icons'],['themes','Themes'],['svg','SVG Lab'],['nineslice','9-Slice'],['resources','Resources']];
+ const role=normalizedRole();
+ let primary=canUseStudio()?studioPrimary:[['social','Social']];
+ let more=canUseStudio()?studioMore:[];
+ if(canApplyForArtist())primary.push(['application','Application']);
+ if(isAdmin())primary.push(['admin','Owner']);
+ $('nav').innerHTML=primary.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')+(more.length?`<div class="nav-more" id="navMore"><button class="alt" type="button" id="navMoreBtn">More ▾</button><div class="nav-more-menu">${more.map(([id,n])=>`<button data-view="${id}">${n}</button>`).join('')}</div></div>`:'');
+ let run=b=>{showView(b.dataset.view);$('nav').classList.remove('mobile-open');$('navMore')?.classList.remove('open')};
+ $('nav').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>run(b));
+ $('navMoreBtn')?.addEventListener('click',e=>{e.stopPropagation();$('navMore').classList.toggle('open')});
+ document.addEventListener('click',e=>{if(!$('navMore')?.contains(e.target))$('navMore')?.classList.remove('open')});
+}
+function showView(id){
+ if(id==='admin'&&!isAdmin())id='social';
+ if(id==='application'&&!canApplyForArtist())id='social';
+ if(!canUseStudio()&&!['social','application'].includes(id))id='social';
+ activeView=id;
+ document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));
+ document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id));
+ if(id==='themes')renderThemes();
+ if(id==='application')renderArtistApplicationView();
+ if(id==='admin'){renderArtistApplications();renderAdminAccounts();renderAdminFeedback()}
+}
+
 function randomPalette(){return palettes[Math.floor(Math.random()*palettes.length)]}
 
 // ===== SVG SHAPE + EFFECT ENGINE =====
@@ -1134,15 +1161,26 @@ function initResources(){
 // ===== REAL AUTH + SHARED COMMUNITY (SUPABASE) =====
 const SUPABASE_URL='https://wmvcouygzycvfkrpopna.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_jaC_o201T4GLp5f82NOkvQ_3FxUHEM7';
-const hasSupabase=()=>window.supabase&&SUPABASE_URL.startsWith('http')&&SUPABASE_ANON_KEY!=='sb_publishable_jaC_o201T4GLp5f82NOkvQ_3FxUHEM7';
+const hasSupabase=()=>window.supabase&&SUPABASE_URL.startsWith('http')&&SUPABASE_ANON_KEY!=='YOUR_SUPABASE_PUBLISHABLE_KEY';
 const sb=hasSupabase()?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,storageKey:'monkey-ui-station-auth',autoRefreshToken:true,detectSessionInUrl:true}}):null;
 let currentProfile=null;
 
 
 function authCurrent(){return currentProfile}
-function normalizedRole(){return String(currentProfile?.role||currentProfile?.user_metadata?.role||'').trim().toLowerCase()}
-function isAdmin(){return normalizedRole()==='admin'}
-function canUseStudio(){return ['artist','admin'].includes(normalizedRole())}
+function normalizedRole(){
+ const raw=String(currentProfile?.role||currentProfile?.user_metadata?.role||'').trim().toLowerCase();
+ // The existing `admin` profile is the single site owner account.
+ if(raw==='admin'||raw==='owner')return 'owner';
+ if(raw==='artist'||raw==='artist_approved')return 'artist_approved';
+ const app=String(currentProfile?.application_status||'').trim().toLowerCase();
+ if(raw==='artist_pending'||app==='pending')return 'artist_pending';
+ if(raw==='artist_declined'||app==='declined'||app==='rejected')return 'artist_declined';
+ return 'normal';
+}
+function isAdmin(){return String(currentProfile?.role||'').trim().toLowerCase()==='admin'}
+function canUseStudio(){return ['artist_approved','owner'].includes(normalizedRole())}
+function canApplyForArtist(){return ['normal','artist_pending','artist_declined'].includes(normalizedRole())}
+function roleLabel(role=normalizedRole()){return ({owner:'OWNER',artist_approved:'ARTIST — APPROVED',artist_pending:'ARTIST — PENDING',artist_declined:'ARTIST — DECLINED',normal:'NORMAL USER'})[role]||'NORMAL USER'}
 async function refreshCurrentProfile(){
  if(!sb)return currentProfile;
  const {data:{user}}=await sb.auth.getUser();
@@ -1229,14 +1267,22 @@ async function submitPendingArtistApplication(user){
 async function loadProfile(user){
  if(!sb||!user)return null;
  const localAvatar=localStorage.getItem('monkey-pfp-'+user.id)||user.user_metadata?.avatar_url||'';
- let fallback={id:user.id,username:user.user_metadata?.username||user.email?.split('@')[0]||'User',email:user.email,avatar_url:localAvatar};
+ let fallback={id:user.id,username:user.user_metadata?.username||user.email?.split('@')[0]||'User',email:user.email,avatar_url:localAvatar,role:'user',application_status:null};
  let {data,error}=await sb.from('profiles').select('id,username,avatar_url,role,portfolio_url,discord_username,hireable').eq('id',user.id).maybeSingle();
+ let profile=data||null;
  if(error){
    let basic=await sb.from('profiles').select('id,username,role,portfolio_url,discord_username,hireable').eq('id',user.id).maybeSingle();
-   if(basic.error){console.warn('Profile lookup failed, using auth account:',basic.error);return fallback}
-   return basic.data?{...basic.data,email:user.email,avatar_url:localAvatar}:fallback;
- }
- return data?{...data,email:user.email,avatar_url:data.avatar_url||localAvatar}:fallback;
+   if(basic.error){console.warn('Profile lookup failed, using auth account:',basic.error);profile=fallback;}
+   else profile=basic.data?{...basic.data,email:user.email,avatar_url:localAvatar}:fallback;
+ }else if(profile){profile={...profile,email:user.email,avatar_url:profile.avatar_url||localAvatar};}
+ if(!profile)profile=fallback;
+ // Artist status is kept in artist_applications. Reading the current user's latest application lets
+ // the UI expose the five effective roles without changing the existing profiles schema.
+ try{
+   const ar=await sb.from('artist_applications').select('status,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
+   if(!ar.error)profile.application_status=ar.data?.status||null;
+ }catch(_){profile.application_status=profile.application_status||null;}
+ return profile;
 }
 
 function updateAuthUI(){
@@ -1538,13 +1584,47 @@ function socialUserCard(u,actions=true){let n=typeof u==='string'?u:u.username,i
 async function renderSocialSearch(q){let box=$('socialSearchResults');if(!q||q.length<2){box.classList.remove('open');box.innerHTML='';return}let users=await searchSocialUsers(q),arr=users.slice();let postArr=await posts();let postsFound=postArr.filter(p=>`${p.title} ${p.description||''} ${p.profiles?.username||''}`.toLowerCase().includes(q.toLowerCase())).slice(0,4);box.innerHTML=(arr.length?`<div class="eyebrow" style="padding:10px 13px">PEOPLE</div>`+arr.map(u=>`<div class="social-search-result" data-search-user="${esc(u.username)}"><div class="profile-avatar" style="width:34px;height:34px;font-size:12px">${socialAvatar(u.username)}</div><div><b>@${esc(u.username)}</b><div class="meta">View profile / add friend</div></div></div>`).join(''):'')+(postsFound.length?`<div class="eyebrow" style="padding:10px 13px">UI POSTS</div>`+postsFound.map(p=>`<div class="social-search-result" data-search-post="${esc(p.id)}"><div><b>${esc(p.title)}</b><div class="meta">@${esc(p.profiles?.username||'User')}</div></div></div>`).join(''):'')+(!arr.length&&!postsFound.length?'<div class="status" style="padding:15px">No users or posts found.</div>':'');box.classList.add('open');box.querySelectorAll('[data-search-user]').forEach(el=>el.onclick=()=>{let n=el.dataset.searchUser;$('friendUsername').value=n;box.classList.remove('open');document.querySelector('[data-social-tab="people"]')?.click();renderPeople([n])});box.querySelectorAll('[data-search-post]').forEach(el=>el.onclick=()=>{box.classList.remove('open');document.querySelector('[data-social-tab="feed"]')?.click();setTimeout(()=>document.querySelector(`[data-social-post="${CSS.escape(el.dataset.searchPost)}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),60)})}
 async function renderHireable(){if(!$('hireableResults'))return;if(!sb){$('hireableResults').innerHTML='<div class="social-empty">Hireable artists require Supabase.</div>';return}let {data,error}=await sb.from('profiles').select('id,username,role,portfolio_url,discord_username,hireable').eq('role','artist').eq('hireable',true).order('username',{ascending:true});if(error){$('hireableResults').innerHTML=`<div class="status err">${esc(error.message)}</div>`;return}$('hireableResults').innerHTML=data?.length?data.map(u=>`<div class="social-row"><div class="social-user"><div class="profile-avatar">${socialAvatar(u)}</div><div class="social-user-copy"><b>@${esc(u.username)} <span class="artist-badge approved">UI ARTIST</span></b><div class="meta">${u.discord_username?`Discord: ${esc(u.discord_username)}`:'Discord not listed'}${u.portfolio_url?' · Portfolio available':''}</div></div></div><div class="social-actions">${u.portfolio_url?`<a class="btn alt" href="${esc(u.portfolio_url)}" target="_blank" rel="noopener">Portfolio ↗</a>`:''}<button class="btn alt" data-view-user="${esc(u.username)}" type="button">View</button></div></div>`).join(''):'<div class="social-empty">No approved UI artists are marked hireable yet.</div>';wireSocialRows()}
 async function renderPeople(seed){let q=($('peopleSearch')?.value||'').trim();if(seed&&seed.length)q=seed[0];let users=await searchSocialUsers(q);$('peopleResults').innerHTML=users.length?users.map(u=>socialUserCard(u)).join(''):'<div class="social-empty">No accounts found.</div>';wireSocialRows()}
-function ensureSocialArtistApplyTab(){
- const tabs=document.querySelector('.social-tabs'),panel=document.getElementById('socialApplyPanel');if(!tabs||!panel)return;
- let b=tabs.querySelector('[data-social-tab="apply"]');const show=['user','artist_declined'].includes(normalizedRole());
- if(show&&!b){b=document.createElement('button');b.type='button';b.className='social-tab';b.dataset.socialTab='apply';b.textContent='Apply UI Artist';tabs.appendChild(b);}
- if(b)b.style.display=show?'':'none';
- if(b&&!b.dataset.wired){b.dataset.wired='1';b.onclick=()=>{tabs.querySelectorAll('.social-tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.social-panel').forEach(p=>{const on=p.id==='socialApplyPanel';p.classList.toggle('active',on);p.style.display=on?'block':'none'});renderArtistApplyForm()};}
+function renderArtistApplicationView(){
+ const host=$('applicationViewContent');
+ if(!host)return;
+ const role=normalizedRole();
+ if(!canApplyForArtist()){host.innerHTML='<div class="status">UI Artist applications are unavailable for this account.</div>';return;}
+ const statusText=role==='artist_pending'?'Your application is currently pending review.':role==='artist_declined'?'Your previous application was declined. You can submit a new application.':'You are currently a Normal User. Submit an application to become a UI Artist.';
+ host.innerHTML=`<div class="application-hero"><div><div class="eyebrow">UI ARTIST APPLICATION</div><h2 style="margin:5px 0 6px">Apply to become a UI Artist</h2><div class="sub">${statusText}</div></div><span class="artist-badge ${role==='artist_pending'?'pending':''}">${esc(roleLabel(role))}</span></div>
+ <form id="applicationForm" class="auth-form" style="margin-top:14px;max-width:760px">
+  <div class="field"><label>Portfolio URL</label><input id="applicationPortfolio" type="url" placeholder="https://your-portfolio.com" required value="${esc(currentProfile?.portfolio_url||'')}"><div class="meta">Show your UI work, Roblox interfaces, Figma work, or another portfolio.</div></div>
+  <div class="field"><label>Discord username</label><input id="applicationDiscord" placeholder="your Discord username" autocomplete="off" required value="${esc(currentProfile?.discord_username||'')}"></div>
+  <button class="btn" type="submit">${role==='artist_declined'?'Submit New Application':'Submit Application'}</button>
+  <div id="applicationStatus" class="auth-status"></div>
+ </form>`;
+ const form=$('applicationForm');
+ if(!form)return;
+ form.onsubmit=async e=>{
+  e.preventDefault();
+  const status=$('applicationStatus'),link=$('applicationPortfolio')?.value.trim()||'',discord=$('applicationDiscord')?.value.trim()||'';
+  status.className='auth-status';status.textContent='Submitting…';
+  try{
+   if(!link)throw new Error('Portfolio URL is required.');
+   if(!/^https?:\/\//i.test(link))throw new Error('Portfolio must start with http:// or https://.');
+   if(!discord)throw new Error('Discord username is required.');
+   if(!sb)throw new Error('Supabase is required.');
+   const r=await sb.rpc('submit_artist_application',{p_portfolio_url:link,p_discord_username:discord,p_portfolio_type:'link',p_portfolio_data:link});
+   if(r.error)throw r.error;
+   currentProfile={...currentProfile,application_status:'pending',portfolio_url:link,discord_username:discord};
+   status.textContent='Application submitted. The owner can now review it.';status.className='auth-status ok';
+   navInit();renderArtistApplicationView();
+  }catch(err){status.textContent=err?.message||'Application failed.';status.className='auth-status err';}
+ };
 }
+
+function ensureSocialArtistApplyTab(){
+ const tabs=document.querySelector('.social-tabs'),panel=document.getElementById('socialApplyPanel');
+ if(!tabs||!panel)return;
+ const b=tabs.querySelector('[data-social-tab="apply"]');
+ if(b)b.style.display='none';
+ if(panel)panel.style.display='none';
+}
+
 function renderArtistApplyForm(){
  const form=$('socialArtistApplyForm');if(!form||form.dataset.wired)return;if(!['user','artist_declined'].includes(normalizedRole()))return;form.dataset.wired='1';
  form.onsubmit=async e=>{e.preventDefault();const status=$('socialApplyStatus'),link=$('socialApplyPortfolio')?.value.trim()||'',discord=$('socialApplyDiscord')?.value.trim()||'';status.className='auth-status';status.textContent='Submitting…';try{if(!link)throw new Error('Portfolio URL is required.');if(!/^https?:\/\//i.test(link))throw new Error('Portfolio must start with http:// or https://.');if(!discord)throw new Error('Discord username is required.');if(!sb)throw new Error('Supabase is required.');const r=await sb.rpc('submit_artist_application',{p_portfolio_url:link,p_discord_username:discord,p_portfolio_type:'link',p_portfolio_data:link});if(r.error)throw r.error;status.textContent='Application submitted. Hako can now review it.';status.className='auth-status ok';}catch(err){status.textContent=err?.message||'Application failed.';status.className='auth-status err';}};
@@ -1655,7 +1735,7 @@ async function sendSocialRequest(){let n=$('friendUsername').value.trim().replac
 async function sendSocialMessage(){let n=socialState.selected,t=$('messageInput').value.trim();if(!n||!t)return;if(sb&&currentProfile){let friend=(socialState.friends||[]).find(x=>(x.username||x).toLowerCase()===n.toLowerCase());if(friend?.id){let {error}=await sb.from('messages').insert({sender_id:currentProfile.id,receiver_id:friend.id,body:t});if(!error){$('messageInput').value='';await loadSharedMessages(friend.id,n);return}toastU?.(error.message||'Message could not be sent.');return}}(socialState.messages[n]||(socialState.messages[n]=[])).push({text:t,mine:true,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});$('messageInput').value='';saveSocial();renderConversation()}
 async function loadSharedMessages(friendId,name){if(!sb||!currentProfile)return;let {data,error}=await sb.from('messages').select('sender_id,receiver_id,body,created_at').or(`and(sender_id.eq.${currentProfile.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${currentProfile.id})`).order('created_at',{ascending:true});if(error){renderConversation();return}socialState.messages[name]=(data||[]).map(m=>({text:m.body,mine:m.sender_id===currentProfile.id,time:new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}));saveSocial();renderConversation()}
 async function adminSetRole(userId,role){if(!isAdmin()||!sb)return;let r=await sb.rpc('admin_manage_account',{p_user_id:userId,p_role:role});if(r.error){toastU?.(r.error.message);return false}toastU?.('Account updated.');return true}
-async function renderAdminAccounts(){if(!isAdmin()||!$('adminAccounts'))return;if(!sb){$('adminAccounts').innerHTML='<div class="status err">Supabase is required.</div>';return}let q=($('adminAccountSearch')?.value||'').trim();let query=sb.from('profiles').select('id,username,avatar_url,role,hireable,portfolio_url,discord_username,created_at').order('created_at',{ascending:false}).limit(500);if(q)query=query.ilike('username',`%${q}%`);let {data,error}=await query;if(error){$('adminAccounts').innerHTML=`<div class="status err">${esc(error.message)}</div>`;return}let rows=data||[];$('adminAccounts').innerHTML=rows.length?rows.map(a=>`<div class="admin-account"><div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>@${esc(a.username||'User')}</b><span class="artist-badge ${a.role==='artist'?'approved':a.role==='artist_pending'?'pending':''}">${esc(a.role||'user').toUpperCase()}</span></div><div class="meta" style="margin-top:5px">Discord: ${esc(a.discord_username||'—')} · Hireable: ${a.hireable?'Yes':'No'}</div>${a.portfolio_url?`<div class="meta" style="margin-top:3px">Portfolio: <a href="${esc(a.portfolio_url)}" target="_blank" rel="noopener">Open ↗</a></div>`:''}</div><div class="actions"><select data-admin-role="${esc(a.id)}" aria-label="Role for ${esc(a.username||'user')}"><option value="user" ${a.role==='user'?'selected':''}>Normal</option><option value="artist" ${a.role==='artist'?'selected':''}>Artist</option><option value="artist_pending" ${a.role==='artist_pending'?'selected':''}>Pending</option><option value="artist_declined" ${a.role==='artist_declined'?'selected':''}>Declined</option><option value="admin" ${a.role==='admin'?'selected':''}>Admin</option></select><button class="btn" data-save-role="${esc(a.id)}">Apply Role</button>${a.role==='artist'?`<button class="btn alt" data-admin-hireable="${esc(a.id)}" data-value="${a.hireable?'0':'1'}">${a.hireable?'Remove Hireable':'Make Hireable'}</button>`:''}</div></div>`).join(''):'<div class="social-empty">No accounts found.</div>';$('adminAccounts').querySelectorAll('[data-save-role]').forEach(b=>b.onclick=async()=>{let sel=$(`[data-admin-role="${CSS.escape(b.dataset.saveRole)}"]`);if(!sel)return;b.disabled=true;let ok=await adminSetRole(b.dataset.saveRole,sel.value);b.disabled=false;if(ok){await renderAdminAccounts();await renderArtistApplications();await renderPeople();await renderHireable()}});$('adminAccounts').querySelectorAll('[data-admin-hireable]').forEach(b=>b.onclick=async()=>{b.disabled=true;let role=await adminSetRole(b.dataset.adminHireable,b.dataset.value==='1'?'artist':'artist');b.disabled=false;if(role){let r=await sb.rpc('admin_set_hireable_for_user',{p_user_id:b.dataset.adminHireable,p_hireable:b.dataset.value==='1'});if(r.error){toastU?.(r.error.message)}else{await renderAdminAccounts();await renderHireable()}}})}
+async function renderAdminAccounts(){if(!isAdmin()||!$('adminAccounts'))return;if(!sb){$('adminAccounts').innerHTML='<div class="status err">Supabase is required.</div>';return}let q=($('adminAccountSearch')?.value||'').trim();let query=sb.from('profiles').select('id,username,avatar_url,role,hireable,portfolio_url,discord_username,created_at').order('created_at',{ascending:false}).limit(500);if(q)query=query.ilike('username',`%${q}%`);let {data,error}=await query;if(error){$('adminAccounts').innerHTML=`<div class="status err">${esc(error.message)}</div>`;return}let rows=data||[];$('adminAccounts').innerHTML=rows.length?rows.map(a=>`<div class="admin-account"><div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>@${esc(a.username||'User')}</b><span class="artist-badge ${a.role==='artist'?'approved':a.role==='artist_pending'?'pending':''}">${esc(a.role==='admin'?'OWNER':a.role==='artist'?'ARTIST — APPROVED':a.role==='artist_pending'?'ARTIST — PENDING':a.role==='artist_declined'?'ARTIST — DECLINED':'NORMAL USER')}</span></div><div class="meta" style="margin-top:5px">Discord: ${esc(a.discord_username||'—')} · Hireable: ${a.hireable?'Yes':'No'}</div>${a.portfolio_url?`<div class="meta" style="margin-top:3px">Portfolio: <a href="${esc(a.portfolio_url)}" target="_blank" rel="noopener">Open ↗</a></div>`:''}</div><div class="actions"><select data-admin-role="${esc(a.id)}" aria-label="Role for ${esc(a.username||'user')}" ${a.role==='admin'?'disabled':''}><option value="user" ${a.role==='user'?'selected':''}>Normal User</option><option value="artist" ${a.role==='artist'?'selected':''}>Artist — Approved</option><option value="artist_pending" ${a.role==='artist_pending'?'selected':''}>Artist — Pending</option><option value="artist_declined" ${a.role==='artist_declined'?'selected':''}>Artist — Declined</option><option value="admin" ${a.role==='admin'?'selected':''}>Owner</option></select><button class="btn" data-save-role="${esc(a.id)}" ${a.role==='admin'?'disabled':''}>Apply Role</button>${a.role==='artist'?`<button class="btn alt" data-admin-hireable="${esc(a.id)}" data-value="${a.hireable?'0':'1'}">${a.hireable?'Remove Hireable':'Make Hireable'}</button>`:''}</div></div>`).join(''):'<div class="social-empty">No accounts found.</div>';$('adminAccounts').querySelectorAll('[data-save-role]').forEach(b=>b.onclick=async()=>{let sel=$(`[data-admin-role="${CSS.escape(b.dataset.saveRole)}"]`);if(!sel)return;b.disabled=true;let ok=await adminSetRole(b.dataset.saveRole,sel.value);b.disabled=false;if(ok){await renderAdminAccounts();await renderArtistApplications();await renderPeople();await renderHireable()}});$('adminAccounts').querySelectorAll('[data-admin-hireable]').forEach(b=>b.onclick=async()=>{b.disabled=true;let role=await adminSetRole(b.dataset.adminHireable,b.dataset.value==='1'?'artist':'artist');b.disabled=false;if(role){let r=await sb.rpc('admin_set_hireable_for_user',{p_user_id:b.dataset.adminHireable,p_hireable:b.dataset.value==='1'});if(r.error){toastU?.(r.error.message)}else{await renderAdminAccounts();await renderHireable()}}})}
 async function submitFeedback(){
  const text=$('feedbackText')?.value.trim(); const status=$('feedbackStatus');
  if(!text||!currentProfile||!sb)return;
