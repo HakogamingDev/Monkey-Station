@@ -477,6 +477,21 @@ html[data-theme-style="paper"] .btn{border-radius:2px;border:2px solid var(--lin
 .preset-section-note{font-size:9px;color:var(--muted);margin:-5px 0 12px}
 
 .gradient-suggestions{margin:12px 0}.gradient-suggest-tabs{display:flex;gap:6px;overflow:auto;padding:2px 0 10px}.gradient-suggest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}.gradient-suggest-card{border:1px solid var(--line,#2b3240);border-radius:12px;overflow:hidden;background:var(--card,#111827)}.gradient-suggest-sample{height:72px}.gradient-suggest-body{padding:8px}.gradient-suggest-body .title{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gradient-suggest-body .meta{font-size:10px;opacity:.65;margin-top:3px}.gradient-suggest-body button{margin-top:7px;width:100%}
+
+/* Theme-aware native dropdowns */
+select, select.field, .field select, .select, .quick-preset, .quick-presets select {
+  background-color: var(--panel, #15171c) !important;
+  color: var(--text, #f5f7fa) !important;
+  border-color: var(--line, #343943) !important;
+  color-scheme: dark;
+}
+select option, select optgroup {
+  background-color: var(--panel, #15171c) !important;
+  color: var(--text, #f5f7fa) !important;
+}
+html[data-theme] select, html[data-theme] select option {
+  color-scheme: dark;
+}
 </style></style><style>
 /* ===== VISUAL POLISH — same layout, cleaner hierarchy ===== */
 .panel{box-shadow:0 14px 42px rgba(0,0,0,.12);backdrop-filter:blur(10px)}
