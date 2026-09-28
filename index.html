@@ -1134,7 +1134,7 @@ function initResources(){
 // ===== REAL AUTH + SHARED COMMUNITY (SUPABASE) =====
 const SUPABASE_URL='https://wmvcouygzycvfkrpopna.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_jaC_o201T4GLp5f82NOkvQ_3FxUHEM7';
-const hasSupabase=()=>window.supabase&&SUPABASE_URL.startsWith('http')&&SUPABASE_ANON_KEY!=='YOUR_SUPABASE_PUBLISHABLE_KEY';
+const hasSupabase=()=>window.supabase&&SUPABASE_URL.startsWith('http')&&SUPABASE_ANON_KEY!=='sb_publishable_jaC_o201T4GLp5f82NOkvQ_3FxUHEM7';
 const sb=hasSupabase()?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,storageKey:'monkey-ui-station-auth',autoRefreshToken:true,detectSessionInUrl:true}}):null;
 let currentProfile=null;
 
